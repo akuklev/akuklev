@@ -1,7 +1,8 @@
 Research interests:
 - Languages for formalized mathematics:
    * 🔭 [The type-theoretic cousin of ZMC/S: A particularly pleasing foundation for category theory](https://github.com/akuklev/QIITs-in-Cedille).
-   * <details>
+   * Striving to expand it to meet a the the following requirements/ 
+  <details>
   <summary>Requirements</summary>
  
   1. Nice handling of constructive Concrete Mathematics, Real Analysis, Basic Linear, Commutative and Universal Algebra, (non-higher) Category Theory
