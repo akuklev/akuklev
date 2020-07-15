@@ -27,6 +27,7 @@ Technically, (1) requires:
 
 <details>
 <summary>Extended Algebraic Theories: Bidirectionally presented type theories as algebraic presentations of higher categorcal stuctures.</summary>
+  
 * Intuitionistic type theory with liberal identity type (i.e. without uniqueness of identity proofs) and dependent sums is known to play a role of “algebraic” presentation of finitely complete ∞-categories, if we add dependent products locally cartesian closed ∞-categories arise, addition of univalent universes leads to ∞-pretoposes. Type-theoretic description of weak ω-categories was recently given.
 * We elaborate this intuition to a notion of extended algebraic theories (XATs), which can be seen as a generalization of Cartmell's Generalised Algebraic Theories w/o equations on sorts, and as stratification of Essentially Algebraic Theories. In particular, the initial model existence proof for EATs can be adopted. 
 * We describe their categorical (“functorial”) semantics in the doctrine of weak model categories.
@@ -35,6 +36,7 @@ Technically, (1) requires:
   * Category of models of a given theory is a weak model category itself
   * For a large class of theories `T`, a theory `T'` can be derived, so that there is a natural notion of `V`-enriched `T`-s for each `T'`-algebra `V`. For example, for the theory `T` of ordinary categories, `T'` is the theory of virtual double categories, so that for any virtual double category `V` the notion of `V`-enriched categories can be defined.
 </details>
+
 <details>
 <summary>Algebraic Theories over a Generalised Field <code>K</code> (including the “Field with one element” 𝔽₁)</summary>
   
