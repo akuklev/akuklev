@@ -1,7 +1,4 @@
-My profile
-==========
-
-Research interests:
+## Research interests
 <details>
 <summary>Languages for formalized mathematics.</summary>
   
@@ -56,7 +53,17 @@ Develop a syntactic formalism and a doctrine implementing semantics for Algebrai
 </details>
    * 🔭 [The type-theoretic cousin of ZMC/S: A particularly pleasing foundation for category theory](https://github.com/akuklev/QIITs-in-Cedille).
 
-Applied interests:
+## Applied interests
+
+* Syntax for the Working Mathematician: A syntax suitable for doing formalized maths, a carefull combination of strengths of several math-
+oriented languages (Fortress, Agda, Coq, Lean, Isabelle, Julia and Python) perfected by through UX analysis.
+
+* A Geometric Proof Language (mainly, for planar eucledian geometry): School Geometry is the subject where most students first encounter formal proofs. A language for machine-verifiable yet easily human-readable proofs would greatly expand accessability of good math education, especially if incorporated into a visial tool (an app for tablet computers) that helps to construct one's own proofs, understand the other's proofs, play, share and learn the language and tools step-by-step in a gamified fasion. <//www.euclidea.xyz/>
+
+* Gamification of skill training for school and college-level mathematics (precalculus and linear algebra). Doing hundreeds of excersises to learn how to calculate, how to deal with algebraic expressions, solve equations, etc. is extremly boring, while being the only known way to internalise the language of mathematics. At the age of clip culture-leaning progressive education and ever increasing ADHS prevalence, most kids never get fluent enough in quantitative and conceptual languages of mathematics and natural sciences to enjoy them. Gamification seems to be at least a partial way out. <//www.triradix.com/>
+
+* [Purified and Improved replacement for HTML+CSS+JavaScript for clean, accessible and consistent interactive documents and FRP-based GUIs](https://akuklev.github.io/html-reworked/).
+
 <!--
 - 👯 I’m looking to collaborate on ...
 - 🤔 I’m looking for help with ...
