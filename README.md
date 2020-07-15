@@ -60,7 +60,7 @@ Develop a syntactic formalism and a doctrine implementing semantics for algebrai
 ## Applied interests
 
 <details>
-<summary>Syntax for the Working Mathematician: Once the workable theoretical basis for formalized math is available, nice syntax and proper tooling will be urgently needed. We develop a carefull combination of strengths of several math-oriented languages (Fortress, Agda, Coq, Lean, Isabelle, Julia and Python) perfected by through UX analysis.</summary>
+<summary>Syntax for the Working Mathematician: Once the workable theoretical basis for formalized math is available, nice syntax and proper tooling will be urgently needed. We develop a carefull combination of strengths of several math-oriented languages (Fortress, Agda, Coq, Lean, Isabelle, Julia and Python) perfected by through UX analysis: <a href="https://github.com/akuklev/akuklev/blob/master/Sketch_for_a_Common_Syntax%20(1).pdf">view pdf</a></summary>
 
 </details>
 
