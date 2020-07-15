@@ -33,15 +33,13 @@ Technically, (1) requires:
   * Category of models of a given theory is a weak model category itself
   * For a large class of theories `T`, a theory `T'` can be derived, so that there is a natural notion of `V`-enriched `T`-s for each `T'`-algebra `V`. For example, for the theory `T` of ordinary categories, `T'` is the theory of virtual double categories, so that for any virtual double category `V` the notion of `V`-enriched categories can be defined.
 </details>
-  
 <details>
 <summary>Algebraic Theories over a Generalised Field `K`, including the “Field with one element” 𝔽₁</summary>
   
 Develop a syntactic formalism and a doctrine implementing semantics for Algebraic Theories over a Generalized Field `K`. [In the case of 𝔽₁, the logic of joinable partial computations should emerge.](https://github.com/akuklev/algebraic-theories/blob/master/K-algebraic-theories.md), Hopf Algebras reduce to Groups etc. For complex disk, the theories relevant to quantum measurement and entanglement might probably emerge.
 </details>
-
 <details>
-<summary> Modal Type Theory, Computational Effects</summary>
+<summary>Modal Type Theory, Computational Effects</summary>
   
 * Adjoint Logics to encompass concurrency (typed actor model)
 * Linear Type Theory (Spectra, Quantum Computing)
