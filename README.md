@@ -19,6 +19,7 @@ Technically, (1) requires:
   
   We don't know yet, how to implement (3), but having enough quotient-inductive-inductive-recursive types to have initial algebras for all XATs is certainly a start. Perhaps having Equaliser Coinductive Types (dual of QITs) containing a form of strict equality in disguise, should be enough to define higher functors.
 </details>
+🔭 (WIP) The type-theoretic cousin of ZMC/S: A particularly pleasing foundation for category theory: <github.com/akuklev/QIITs-in-Cedille>.
 
 <details>
 <summary>Extended Algebraic Theories: Bidirectionally presented type theories as algebraic presentations of higher categorcal stuctures.</summary>
@@ -30,6 +31,8 @@ Technically, (1) requires:
   * Category of models of a given theory is a weak model category itself
   * For a large class of theories `T`, a theory `T'` can be derived, so that there is a natural notion of `V`-enriched `T`-s for each `T'`-algebra `V`. For example, for the theory `T` of ordinary categories, `T'` is the theory of virtual double categories, so that for any virtual double category `V` the notion of `V`-enriched categories can be defined.
 </details>
+🔭 (WIP) <github.com/akuklev/algebraic-theories>.
+
 <details>
 <summary>Algebraic Theories over a Generalised Field `K`, including the “Field with one element” 𝔽₁</summary>
   
@@ -51,7 +54,6 @@ Develop a syntactic formalism and a doctrine implementing semantics for Algebrai
 * Elaborate on duality between rapidly-growing “Nat -> Nat” functions and natural ordinal notation systems (a form of inductive types), provide a straightforward way to encode both by a diaphantine equation: equation has solution for arbitrary `x` ⇔ “the relational description does indeed define a total rapidly-growing function” ⇔ “transfinite induction up to `θ` always terminates”.  
 * A finitist logical system for ordinal analysis (where complex cut elimination proofs can be carried out) implemented as extrinsic type system for diophantine equations. No unconditionally true judgements beyond ω², conditional judgements of the form “well-founded induction up to `θ` proves consistency of logical system `Ξ`” with meaning explanation “totality of a relationally-described rapidly-growing function for arguments up to `n` implies cut-elimination for Ξ-sentences with length up to `n`”. Ideally a self-verifying theory.
 </details>
-   * 🔭 [The type-theoretic cousin of ZMC/S: A particularly pleasing foundation for category theory](https://github.com/akuklev/QIITs-in-Cedille).
 
 ## Applied interests
 
@@ -74,7 +76,7 @@ Doing hundreeds of excersises to learn how to calculate, how to deal with algebr
 
 
 <details>
-<summary> [Purified and Improved replacement for HTML+CSS+JavaScript for clean, accessible and consistent interactive documents and FRP-based GUIs](https://akuklev.github.io/html-reworked/).</summary>
+<summary> Purified and Improved replacement for HTML+CSS+JavaScript for clean, accessible and consistent interactive documents and FRP-based GUIs. <akuklev.github.io/html-reworked>.</summary>
 
 </details>
 <!--
