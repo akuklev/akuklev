@@ -19,8 +19,7 @@ Technically, (1) requires:
   
   We don't know yet, how to implement (3), but having enough quotient-inductive-inductive-recursive types to have initial algebras for all XATs is certainly a start. Perhaps having Equaliser Coinductive Types (dual of QITs) containing a form of strict equality in disguise, should be enough to define higher functors.
 </details>
-🔭 (WIP) The type-theoretic cousin of ZMC/S: A particularly pleasing foundation for category theory: http://github.com/akuklev/QIITs-in-Cedille.       
-
+🔭 (WIP) The type-theoretic cousin of ZMC/S: A particularly pleasing foundation for category theory: http://github.com/akuklev/QIITs-in-Cedille. \
 
 <details>
 <summary>Extended Algebraic Theories: Bidirectionally presented type theories as algebraic presentations of higher categorcal stuctures.</summary>
@@ -32,7 +31,7 @@ Technically, (1) requires:
   * Category of models of a given theory is a weak model category itself
   * For a large class of theories `T`, a theory `T'` can be derived, so that there is a natural notion of `V`-enriched `T`-s for each `T'`-algebra `V`. For example, for the theory `T` of ordinary categories, `T'` is the theory of virtual double categories, so that for any virtual double category `V` the notion of `V`-enriched categories can be defined.
 </details>
-👯 I’m looking to collaborate on http://github.com/akuklev/algebraic-theories.       
+👯 I’m looking to collaborate on http://github.com/akuklev/algebraic-theories. \
 
 
 <details>
