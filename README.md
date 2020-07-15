@@ -65,13 +65,13 @@ Develop a syntactic formalism and a doctrine implementing semantics for Algebrai
 <details>
 <summary>A Geometric Proof Language (mainly, for planar eucledian geometry as taught in schools), Gamified School Geometry</summary>
   
-School Geometry is the subject where most students first encounter formal proofs. A language for machine-verifiable yet easily human-readable proofs would greatly expand accessability of good math education, especially if incorporated into a visial tool (an app for tablet computers) that helps to construct one's own proofs, understand the other's proofs, play, share and learn the language and tools step-by-step in a gamified fasion. <//www.euclidea.xyz/>
+School Geometry is the subject where most students first encounter formal proofs. A language for machine-verifiable yet easily human-readable proofs would greatly expand accessability of good math education, especially if incorporated into a visial tool (an app for tablet computers) that helps to construct one's own proofs, understand the other's proofs, play, share and learn the language and tools step-by-step in a gamified fasion. <www.euclidea.xyz>
 </details>
 
 <details>
 <summary>Gamification of skill training for school and college-level mathematics (precalculus and linear algebra).</summary>
   
-Doing hundreeds of excersises to learn how to calculate, how to deal with algebraic expressions, solve equations, etc. is extremly boring, while being the only known way to internalise the language of mathematics. At the age of clip culture-leaning progressive education and ever increasing ADHS prevalence, most kids never get fluent enough in quantitative and conceptual languages of mathematics and natural sciences to enjoy them. Gamification seems to be at least a partial way out. <www.triradix.com/>
+Doing hundreeds of excersises to learn how to calculate, how to deal with algebraic expressions, solve equations, etc. is extremly boring, while being the only known way to internalise the language of mathematics. At the age of clip culture-leaning progressive education and ever increasing ADHS prevalence, most kids never get fluent enough in quantitative and conceptual languages of mathematics and natural sciences to enjoy them. Gamification seems to be at least a partial way out. <www.triradix.com>
 </details>
 
 
