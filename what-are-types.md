@@ -45,3 +45,14 @@ Type systems supporting abstract parameters (at least of the type `*`) are calle
 ------------------------------------
 
 While data types in C-like and Java-like languages essentially classify bit strings, data types in 
+
+```
+@Structure SSType:
+   get : (T : U, dec(T) -> SSType)
+```
+
+```
+@Structure VDF[T : SSType]:
+  get : (head : dec(fst T.get), tail : VDF[(snd T.get)(head)])
+
+```
