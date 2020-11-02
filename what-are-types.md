@@ -38,21 +38,68 @@ Here we additionally guarantee that this operation preserves the lenth of the li
 
 Abstract parameters by definition enjoy a property called erasability: they are irrelevant for runtime execution, they are there only for compile-time type checking and elaboration.
 
-Type systems supporting abstract parameters (at least of the type `*`) are called polymorphic, the ability to handle purely abstract types like `* -> *` and `* -> * -> *` is known as higher kinded polymorphism, handling `(Nat -> *) -> *` is known as complex kinded polymorphism. If types of further arguments and the return type are allowed to depend not only on abstract parameters, but also on ordinary values, the type system is told to feature dependent types (a part of the name of our research group). 
+Type systems supporting abstract parameters (at least of the type `*`) are called polymorphic, the ability to handle purely abstract types like `* -> *` and `* -> * -> *` is known as higher-kinded polymorphism, handling `(Nat -> *) -> *` is known as complex kinded polymorphism. If types of further arguments and the return type are allowed to depend not only on abstract parameters, but also on ordinary values, the type system is told to feature dependent types (a part of the name of our research group). 
 
 
-§ Synthetic types and Function types
-------------------------------------
+§ Generating all data types: Synthetic types and Function types
+---------------------------------------------------------------
 
-While data types in C-like and Java-like languages essentially classify bit strings, data types in 
+It turns out, that all data types that have found applications in programming and concrete mathematics to this day, including even unbounded arbitrary-precession real numbers, can be defined combining synthetic datatypes (the ones susceptible to pattern matching, see below) and function types `X -> Y`, the types of “mathematical” (i.e. pure, total, deterministic) functions turning values of the type `X` into values of the type `Y`, or their dependent form where the result type can depend on the input value (denoted by `(x̲ : X) -> Y[x]` or alternatively `∀(x̲ : X), Y[y]`).
+
+Function types `X -> Y` follow the open-world assumption: it is assumed that the type of functions includes all functions definable by terminating exhaustive pattern matching, but not limited to them (because we know that there are more computable functions than one can show to be terminating in any given fixed theory). The only thing we assume is that any `f : X -> Y` can be applied to a value `x : X` yielding a value `f(x) : Y`. In presence of abstract interval type (see next section) we can also show that any two functions that agree on all inputs are equal and therefore indistinguishable: the typesystem itself prohibits syntactic introspection into function types, if they are defined as described. Please note that Haskell and many similar languages lack proper function types: by `X -> Y` they denote the type of computable partial functions which are not guaranteed to terminate. Partial function types are not sufficient for many applications we'll be talking below.
+
+Synthetic datatypes generalise finite datatypes, the so called enumerations:
+```
+@Data Cardsuit:
+  Clubs
+  Diamonds
+  Hearts
+  Spades
+```
+
+Here, `Clubs`, `Diamonds`, `Hearts` and `Spades` are called constructors of the cardsuit types. Synthetic datatypes allow constructors to have parameters, say
+```
+@Data CalcConstant:
+  Pi
+  EulerNumber
+  Literal(n̲ : Int)
+```
+
+Futhermore, synthetic datatypes allow parameters to be of the type being currently defined as long as recursion stays well-founded:
+```
+@Data Nat:
+  Zero
+  Succ(n̲ : Nat)
+```
+
+If all constructor parameters of a synthetic type are of a syntethetic type themselves all the way down, the type is called closed synthetic type. In this case all possible values of the synthetic type can be exhaustively enumerated, in particular synthetic types follow the closed-world assumption, all values can be listed and there are no values besides that, equality of two values is decidable by a trivial top-down recursive algorithm. Functions on synthetic types (not necessary closed ones) can be defined by means of structural induction/recursion on the constructors of the type (i.e. essentially just pattern matching). Under mild assumptions easily checkable by the compiler they can be shown to be computable and terminating by definition.
+
+Mixed synthetic types (non-closed ones) do not follow the closed world assumption anymore since some of the constructors may have functions (following open-world assumption) as parameters. Constructors with parameters of abstract interval type enable synthetic types with custom equality (see below). The type of arbitrary precision real numbers is a very complex mixed synthetic type with custom equality. For the mathematicians among us, closed synthetic types with custom equality (also known as higher inductive-inductive types) correspond to initial algebras for finitary generalized algebraic theories without equations on sorts. In case of mixed types (like reals) one goes beyond finitarity.
+
+§ Extentsions: induction-recursion and coinductivity
+----------------------------------------------------
+
+§ Semi-simplicial Types
+-----------------------
 
 ```
 @Structure SSType:
-   get : (T : U, dec(T) -> SSType)
+   headT : U
+   tailT : dec(headT) -> SSType
 ```
 
 ```
 @Structure VDF[T : SSType]:
-  get : (head : dec(fst T.get), tail : VDF[(snd T.get)(head)])
-
+  head : dec(T.headT)
+  tail : VDF[T.tailT(head)])
+  
+@def apply(f : VDF[T], n : Nat):
+   f(.tail)^n.head
 ```
+
+§ Abstract interval type
+------------------------
+
+
+§ Purely abstract types and universes: strong reflection principle
+------------------------------------------------------------------
