@@ -11,13 +11,34 @@ Types were rediscovered by programming language designers in late 1950s, but the
 § What's wrong with Java-like type systems?
 -------------------------------------------
 
+Let me first name a few problems and then discuss them in detail:
+- Lack of structurally typed (aka duck-typed) tuple and record types;
+- Implicit contravariant casts are fundamentally flawed;
+- Subtyping defined by inheritance fundamentally flawed;
+- Both subtyping and inheritance clash with mutability;
+– No way to define pure functions (those with no side effects);
+– No way to define pure data structures (those with no circularities);
+– Generics inconsistent;
+– Datatype-generic programming not available (impossible to define, say, a `serialize()`-method for generically for all possible classes containing serializable fields only).
+
+
 Java has a small set of primitive data types (boolean, int and float) which cannot be extended, and an extensible system of reference data types. Note that in some Java-like type systems, one can define variant types or enum types (say, `enum BasicColor := {Red | Green | Blue}` that act as primitive types. Please note, that in Java and all JVM-languages, the type `int` (integer) is misnomer as a tribute to the C programming language. Java `int`-values are limited to numbers between -2'147'483'648 and 2'147'483'647 without any overflow or underflow protection by default. There are some higher level languages like Python (which has quite a different type system), whenever an integer over- or underflows, i.e. fails to fit into the register or memory cell it is intended to be stored, automatic fallback to arbitrary precision integer representation occures, a technique that can be implemented without any performance losses (in case no over-/underflow ever occures) on many CPU architectures.
 
 Primitive data types classify values (thus are _data_ types indeed) that can be passed as arguments, stored as local variables or in fields (“typed memory cells”) of (mutable) objects stored in the heap. Values of primitive data types are always passed call-by-value.
 
 Reference data types classify objects (in general, mutable) objects stored in heap or being external resources such as files, IO-streams, remote services or devices like printers or cameras. Arguments of reference types are always passed call-by-name (aka call-by-reference). In Java, there are two kinds of reference types: array types (references to fixed-length mutable arrays of values or references of the same type) and object types also called classes. One can define custom classes, but there are some predefined ("inbuilt") ones like “Object”, “Thread”, “File”, etc. In many Java-like systems, arrays are objects as well, i.e. array types are just inbuilt classes, leading to a way more uniform type system. Unfortunatelly, in Java any reference is allowed to take the special value `null` without any prior warning. (There are some JVM languages remedying both issues.)
 
-Java does not provide any way to define additional data types: types which would classify stuff that is passed call-by-value and contains only self-contained data, in particular no references to (possibly mutable) objects or external resources. But datatypes can be emulated using a special trick: when defining a class (type of possibly mutable object), one can declare one or more fields immutable. Let's call a class recursively pure if all its fields are declared immutable and have either primitive or recursively immutable reference types.
+Java does not provide any way to define additional data types: types which would classify stuff that is passed call-by-value and contains only self-contained data, in particular no references to (possibly mutable) objects or external resources. But datatypes can be emulated using a special trick: when defining a class (type of possibly mutable object), one can declare one or more fields immutable. Let's call a class recursively pure if all its fields are declared immutable and have either primitive or recursively immutable reference types. Under additional assumptions that nullability of refrerences can be limited, one can even express some nontrivial data structures, e.g.
+```Java
+@PurelyImmutable
+final class LinkedList<@PurelyImmutable T> {
+  final @NonNullable T head;
+  final @Nullable LinkedList<T> tail;
+}
+// Note: We cannot rule out circular lists.
+```
+
+Recursively pure classes represent the most mature part of Javaesque type systems, but let me show that even they are flawed.
 
 
  
