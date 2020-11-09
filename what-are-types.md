@@ -6,10 +6,45 @@ Types are there to classify “range” of variables and parameters in two class
 
 History of type theory is therefore twofold, types were first introduced and studied by logicians and proof theorists, most notably Bertrand Russell between 1902 and 1908 for the family of formal languages for his Principia Mathematica project of codifying basic mathematics, Alonzo Church around 1935 for his proof that first order logic is in general undecidable and Kurt Gödel between 1944 and 1958 for his proof of relative consistency of arithmetics.
 
-Types were rediscovered by programming language designers in late 1950s, but the type systems used for programming languages were rudimentary and incomplete. Type declarations were used only by compilers to find out what registers/how many memory cells to use for which variables, and which operations are allowed on which variables. You don't need a complex type system for that: under the hood all variables were bit strings of fixed length. Early programming languages even had a fixed number of data types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. In programming languages like C++, Java, C# and alike, you have complex type systems allowing for both domain-specific data types (say, `Date` or `Color`) and custom containers like `List<SomeType>`, `BitTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`, but these type systems are still incomplete and don't have self-sufficient intrinsic definitions independent of hardware implementations of their respective programming languages. Incompleteness refers to the fact that sometimes you need to forcibly “cast” values between types to write perfectly sensible programs. Such types only annotate variables facilitating some syntactic sugar and a few very weak correctness guarantees checkable in compile time, while being a leaky abstraction "pegged" upon the true operational semantics of their respective programming language. Type systems we study are _not_ of that kind.
+Types were rediscovered by programming language designers in late 1950s, but the type systems used for programming languages were rudimentary and incomplete. Type declarations were used only by compilers to find out what registers/how many memory cells to use for which variables, and which operations are allowed on which variables. You don't need a complex type system for that: under the hood all variables were bit strings of fixed length. Early programming languages even had a fixed number of data types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. In programming languages like C++, Java, C# and alike, you have complex type systems allowing for both domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`, but these type systems are typically incoherent and not self-sufficient. In particular, sometimes you need to forcibly “cast” values between types to write perfectly sensible programs. Such “type systems” often do more harm than good, being leaky abstractions "pegged" upon the true operational semantics of their respective programming language. Type systems we study are _not_ of that kind.
+
+Good news is that the issues can be addressed.
+
+
+§ Strictly Typed Languages
+--------------------------
+
+There are several programming languages (Haskell being the most prominent example) that reconcile the mathematical notion of types with the programmers' notion: the strictly typed languages. NB!: Strictly typed does not mean statically typed: a strictly typed language can support type inference and gradual typing (i.e. “duck typing” where possible until explicit type anotations are provided): public APIs, mature libraries and safety-critical software probably should be explicitely typed in the most precise manner, but early prototypes and unsettled components should be as concise and agile as possible.
+
+Strictly typed does not mean purely functional either: most strictly typed languages are, but it is for the reason that type systems for mixed paradigm programming are still very much work in progress, while type systems for purely functional ones are rather humble extensions of systems developed by mathematicians (Alonzo Church, Kurt Gödel, et al.) over half a century ago, for the most part way before any computers even existed.
+
+The field of strictly typed languages is still in its infancy. We have not yet completely figured out how type complex computational behaviours at all, let alone doing it conveniently, comprehensibly for non-experts, and with a transparent mental model capable of estimating performance.
+
 
 § What's wrong with Java-like type systems?
 -------------------------------------------
+
+Here we'll discuss widespread flaws in type systems of statically typed class-based object oriented programming languages as exemplified by Java.
+
+Java has a small set of primitive data types (boolean, int and float) which cannot be extended, and an extensible system of reference data types. In Java and all JVM-languages, the type `int` (integer) is misnomer as a tribute to the C programming language. Java `int`-values are limited to numbers between -2'147'483'648 and 2'147'483'647 without any overflow or underflow protection by default. There are some higher level languages like Python (which has quite a different type system), whenever an integer over- or underflows, i.e. fails to fit into the register or memory cell it is intended to be stored, automatic fallback to arbitrary precision integer representation occures, a technique that can be implemented without any performance losses (in case no over-/underflow ever occures) on many CPU architectures.
+
+Primitive data types classify values (thus are _data_ types indeed) that can be passed as arguments, stored as local variables or in fields (“typed memory cells”) of (mutable) objects stored in the heap. Values of primitive data types are always passed call-by-value.
+
+Reference data types classify objects (in general, mutable) objects stored in heap or being external resources such as files, IO-streams, remote services or devices like printers or cameras. Arguments of reference types are always passed call-by-name (aka call-by-reference). In Java, there are two kinds of reference types: array types (references to fixed-length mutable arrays of values or references of the same type) and object types also called classes. One can define custom classes, but there are some predefined ("inbuilt") ones like “Object”, “Thread”, “File”, etc. In many Java-like systems, arrays are objects as well, i.e. array types are just inbuilt classes, leading to a way more uniform type system. Unfortunatelly, in Java any reference is allowed to take the special value `null` without any prior warning. (There are some JVM languages remedying both issues.)
+
+Java does not provide any way to define additional data types: types which would classify stuff that is passed call-by-value and contains only self-contained data, in particular no references to (possibly mutable) objects or external resources. But datatypes can be emulated using a special trick: when defining a class (type of possibly mutable object), one can declare one or more fields immutable. Let's call a class recursively immutable if all its fields are declared immutable and have either primitive or recursively immutable reference types. Under additional assumptions that nullability of refrerences can be limited, one can even express some nontrivial data structures, e.g.
+```Java
+@RecursivelyImmutable
+final class LinkedList<@RecursivelyImmutable T> {
+  final @NonNullable T head;
+  final @Nullable LinkedList<T> tail;
+}
+// Note: We cannot rule out circular lists in Java.
+```
+
+Recursively immutable classes represent the most mature part of Javaesque type systems, but let me show that even they are flawed.
+
+* * *
 
 Let me first name a few problems and then discuss them in detail:
 - Lack of structurally typed (aka duck-typed) tuple and record types;
@@ -22,42 +57,9 @@ Let me first name a few problems and then discuss them in detail:
 – Datatype-generic programming not available (impossible to define, say, a `serialize()`-method for generically for all possible classes containing serializable fields only).
 
 
-Java has a small set of primitive data types (boolean, int and float) which cannot be extended, and an extensible system of reference data types. Note that in some Java-like type systems, one can define variant types or enum types (say, `enum BasicColor := {Red | Green | Blue}` that act as primitive types. Please note, that in Java and all JVM-languages, the type `int` (integer) is misnomer as a tribute to the C programming language. Java `int`-values are limited to numbers between -2'147'483'648 and 2'147'483'647 without any overflow or underflow protection by default. There are some higher level languages like Python (which has quite a different type system), whenever an integer over- or underflows, i.e. fails to fit into the register or memory cell it is intended to be stored, automatic fallback to arbitrary precision integer representation occures, a technique that can be implemented without any performance losses (in case no over-/underflow ever occures) on many CPU architectures.
 
-Primitive data types classify values (thus are _data_ types indeed) that can be passed as arguments, stored as local variables or in fields (“typed memory cells”) of (mutable) objects stored in the heap. Values of primitive data types are always passed call-by-value.
-
-Reference data types classify objects (in general, mutable) objects stored in heap or being external resources such as files, IO-streams, remote services or devices like printers or cameras. Arguments of reference types are always passed call-by-name (aka call-by-reference). In Java, there are two kinds of reference types: array types (references to fixed-length mutable arrays of values or references of the same type) and object types also called classes. One can define custom classes, but there are some predefined ("inbuilt") ones like “Object”, “Thread”, “File”, etc. In many Java-like systems, arrays are objects as well, i.e. array types are just inbuilt classes, leading to a way more uniform type system. Unfortunatelly, in Java any reference is allowed to take the special value `null` without any prior warning. (There are some JVM languages remedying both issues.)
-
-Java does not provide any way to define additional data types: types which would classify stuff that is passed call-by-value and contains only self-contained data, in particular no references to (possibly mutable) objects or external resources. But datatypes can be emulated using a special trick: when defining a class (type of possibly mutable object), one can declare one or more fields immutable. Let's call a class recursively pure if all its fields are declared immutable and have either primitive or recursively immutable reference types. Under additional assumptions that nullability of refrerences can be limited, one can even express some nontrivial data structures, e.g.
-```Java
-@PurelyImmutable
-final class LinkedList<@PurelyImmutable T> {
-  final @NonNullable T head;
-  final @Nullable LinkedList<T> tail;
-}
-// Note: We cannot rule out circular lists.
-```
-
-Recursively pure classes represent the most mature part of Javaesque type systems, but let me show that even they are flawed.
-
-
- 
-
-
-§ Strictly typed languages
---------------------------
-
-A handful mostly academic programming languages (Haskell being the most prominent example) reconcile the mathematical notion of types with the programmers' notion. Such languages are calles strictly typed.
-
-Strictly typed does not mean statically typed: a strictly typed language can support type inference and/or gradual typing, both of which are highly desirable for rapid prototyping: public APIs, mature libraries and safety-critical software probably should be explicitely typed in the most precise manner, while early prototypes and unsettled components should be as concise and agile as possible.
-
-Strictly typed does not mean purely functions: most strictly typed languages are, but it is for the reason that type systems for mixed paradigm programming are still very much work in progress, while type systems for purely functional ones are rather humble extensions of systems developed by mathematicians (Alonzo Church, Kurt Gödel, et al.) over half a century ago, for the most part way before any computers even existed.
-
-All strictly typed programming languages known to the author at the moment are rather poor at rapid prototyping, have steep learning curves and extremely involved cost models rendering any performance optimization whatsoever virtually inaccessible to non-experts, which is the reason why these are non-mainstream, mostly academic programming languages. We are sure that all of these setbacks can be dealt with, yet it will surely take a decade or two.
-
-
-§ Values, objects and abstract parameters
------------------------------------------
+§ Sorting the wheat from the chaff: Values, objects and abstract parameters
+---------------------------------------------------------------------------
 
 There are three classes of types.
 – Data types like `Int`, `List[Int]`, `Real` or `Int -> Int` (a "mathematical" function from integers to integers, i.e. total deterministic pure function). These are types of values, pure information that can be copied or discarded arbitrarily without any caveats, it can be sent in a message over the network or saved onto a disk. Whenever one writes `f(x̲ : Int)` it is meant that `f` takes an integer value as an argument. As opposed to languages like Java and C#, in strict languages `List[Int]` is always to be understood as a(n inherently immutable) value, not as a mutable container of integers. In case `f(x̲ : List[Int])` the variable `x` refers to a value upon which `f` was called, it cannot be modified by a third party in concurrent setting or used to export modifications back to the call site, it's just a value. In a strict language, the notation `x := x + 1` is either completely prohibited in order to avoid confusion (one has to use a fresh name each time, `y := x + 1`) or just shadows an existing local constant `x` by a new one, leaving old one accesible outside of the scope where the new definition took place. It is, `x := x + 1` if it is allowed, is just a syntactic sugar, defined to work exactly the same way as if the left `x` were replaced by a fresh variable together with all usages of `x` in the same scope below this definition. The compiler might internally implement this using mutability if the overshadowed constant is never used again, but on the semantic level there is no mutability here. Immutability of values (or broadly speaking, referential transparency, the fact that expressions might be freely replaced by their values, after all variables were disambiguated to have unique names) allow flexible execution order: any mixture of lazy, eager and preemptive, out-of-order and parallel is guaranteed to produce same results and no side effects.
