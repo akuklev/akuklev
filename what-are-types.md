@@ -2,14 +2,15 @@ I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups
 – Has some experience with a statically-typed class-based object-oriented language like Java or C#;
 – Has seen some functional programming elements, perhaps in a language like Clojure, Scala or F#.
 
-§ What are types and type systems?
-----------------------------------
-
 What are types in the sense we'll be talking about? Types are there to classify range of variables and parameters in two classes of formal languages: programming languages and mathematical languages used for writing down theorems and proofs. Our groups is works in both directions:
 – We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
 — We are working on type system embracing complex computational behaviours including concurrency and nondeterminism.
 
-History of type theory is twofold: types were first introduced and studied by logicians and proof theorists between 1902 and 1958[^1] and then rediscovered by programming language designers around 1966.
+History of type theory is twofold. Strictly typed formal languages were first introduced and studied by logicians and proof theorists between 1902 and 1958. In particular, Kurt Gödel developed a strictly typed “arithmetic programming language” capable of expressing a particular set of explicitly computable functions on natural numbers in order to prove relative consistency of arithmetics by studying type theory of that language. Programming language designers introduced types to programming languages in late 1950s for completely different reasons: variables and parameters had to have type declarations to tell the machine what registers or how many memory cells to use for a given variable. Yet eventually, it gave rise statically typed programming languages with complex type systems. In order to rectify incoherences of those type systems, computer scientists rediscovered type theory in 1970s. Unfortunatelly, almost 50 years later type theory remains largely limited to realms of pure mathematics and theoretical computer science, while most statically typed programming languages (as of 2020) still have poor and incoherent type systems.
+
+As opposed to strictly typed languages, 
+
+
 
 Types as such were used in programming languages already in 1950s, but they comprised very rudimentary type systems, namely finite ones: In a low level programming language, all variables are bit strings of fixed length under the hood, thus it is sufficient to have a fixed finite number of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. The type declarations are then used by compilers to find out what registers/how many memory cells to use for which variables, and which operations are allowed on which variables. But one can also have a high level programming language with a finite type system, the example being Perl: there, the type of the variable is declared by a single-character sigil prefixing the variable name. There are `$scalars`, `@lists`, `%hashes`, `&routines` and `*globs`.
 
@@ -35,7 +36,7 @@ Type systems developed by mathematicians appear quite similar on the first glanc
 
 
 
-[^1]: Most notably Bertrand Russell between 1902 and 1908 for the family of formal languages for his Principia Mathematica project of codifying basic mathematics, Alonzo Church around 1935 for his proof that first order logic is in general undecidable and Kurt Gödel between 1944 and 1958 for his proof of relative consistency of arithmetics.
+[^1]: Most notably Bertrand Russell between 1902 and 1908 for the family of formal languages for his Principia Mathematica project of codifying basic mathematics, Alonzo Church around 1935 for his proof that first order logic is in general undecidable and .
 
 §§ Finite type systems, conversions
 -----------------------------------
