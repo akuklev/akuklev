@@ -1,14 +1,50 @@
-I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer. I assume our intended reader to have some experience with a low-level programming language like C, a “strongly” typed object-oriented language supporting generics like Java or C#, and having seen some functional programming elements, perhaps in a language like Clojure, Scala or F#. Proficiency in strictly typed purely functional programming languages like Haskell or fluency in advanced math is _not_ assumed.
+I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who
+– Has some experience with a statically-typed class-based object-oriented language like Java or C#;
+– Has seen some functional programming elements, perhaps in a language like Clojure, Scala or F#.
 
-Types are there to classify “range” of variables and parameters in two classes of formal languages: programming languages and mathematical languages used for writing down theorems and proofs. Our groups is works in both directions:
+§ What are types and type systems?
+----------------------------------
+
+What are types in the sense we'll be talking about? Types are there to classify range of variables and parameters in two classes of formal languages: programming languages and mathematical languages used for writing down theorems and proofs. Our groups is works in both directions:
 – We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
 — We are working on type system embracing complex computational behaviours including concurrency and nondeterminism.
 
-History of type theory is therefore twofold, types were first introduced and studied by logicians and proof theorists, most notably Bertrand Russell between 1902 and 1908 for the family of formal languages for his Principia Mathematica project of codifying basic mathematics, Alonzo Church around 1935 for his proof that first order logic is in general undecidable and Kurt Gödel between 1944 and 1958 for his proof of relative consistency of arithmetics.
+History of type theory is twofold: types were first introduced and studied by logicians and proof theorists between 1902 and 1958[^1] and then rediscovered by programming language designers around 1966.
 
-Types were rediscovered by programming language designers in late 1950s, but the type systems used for programming languages were rudimentary and incomplete. Type declarations were used only by compilers to find out what registers/how many memory cells to use for which variables, and which operations are allowed on which variables. You don't need a complex type system for that: under the hood all variables were bit strings of fixed length. Early programming languages even had a fixed number of data types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. In programming languages like C++, Java, C# and alike, you have complex type systems allowing for both domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`, but these type systems are typically incoherent and not self-sufficient. In particular, sometimes you need to forcibly “cast” values between types to write perfectly sensible programs. Such “type systems” often do more harm than good, being leaky abstractions "pegged" upon the true operational semantics of their respective programming language. Type systems we study are _not_ of that kind.
+Types as such were used in programming languages already in 1950s, but they comprised very rudimentary type systems, namely finite ones: In a low level programming language, all variables are bit strings of fixed length under the hood, thus it is sufficient to have a fixed finite number of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. The type declarations are then used by compilers to find out what registers/how many memory cells to use for which variables, and which operations are allowed on which variables. But one can also have a high level programming language with a finite type system, the example being Perl: there, the type of the variable is declared by a single-character sigil prefixing the variable name. There are `$scalars`, `@lists`, `%hashes`, `&routines` and `*globs`.
+
+Languages with more elaborate type systems have either type formers (= built-in types with compile-time parameters) or extensible type systems where one can define entirely new types. Algol W (1966) already had both:
+* types with compile-time parameters:
+* * arrays of fixed length `n` and fixed element type `T` (`Array<T, n>` in C++-esque notation) in Algol 60
+* * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation) in Algol W
+* user-defined types for typed records (also known as structures).
+
+
+
+Programming languages like C++, Java, C# extend this approach: they allow to define
+
+and alike, you have complex type systems allowing for both domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`, but these type systems are typically incoherent and not self-sufficient. In particular, sometimes you need to forcibly coerce values between types to write perfectly sensible programs. Such “type systems” often do more harm than good, being leaky abstractions "pegged" upon the true operational semantics of their respective programming language. Type systems we study are _not_ of that kind.
 
 Good news is that the issues can be addressed.
+
+
+
+Type systems developed by mathematicians appear quite similar on the first glance:
+* they also have a number of primitive types, e.g. `Bit` (either true or false) and `Nat` (a natural number) and
+* a number of type formers, e.g. `Pair<X, Y>` and `Function<X, Y>`.
+
+
+
+[^1]: Most notably Bertrand Russell between 1902 and 1908 for the family of formal languages for his Principia Mathematica project of codifying basic mathematics, Alonzo Church around 1935 for his proof that first order logic is in general undecidable and Kurt Gödel between 1944 and 1958 for his proof of relative consistency of arithmetics.
+
+§§ Finite type systems, conversions
+-----------------------------------
+There is a byproduct to that: in order for the compiler to make sense of the program, only values of the same type `X` may be used in a context where values of the type `X` are required, otherwise the compiler is not able to make sense of the program. Thus, some programs which are obviously wrong are discarded before being run. This is known as “compile-time guarantees” and is sometimes sold as 
+
+On the other hand, it means even in a language with a finite number of types there can be a nontrivial type 
+
+There is still one nontrivial aspect to those “type systems”: the language might have a so called “strict typing discipline”, which means, in a context requiring value of type `X` you are only allowed to use value the same type `X`, otherwise the compiler would terminate yielding an error description not being able to . There is an 
+
 
 
 § Strictly Typed Languages
