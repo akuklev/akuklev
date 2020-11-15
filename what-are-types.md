@@ -1,10 +1,10 @@
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who
-– Has some experience with a statically-typed class-based object-oriented language like Java or C#;
-– Has seen some functional programming elements, perhaps in a language like Clojure, Scala or F#.
+* Has some experience with a statically-typed class-based object-oriented language like Java or C#;
+* Has seen some functional programming elements, perhaps in a language like Clojure, Scala or F#.
 
 What are types in the sense we'll be talking about? Types are there to classify range of variables and parameters in two classes of formal languages: programming languages and mathematical languages used for writing down theorems and proofs. Our groups is works in both directions:
-– We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
-— We are working on type system embracing complex computational behaviours including concurrency and nondeterminism.
+* We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
+* We are working on type system embracing complex computational behaviours including concurrency and nondeterminism.
 
 History of type theory is twofold. Strictly typed formal languages were first introduced and studied by logicians and proof theorists between 1902 and 1958. In particular, Kurt Gödel developed a strictly typed “arithmetic programming language” capable of expressing a particular set of explicitly computable functions on natural numbers in order to prove relative consistency of arithmetics by studying type theory of that language. Programming language designers introduced types to programming languages in late 1950s for completely different reasons: variables and parameters had to have type declarations to tell the machine what registers or how many memory cells to use for a given variable. Yet eventually, it gave rise statically typed programming languages with complex type systems. In order to rectify incoherences of those type systems, computer scientists rediscovered type theory in 1970s. Unfortunatelly, almost 50 years later type theory remains largely limited to realms of pure mathematics and theoretical computer science, while most statically typed programming languages (as of 2020) still have poor and incoherent type systems.
 
