@@ -8,8 +8,16 @@ Types are there to classify range of variables and parameters in two classes of 
 * We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
 * We are working on type system embracing complex computational behaviours including concurrency and nondeterminism.
 
-History of type theory is twofold. Types were introduced and studied by logicians and proof theorists at least since 1902, way before programmable computers came to existence. In particular, Kurt Gödel developed a strictly typed “arithmetic programming language” capable of expressing a particular set of explicitly computable functions on natural numbers in order to prove relative consistency of arithmetics by studying type theory of that language.  
-Programming language designers introduced types to programming languages in late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine what registers or how many memory cells to use for a given variable, but eventually statically typed programming languages with complex type systems. In order to rectify incoherences of those type systems, computer scientists rediscovered type theory in 1970s. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, most statically typed programming languages still have poor, leaky and incoherent type systems.
+History of type theory is twofold. Types were first introduced and studied by logicians and proof theorists, for the most part way before programmable computers came to existence. This part of the history began in 1902 in a letter from Bertrand Russell to Gottlob Frege (both of whom were logicians), where types were introduced to solve an inconsistency in Frege's work, and culminated as Kurt Gödel (a proof theorist) developed a strictly typed “arithmetic programming language” capable of expressing a particular set of explicitly computable functions on natural numbers in order to prove relative consistency of arithmetics by studying type theory of that language.  
+Programming language designers introduced types to programming languages in late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine what registers or how many memory cells to use for a given variable, but eventually statically typed programming languages with complex type systems. In order to rectify incoherences of those type systems, computer scientists rediscovered type theory in 1970s. Since than, type theory has been developed by logicians/proof theorists and computer scientists hand in hand.
+
+The practical goal of rectifying type systems of general-purpose programming languages (both statically and dynamically typed ones) is still far from being achieved. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages (for instance Java, C# or C/C++) are a type theorists nightmare. Additionally, they discredit the whole field by promoting the impression, that any complex type system is necessarily a largely pointless pain in the neck.
+
+The reason for such state of affairs is certainly not (only) the ignorance of programming language designers, but large communication gap between computer scientists and engineers (including programming language designers outside of academia), and the circumstance that type theoretical understanding of quite mundane complex computational behaviours (concurrency, shared mutable state, interaction with external systems) is still very much work-in-progress.
+
+Good news is that both issues can be addressed.
+
+* * *
 
 In mathematics, type systems are developed together with their respective typed formal languages, being a perfect fit: type system is expressive enough to provide a precise type for every expression; precise type of every expression can be checked in advance (“in compile-time”). In programming language design, type systems are often piggybacked onto the language, being a somewhat vague declaration of intent. `a : Real, b : Real :- a / b : Real`.
 
@@ -27,7 +35,6 @@ Programming languages like C++, Java, C# extend this approach: they allow to def
 
 and alike, you have complex type systems allowing for both domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`, but these type systems are typically incoherent and not self-sufficient. In particular, sometimes you need to forcibly coerce values between types to write perfectly sensible programs. Such “type systems” often do more harm than good, being leaky abstractions "pegged" upon the true operational semantics of their respective programming language. Type systems we study are _not_ of that kind.
 
-Good news is that the issues can be addressed.
 
 
 
@@ -35,9 +42,6 @@ Type systems developed by mathematicians appear quite similar on the first glanc
 * they also have a number of primitive types, e.g. `Bit` (either true or false) and `Nat` (a natural number) and
 * a number of type formers, e.g. `Pair<X, Y>` and `Function<X, Y>`.
 
-
-
-[^1]: Most notably Bertrand Russell between 1902 and 1908 for the family of formal languages for his Principia Mathematica project of codifying basic mathematics, Alonzo Church around 1935 for his proof that first order logic is in general undecidable and .
 
 §§ Finite type systems, conversions
 -----------------------------------
