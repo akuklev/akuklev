@@ -1,6 +1,3 @@
-§ What are types and what are they good for?
-============================================
-
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who has some experience with a statically typed class-based object-oriented language (like Java or C#)
 and has seen some functional programming elements (perhaps in a language like Clojure, Scala or F#).
 
@@ -11,17 +8,40 @@ Types are there to classify range of variables and parameters in two classes of 
 History of type theory is twofold. Types were first introduced and studied by logicians and proof theorists, for the most part way before programmable computers came to existence. This part of the history began in 1902 in a letter from Bertrand Russell to Gottlob Frege (both of whom were logicians), where types were introduced to solve an inconsistency in Frege's work, and culminated as Kurt Gödel (a proof theorist) developed a strictly typed “arithmetic programming language” capable of expressing a particular set of explicitly computable functions on natural numbers in order to prove relative consistency of arithmetics by studying type theory of that language.  
 Programming language designers introduced types to programming languages in late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine what registers or how many memory cells to use for a given variable, but eventually statically typed programming languages with complex type systems emerged. In order to rectify incoherences of those type systems, computer scientists rediscovered type theory in 1970s. Since than, type theory has been developed by logicians/proof theorists and computer scientists hand in hand.
 
-The practical goal of rectifying type systems of general-purpose programming languages (both statically and dynamically typed ones) is still far from being achieved. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages (for instance Java, C# or C/C++) are a type theorists nightmare. Additionally, they discredit the whole field by promoting an impression, a complex type system is always a largely pointless pain in the neck.
+The practical goal of rectifying type systems of general-purpose programming languages (both statically and dynamically typed ones) is still far from being achieved. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages (for instance Java, C# or C/C++) are a type theorists nightmare. Moreover, they discredit the whole field by promoting an impression, a complex type system is always a largely pointless pain in the neck.
 
 The reason for such state of affairs is certainly not (only) the ignorance of programming language designers, but large communication gap between computer scientists and engineers (including programming language designers outside academia), and the circumstance that type theoretical understanding of quite mundane complex computational behaviours (concurrency, shared mutable state, interaction with external systems) is still very much work-in-progress.
 
 Good news is that both issues can be addressed.
 
+§ Types in Math and Programming
+-------------------------------
+
+First let me mention a (mathematical) type system used by Gödel for his seminal relative consistency proof. That typesystem had a single primitive type `Nat` of natural numbers and a primitive type former `Function<X, Y>` of explicitly computable functions taking a value of type `X` as argument and yielding a value of type `Y`. The raison d'être of the type system is to define a formal language by means of a typed grammar that consists of rules like these two:
+```
+ n : Nat   m : Nat         f : Function<X̲, Y̲>    x : X
+–––––––––––––––––––(1)    —————————————————————————————(2)
+    m + n : Nat                    f(x) : Y
+```
+
+These rules say, that
+1) Whenever you have two expressions of type `Nat`, you can plug them together with a `+` inbetween to obtain another expression of the type `Nat`.
+2) Whenever you have an expression of the type `Function<X, Y>` for some typex `X` and `Y`, and an expression of the type `X`, you can plug them together to obtain an expression of the type `Y`.
+
+These are grammar rules, they tell nothing about meaning (computational meaning or meaning of any other sort) of those expressions, they merely describe how expressions are allowed to be plugged together. In particular, grammar rules cannot be conditional on something which would require inspecting constituents themselves rather than their types. Consider the following non-example:
+```
+ p : Real   q : Real
+–––––––––––––––––––——
+    p / q : Real
+```
+
+If `/` is to be interpreted as division, this rule rules out interpreting `Real` as the type of real numbers. Since no condition like `q ≠ 0` can be imposed on constituents, the only way to rectify this rule is to introduce a new type `PReal` (projectively extended real numbers) containing additional value for the division by zero case.
+
 * * *
 
-In mathematics, type systems are developed together with their respective typed formal languages, being a perfect fit: type system is expressive enough to provide a precise type for every expression; precise type of every expression can be checked in advance (“in compile-time”). In programming language design, type systems are often piggybacked onto the language, being a somewhat vague declaration of intent. `a : Real, b : Real :- a / b : Real`.
+Types as used in programming began in in 1950s: type declarations were used by compilers to find out what registers/how many memory cells to use for which variables, and which operations are permitted. The second usage seemingly coincides with mathematical usage of types, but in practice programming language designers treat typing rules as somewhat vague declarations of intent and do not object to declarations like `div(x : Real, y : Real) : Real` (our non-example above).
 
-Types as such were used in programming languages already in 1950s, but they comprised very rudimentary type systems, namely finite ones: In a low level programming language, all variables are bit strings of fixed length under the hood, thus it is sufficient to have a fixed finite number of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. The type declarations are then used by compilers to find out what registers/how many memory cells to use for which variables, and which operations are allowed on which variables. But one can also have a high level programming language with a finite type system, the example being Perl: there, the type of the variable is declared by a single-character sigil prefixing the variable name. There are `$scalars`, `@lists`, `%hashes`, `&routines` and `*globs`.
+In a low level programming language, all variables are bit strings of fixed length under the hood, thus it is sufficient to have a fixed finite number of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. One can also have a high level programming language with a finite type system, the example being Perl: there, the type of the variable is declared by a single-character sigil prefixing the variable name. There are `$scalars`, `@lists`, `%hashes`, `&routines` and `*globs`.
 
 Languages with more elaborate type systems have either type formers (= built-in types with compile-time parameters) or extensible type systems where one can define entirely new types. Algol W (1966) already had both:
 * types with compile-time parameters:
@@ -29,6 +49,7 @@ Languages with more elaborate type systems have either type formers (= built-in 
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation) in Algol W
 * user-defined types for typed records (also known as structures).
 
+Type systems developed by mathematicians appear quite similar on the first glance.
 
 
 Programming languages like C++, Java, C# extend this approach: they allow to define
@@ -38,9 +59,8 @@ and alike, you have complex type systems allowing for both domain-specific data 
 
 
 
-Type systems developed by mathematicians appear quite similar on the first glance:
-* they also have a number of primitive types, e.g. `Bit` (either true or false) and `Nat` (a natural number) and
-* a number of type formers, e.g. `Pair<X, Y>` and `Function<X, Y>`.
+
+
 
 
 §§ Finite type systems, conversions
