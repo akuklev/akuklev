@@ -17,7 +17,7 @@ Good news is that both issues can be addressed.
 § Types in Math and Programming
 -------------------------------
 
-First let me mention a (mathematical) type system used by Gödel for his seminal relative consistency proof. That typesystem had a single primitive type `Nat` of natural numbers and a primitive type former `Function<X, Y>` of explicitly computable functions taking a value of type `X` as argument and yielding a value of type `Y`. The raison d'être of the type system is to define a formal language by means of a typed grammar that consists of rules like these two:
+First let me mention a (mathematical) type system used by Gödel for his seminal relative consistency proof, the System T. That typesystem had a single primitive type `Nat` of natural numbers and a primitive type former `Function<X, Y>` of explicitly computable functions taking a value of type `X` as argument and yielding a value of type `Y`. The raison d'être of the type system is to define a formal language by means of a typed grammar that consists of rules like these two:
 ```
  n : Nat   m : Nat         f : Function<X̲, Y̲>    x : X
 –––––––––––––––––––(1)    —————————————————————————————(2)
@@ -37,40 +37,30 @@ These are grammar rules, they tell nothing about meaning (computational meaning 
 
 If `/` is to be interpreted as division, this rule rules out interpreting `Real` as the type of real numbers. Since no condition like `q ≠ 0` can be imposed on constituents, the only way to rectify this rule is to introduce a new type `PReal` (projectively extended real numbers) containing additional value for the division by zero case.
 
-* * *
-
 Types as used in programming began in in 1950s: type declarations were used by compilers to find out what registers/how many memory cells to use for which variables, and which operations are permitted. The second usage seemingly coincides with mathematical usage of types, but in practice programming language designers treat typing rules as somewhat vague declarations of intent and do not object to declarations like `div(x : Real, y : Real) : Real` (our non-example above).
 
 In a low level programming language, all variables are bit strings of fixed length under the hood, thus it is sufficient to have a fixed finite number of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. One can also have a high level programming language with a finite type system, the example being Perl: there, the type of the variable is declared by a single-character sigil prefixing the variable name. There are `$scalars`, `@lists`, `%hashes`, `&routines` and `*globs`.
 
-Languages with more elaborate type systems have either type formers (= built-in types with compile-time parameters) or extensible type systems where one can define entirely new types. Algol W (1966) already had both:
+Languages with infinite collection of types quickly emerged as low level languages evolved. They either had type formers (= built-in types with compile-time parameters) or extensible type systems where one can define entirely new types. Algol W (1966) already had both:
 * types with compile-time parameters:
 * * arrays of fixed length `n` and fixed element type `T` (`Array<T, n>` in C++-esque notation) in Algol 60
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation) in Algol W
 * user-defined types for typed records (also known as structures).
 
-Type systems developed by mathematicians appear quite similar on the first glance.
+Modern statically typed mainstream languages straightforwardly extend type system of Algol W allowing for both domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
-Programming languages like C++, Java, C# extend this approach: they allow to define
+§ What's wrong with Java-like type systems?
+-------------------------------------------
 
-and alike, you have complex type systems allowing for both domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`, but these type systems are typically incoherent and not self-sufficient. In particular, sometimes you need to forcibly coerce values between types to write perfectly sensible programs. Such “type systems” often do more harm than good, being leaky abstractions "pegged" upon the true operational semantics of their respective programming language. Type systems we study are _not_ of that kind.
+Already a finite type systems can bear problems. When a compiler encounters a case where a value of the type `X` is used in a context where values of the type `Y` is required, it can either terminate with an error message or apply an implicit conversion from `X` to `Y`. For example, most (if not all) compilers would silently agree to use an `int16` value in a context where an `int32` is required: they're simply pad the binary number representation to match the length. Some languages also implicitly convert `int16` to `float32` and `int32`s to `float64` since no information loss takes place. Here the first two problems arise:
 
+1) There can be more than one way to convert `A` to `B`, say `int16 -> int32 -> float64` and `int16 -> float32 -> float64`. They have to be equivalent. If your language has extensible type system and supports custom implicit conversions (which is the case in Scala), you have to enforce this property somehow (which cannot be done in Scala).
 
+2) If the language supports overloading (i.e. the same expression may be interpreted differently depending on types of operands), result of the expression should stay the same regardless of implicit conversions. For example in C `a / b` means integer division if `a` and `b` are integers, or real division if `a` and `b` are floating point approximations of real numbers. In this example `1 / 2 = 0` if `1` and `2` are interpreted as integer numbers, but `0.5` if they are interpreted as floats: a clear case of incoherent behavior, which can be easily fixed by using a diffrent operator for integer division (like `//` in Python). There are however more subtle cases: assume, you use `+` both for unguarded addition of `int16`s and `int32`s. Now if you add two large 16 bit integers as `int16`s you'll obtain a negative number, whereas adding them as `int32`s would yield a postive number. In case you use `+` for guarded addition of both `int16`s and `int32`s you'll get an `#OVERFLOW` in the first case and a proper number in the second one. You cannot have overloaded arithmetic operators in a low level language with implicit conversions without being incoherent! (In a high-level language you can have a proper addition operator `+`, for instance in Python `+` performs addition of fixed length integers by default, yet performs automatic fallback to arbitrary precision integer representation on overflow and underflow.  
+It's extremly hard to have both overloading and implicit conversions together without being incoherent!
 
-
-
-
-
-
-§§ Finite type systems, conversions
------------------------------------
-There is a byproduct to that: in order for the compiler to make sense of the program, only values of the same type `X` may be used in a context where values of the type `X` are required, otherwise the compiler is not able to make sense of the program. Thus, some programs which are obviously wrong are discarded before being run. This is known as “compile-time guarantees” and is sometimes sold as 
-
-On the other hand, it means even in a language with a finite number of types there can be a nontrivial type 
-
-There is still one nontrivial aspect to those “type systems”: the language might have a so called “strict typing discipline”, which means, in a context requiring value of type `X` you are only allowed to use value the same type `X`, otherwise the compiler would terminate yielding an error description not being able to . There is an 
-
+When type formers come into play, it is quite natural to automatically extend implicit conversions: if there is an implicit conversion from `X` to `Y`, one can automatically derive implicit conversion from (immutable) `List<X>` to `List<Y>` and from (pure) `Function<T, X>` to `Function<T, Y>`. But in can only apply to some parameters of type formers, namely so called covariant parameters. Some programming languages (prime example being Scala) also derive implicit conversions along contravariant parameters, not only from (immutable) `Map<T, X>` to `Map<T, Y>`. but also from `Map<Y, T>` to `Map<X, T>` (attention, reversed order!). Such conversions should be available on demand (i.e. as explicit coersions), but not performed implicitly for they can lead to unintentional information loss.
 
 
 § Strictly Typed Languages
