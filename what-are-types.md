@@ -13,15 +13,15 @@ From their side, programming language designers introduced types in the late 195
 The practical goal of redesigning type systems of general-purpose programming languages is still far from being achieved. In fact, based on their experience with languages like C++, C# or Java, many programmers believe complex type systems to be a pointless pain in the neck. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages are a type theorist's nightmare. However types are inevitable in programming languages, and carefully designing a type system in advance is the only way for typing not to be a nuissance.
 
 There are several unrelated issues to be addressed:
+* Mainstream languages tend to stick with bad typing practices where better ones are available;
 * The gap between statically typed languages and dynamically typed languages has to be closed;
-* Mainstream languages tend to get some things wrong even if it's known how to get them right;
-* There are things we don't know yet how to get right.
+* There are computational behaviours for which good typing practices are yet to be determined.
 
-The gap can be indeed closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in lightweight cases. These mechanisms are indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
+The first issue seems to be due to inertia and a communication gap between computer scientists and engineers.
 
-The second issue seems to be of a social kind, namely the communication gap between computer scientists and engineers.
+The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in ?simple? cases. These mechanisms are indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
 
-The issue we're primarily work on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for concurrency, mutable state and interaction with external systems for a very simple reason: all types required by these languages are data types, there are no objects (extrinsic actors, ressources, mutable state) to be typed.
+The issue our group primarily works on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for concurrency, mutable state and interaction with external actors. This situation has a very simple cause: all types required by these languages are data types, there are no objects (extrinsic actors, ressources, mutable state) to be typed.
 
  * * *
  
