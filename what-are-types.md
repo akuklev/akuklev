@@ -27,18 +27,16 @@ The issue our group primarily works on is the last one. Existing type-theoretica
 § Types in Math and Types in Programming
 ----------------------------------------
 
-To give an idea of a type system, let's introduce System T, the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and a primitive type former `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. The raison d'être of the type system is to define a formal language by means of a typed grammar that consists of rules like these two:
+To give the reader an idea of what a type system is, let's introduce System T, the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and types `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. Type systems are there to define a formal language by a typed grammar that consists of rules like this:
 ```
- n : Nat   m : Nat         f : Function<X̲, Y̲>    x : X
-–––––––––––––––––––(1)    —————————————————————————————(2)
-    m + n : Nat                    f(x) : Y
+ f : Function<X̲, Y̲>    x : X
+—————————————————————————————
+        f(x) : Y
 ```
 
-These rules say, that
-1) Whenever you have two expressions of type `Nat`, you can plug them together with a `+` inbetween to obtain another expression of the type `Nat`.
-2) Whenever you have an expression of the type `Function<X, Y>` for some typex `X` and `Y`, and an expression of the type `X`, you can plug them together to obtain an expression of the type `Y`.
+This rule means that whenever you have an expression of type `Function<X, Y>` for some types `X` and `Y`, and an expression of type `X`, you can plug them together to obtain an expression of type `Y`.
 
-These are grammar rules, they tell nothing about intended meaning of those expressions, they merely describe how terms are allowed to be plugged together. In particular, grammar rules cannot be conditional on something which would require inspecting constituents themselves rather than their types. Consider the following non-example:
+Such grammar rules tell nothing about the intended meaning of expressions they define, they merely describe how terms are allowed to be plugged together. In particular, grammar rules cannot be conditional on something that would require inspecting constituents themselves rather than their types. Consider the following non-example:
 ```
  p : Real   q : Real
 –––––––––––––––––––——
