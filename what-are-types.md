@@ -10,14 +10,39 @@ There are two types of formal languages: programming languages and the ones used
 The history of type theory is two-fold. Types were first introduced and studied by logicians and proof theorists, way before programmable computers came into existence. This part of the history began in a 1902 letter from Bertrand Russell to Gottlob Frege (both of whom were logicians), where types were introduced to solve an inconsistency in Frege's work, and culminated as Kurt Gödel (a proof theorist) developed a “programming language” of primitive recursive functionals to prove relative consistency of arithmetics by studying type theory of that language.  
 From their side, programming language designers introduced types in the late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine which register or how many memory cells to use for a given variable. Eventually statically typed programming languages with complex type systems emerged. To rectify incoherences of those ad hoc type systems, computer scientists rediscovered type theory in the 1970s. Since then, type theory has been developed by mathematicians and computer scientists hand in hand.
 
-The practical goal of redesigning type systems of general-purpose programming languages is still far from being achieved. In fact, based on their experience with mainstream languages like C++, C# or Java, many programmers believe complex type systems to be a pointless pain in the neck. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages are a type theorists' nightmare.
+The practical goal of redesigning type systems of general-purpose programming languages is still far from being achieved. In fact, based on their experience with languages like C++, C# or Java, many programmers believe complex type systems to be a pointless pain in the neck. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages are a type theorist's nightmare. However types are inevitable in programming languages, and carefully designing a type system in advance is the only way for typing not to be a nuissance.
+
+There are several unrelated issues to be addressed:
+– The gap between statically typed languages and dynamically typed languages has to be closed;
+- Mainstream languages tend to get some things wrong even if it's known how to get them right;
+– There are things we don't know yet how to get right.
+
+The gap can be indeed closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in lightweight cases. These mechanisms are indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
+
+The second issue seems to be of a social kind, namely the communication gap between computer scientists and engineers.
+
+The issue we're primarily work on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for concurrency, mutable state and interaction with external systems for a very simple reason: all types required by these languages are data types, there are no objects (objects with mutable state or extrinsic resources) to be typed.
+
+ * * *
+ 
+The first one is of a social nature: many 
+Со статически типизированными `type theorist's nightmare` языками есть три разнородные issue.
+1) В них криво сделано то, что умеют делать прямо. 
+2) В них есть то, что ещё не умеют делать прямо.
+3) В них (как правило) не поддерживается клёвого из динамически-типизированных языков.
+
+(1) потому что large .
+(2) потому что сейчас умеют типизировать только функциональные языки, не поддерживающие concurrency и mutable state, и ограниченно поддерживающие interaction with external systems. Причина преимущественно в том, что их системы типов просто стоят на плечах гигантов, т.е. довольно прямолинейно продолжают работу Гёделя. А нам нужны богатые мультипарадигменные языки.
+(3) это называется gradual typing, как его совмещать со строгими системами типов тоже wip.
+
+, probably due to a large communication gap between computer scientists and working engineers
 
 Both type theoretical understanding of quite mundane complex computational behaviours (concurrency, shared mutable state, interaction with external systems) and sound approach to gradual typing (= omittability of precise type annotations, which is indispensable for rapid prototyping and highly desirable for a language to have a bearable learning curve) are still very much work-in-progress. Without them, type-theoretically sound languages remain niche.
 
-Good news is that both issues can be addressed.
+Good news is that all these issues can be addressed.
 
-§ Types in Math and Programming
--------------------------------
+§ Types in Math and Types in Programming
+----------------------------------------
 
 To give an idea of a type system, let's introduce System T, the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and a primitive type former `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. The raison d'être of the type system is to define a formal language by means of a typed grammar that consists of rules like these two:
 ```
@@ -47,11 +72,11 @@ Since, all variables in a low level programming language are bit strings of fixe
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation) in Algol W
 * user-defined types for typed records (also known as structures).
 
-Modern statically typed mainstream languages straightforwardly extend type system of Algol W allowing for domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
+Most modern statically typed mainstream languages straightforwardly extend type system of Algol W allowing for domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
 § What's wrong with C-style type systems?
--------------------------------------------
+-----------------------------------------
 
 Already a finite type system can bear problems. When a compiler encounters a case where a value of the type `X` is used in a context where values of the type `Y` is required, it can either terminate with an error message or apply an implicit conversion from `X` to `Y`. For example, most (if not all) compilers would silently agree to use an `int16` value in a context where an `int32` is required: they're simply pad the binary number representation to match the length. Some languages also implicitly convert `int16` to `float32` and `int32`s to `float64` since no information loss takes place. Here the first two problems arise:
 
@@ -60,7 +85,9 @@ Already a finite type system can bear problems. When a compiler encounters a cas
 2) If the language supports overloading (i.e. the same expression may be interpreted differently depending on types of operands), result of the expression should stay the same regardless of implicit conversions. For example in C `a / b` means integer division if `a` and `b` are integers, or real division if `a` and `b` are floating point approximations of real numbers. In this example `1 / 2 = 0` if `1` and `2` are interpreted as integer numbers, but `0.5` if they are interpreted as floats: a clear case of incoherent behavior, which can be easily fixed by using a diffrent operator for integer division (like `//` in Python). There are however more subtle cases: assume, you use `+` both for unguarded addition of `int16`s and `int32`s. Now if you add two large 16 bit integers as `int16`s you'll obtain a negative number, whereas adding them as `int32`s would yield a postive number. In case you use `+` for guarded addition of both `int16`s and `int32`s you'll get an `#OVERFLOW` in the first case and a proper number in the second one. You cannot have overloaded arithmetic operators in a low level language with implicit conversions without being incoherent! (In a high-level language you can have a proper addition operator `+`, for instance in Python `+` performs addition of fixed length integers by default, yet performs automatic fallback to arbitrary precision integer representation on overflow and underflow.  
 It's extremly hard to have both overloading and implicit conversions together without being incoherent!
 
-When type formers come into play, it is quite natural to automatically extend implicit conversions: if there is an implicit conversion from `X` to `Y`, one can automatically derive implicit conversion from (immutable) `List<X>` to `List<Y>` and from (pure) `Function<T, X>` to `Function<T, Y>`. But in can only apply to some parameters of type formers, namely so called covariant parameters. Some programming languages (prime example being Scala) also derive implicit conversions along contravariant parameters, not only from (immutable) `Map<T, X>` to `Map<T, Y>`. but also from `Map<Y, T>` to `Map<X, T>` (attention, reversed order!). Such conversions should be available on demand (i.e. as explicit coersions), but not performed implicitly for they can lead to unintentional information loss.
+When type formers come into play, it is quite natural to automatically extend implicit conversions along covariant parameters: implicit convertibility from `X` to `Y` should imply implicit convertibility from (immutable) `List<X>` to `List<Y>` and from (pure) `Function<T, X>` to `Function<T, Y>`. But in can only apply to some parameters of type formers, namely so called covariant parameters. Some programming languages (prime example being Scala) also derive implicit convertibility along contravariant parameters, not only from (immutable) `Map<T, X>` to `Map<T, Y>`, but also from `Map<Y, T>` to `Map<X, T>` (attention, reversed order!).
+
+Such conversions should be available on demand (i.e. as explicit coersions), but not performed implicitly for they can lead to unintentional information loss.
 
 * * *
 
