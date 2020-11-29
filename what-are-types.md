@@ -27,14 +27,16 @@ The issue our group primarily works on is the last one. Existing type-theoretica
 § Types in Math and Types in Programming
 ----------------------------------------
 
-To give the reader an idea of what a type system is, let's introduce System T, the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and types `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. Type systems are there to define a formal language by a typed grammar that consists of rules like this:
+To give the reader an idea of what a type system is, let's introduce the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and types `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. So has conists of types `Nat`, `Function<Nat, Nat>`, `Function<Function<Nat, Nat>, Nat>`, `Function<Function<Nat, Nat>, Function<Function<Nat, Nat>, Nat>>` etc.
+
+In mathematics, type systems are used primarily in definitions of formal languages. A formal language is defined by a typed grammar that consists of rules like this:
 ```
  f : Function<X̲, Y̲>    x : X
 —————————————————————————————
         f(x) : Y
 ```
 
-A rule is a recipee for forming expressions. Constituents `f` and `x` annotated by their respective required types are written above the separating line, the resulting expression `f(x)` annotated by its type is written below the line. This rule reads “whenever you have an expression `f` of type `Function<X, Y>` for some types `X` and `Y`, and an expression `x` of type `X`, you can put them together to obtain an expression `f(x)` of type `Y`”. Here `f(x)` is not a pre-existing notation, it could bear any name instead, say `apply [f] to [x]` or `x |> f`.
+A rule is a recipee for forming expressions. This rule introduces the notation `f(x)`. Constituents `f` and `x` annotated by their respective required types are written above the separating line, the resulting expression `f(x)` annotated by its type is written below the line. This rule reads “whenever you have an expression `f` of type `Function<X, Y>` for some types `X` and `Y`, and an expression `x` of type `X`, one can put them together to obtain an expression `f(x)` of type `Y`”. Here `f(x)` is not a pre-existing notation, it could bear any name instead, say `apply [f] to [x]` or `x |> f`.
 
 Such grammar rules tell nothing about the intended meaning of expressions they define, they merely describe how expressions are composed. In particular, grammar rules can only be conditional on types of their constituent expressions. Consider the following non-example:
 ```
@@ -42,7 +44,7 @@ Such grammar rules tell nothing about the intended meaning of expressions they d
 –––––––––––––––––––——
     p / q : Real
 ```
-Let us assume that `Real` denotes the type of real numbers. Then the expression `p / q` cannot be interpreted as division as there are cases for which properly typed `p` and `q` do not yield a real `p / q`. No condition like `q ≠ 0` can be imposed on constituents for it is not a condition on constituents' types. The only way for the resulting expression to be read as division, is to assign it a new type handling the division-by-zero case. For example, one could use the type `PReal` (projectively extended real numbers) containing additional value for the division-by-zero case.
+Let us assume that `Real` denotes the type of real numbers. Then the expression `p / q` cannot be interpreted as division as there are cases for which properly typed `p` and `q` do not yield a real `p / q`. No condition like `q ≠ 0` can be imposed on constituents for it is not a condition on constituents' types. The only way for the resulting expression to be read as division, is to assign it a new type handling the division-by-zero case. For example, one could use a type (let's call it `PReal`) containing an additional value for the division-by-zero case.
 
 Types as used in programming began in 1950s: type declarations were used by compilers to find out which registers or how many memory cells to use for respective variables, and which operations are permitted. The second usage seemingly coincides with mathematical usage of types, but in practice programming language designers used to treat typing rules as somewhat vague declarations of intent without objecting to declarations like `divide(x : Real, y : Real) : Real` (the non-example above).
 
