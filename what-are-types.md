@@ -21,25 +21,8 @@ The first issue seems to be due to inertia and a communication gap between compu
 
 The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in ?simple? cases. These mechanisms are indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
 
-The issue our group primarily works on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for desirable computational behaviours: concurrency, mutable state, and interaction with external actors. This is because all types present in these languages are data types, while aforementioned behaviours call for object types.
+The issue our group primarily works on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for desirable computational behaviours: concurrency, mutable state, and interaction with external actors. This is because all types present in these languages are data types, while aforementioned behaviours call for object types. This will be discussed below at length.
 
- * * *
- 
-The first one is of a social nature: many 
-Со статически типизированными `type theorist's nightmare` языками есть три разнородные issue.
-1) В них криво сделано то, что умеют делать прямо. 
-2) В них есть то, что ещё не умеют делать прямо.
-3) В них (как правило) не поддерживается клёвого из динамически-типизированных языков.
-
-(1) потому что large .
-(2) потому что сейчас умеют типизировать только функциональные языки, не поддерживающие concurrency и mutable state, и ограниченно поддерживающие interaction with external systems. Причина преимущественно в том, что их системы типов просто стоят на плечах гигантов, т.е. довольно прямолинейно продолжают работу Гёделя. А нам нужны богатые мультипарадигменные языки.
-(3) это называется gradual typing, как его совмещать со строгими системами типов тоже wip.
-
-, probably due to a large communication gap between computer scientists and working engineers
-
-Both type theoretical understanding of quite mundane complex computational behaviours (concurrency, shared mutable state, interaction with external systems) and sound approach to gradual typing (= omittability of precise type annotations, which is indispensable for rapid prototyping and highly desirable for a language to have a bearable learning curve) are still very much work-in-progress. Without them, type-theoretically sound languages remain niche.
-
-Good news is that all these issues can be addressed.
 
 § Types in Math and Types in Programming
 ----------------------------------------
