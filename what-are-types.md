@@ -21,7 +21,7 @@ The gap can be indeed closed by means of gradual typing and type inference: mech
 
 The second issue seems to be of a social kind, namely the communication gap between computer scientists and engineers.
 
-The issue we're primarily work on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for concurrency, mutable state and interaction with external systems for a very simple reason: all types required by these languages are data types, there are no objects (objects with mutable state or extrinsic resources) to be typed.
+The issue we're primarily work on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for concurrency, mutable state and interaction with external systems for a very simple reason: all types required by these languages are data types, there are no objects (extrinsic actors, ressources, mutable state) to be typed.
 
  * * *
  
