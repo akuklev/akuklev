@@ -36,7 +36,7 @@ In mathematics, type systems are used primarily in definitions of formal languag
         f(x) : Y
 ```
 
-A rule is a recipee for forming expressions. This rule introduces the notation `f(x)`. Constituents `f` and `x` annotated by their respective required types are written above the separating line, the resulting expression `f(x)` annotated by its type is written below the line. This rule reads “whenever you have an expression `f` of type `Function<X, Y>` for some types `X` and `Y`, and an expression `x` of type `X`, one can put them together to obtain an expression `f(x)` of type `Y`”. Here `f(x)` is not a pre-existing notation, it could bear any name instead, say `apply [f] to [x]` or `x |> f`.
+A rule is a recipe for forming expressions. This rule introduces the notation `f(x)`. Constituents `f` and `x` annotated by their respective required types are written above the separating line, and the resulting expression `f(x)` annotated by its type is written below the line. This rule reads “whenever you have an expression `f` of type `Function<X, Y>` for some types `X` and `Y`, and an expression `x` of type `X`, one can put them together to obtain an expression `f(x)` of type `Y`”. Here `f(x)` is not a pre-existing notation, it could bear any name instead, say `apply [f] to [x]` or `x |> f`.
 
 Such grammar rules tell nothing about the intended meaning of expressions they define, they merely describe how expressions are composed. In particular, grammar rules can only be conditional on types of their constituent expressions. Consider the following non-example:
 ```
@@ -49,7 +49,7 @@ Let us assume that `Real` denotes the type of real numbers. Then the expression 
 § Types in Programming
 ----------------------
 
-Types as used in programming began in 1950s: type declarations were used by compilers to find out which registers or how many memory cells to use for respective variables, and which operations are permitted. The second usage seemingly coincides with mathematical usage of types, but in practice programming language designers used to treat typing rules as somewhat vague declarations of intent without objecting to declarations like `divide(x : Real, y : Real) : Real` (the non-example above).
+Types appeared in programming in 1950s: type declarations were used by compilers to find out which registers or how many memory cells to use for respective variables, and which operations are permitted. The second usage seemingly coincides with the mathematical usage of types, but in practice programming language designers used to treat typing rules as somewhat vague declarations of intent. For example, in many languages type declaration `divide(x : Real, y : Real) : Real` (the non-example above) is perfectly valid.
 
 Since, all variables in a low level programming language are bit strings of fixed length under the hood, minimalistic type systems have had a fixed finite number of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. Yet as low level languages evolved, non-trivial type systems quickly emerged. There are two ways a type system can grow beyond a finite number of types: it either has to have type formers (= built-in types with compile-time parameters) or be extensible, so one can define entirely new types inside the program. Algol W (1966) already had both:
 * types with compile-time parameters:
