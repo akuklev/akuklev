@@ -53,11 +53,15 @@ Types appeared in programming in 1950s: type declarations were used by compilers
 
 To illustrate how types were used in early programming languages, let us consider the following. Under the hood, all variables in low level programming languages are bit strings of fixed length. Therefore minimalistic type systems have had a finite collection of built-in types directly corresponding to the hardware architecture of underlying systems, say `byte`, `int16`, `int32`, `real32`, `real64` and `pointer`. Yet as low level languages evolved, non-trivial type systems quickly emerged.
 
-There are two ways a type system can grow beyond a finite number of types: it either has to have type formers (= built-in types with compile-time parameters) or be extensible, so one can define entirely new types inside the program. Algol W (1966) already had both:
-* types with compile-time parameters:
+There are two ways a type system can grow beyond a finite number of types: it either has to have type formers or be extensible. Type formers are built-in types with compile-time parameters like `Function<X, Y>` we saw above. Type system extensibility means one can define entirely new types inside a program.
+
+// Пояснить чего такое алгол, и почему тут вылез именно он 
+
+Algol W (1966) already had both features:
+* type formers:
 * * arrays of fixed length `n` and fixed element type `T` (`Array<T, n>` in C++-esque notation) in Algol 60
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation) in Algol W
-* user-defined types for typed records (also known as structures).
+* type system was extensible: user-defined types for typed records (also known as structures).
 
 Most modern statically typed mainstream languages straightforwardly extend type system of Algol W allowing for domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
