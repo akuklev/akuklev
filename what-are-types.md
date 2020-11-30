@@ -24,8 +24,8 @@ The static vs. dynamic typing gap can indeed be closed by means of gradual typin
 The issue our group primarily works on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for desirable computational behaviours: concurrency, mutable state, and interaction with external actors. This is because all types present in these languages are data types, while aforementioned behaviours call for object types. This will be discussed below at length.
 
 
-§ Types in Math and Types in Programming
-----------------------------------------
+§ Types in Math
+---------------
 
 To give the reader an idea of what a type system is, let's introduce the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and types `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. So has conists of types `Nat`, `Function<Nat, Nat>`, `Function<Function<Nat, Nat>, Nat>`, `Function<Function<Nat, Nat>, Function<Function<Nat, Nat>, Nat>>` etc.
 
@@ -45,6 +45,9 @@ Such grammar rules tell nothing about the intended meaning of expressions they d
     p / q : Real
 ```
 Let us assume that `Real` denotes the type of real numbers. Then the expression `p / q` cannot be interpreted as division as there are cases for which properly typed `p` and `q` do not yield a real `p / q`. No condition like `q ≠ 0` can be imposed on constituents for it is not a condition on constituents' types. The only way for the resulting expression to be read as division, is to assign it a new type handling the division-by-zero case. For example, one could use a type (let's call it `PReal`) containing an additional value for the division-by-zero case.
+
+§ Types in Programming
+----------------------
 
 Types as used in programming began in 1950s: type declarations were used by compilers to find out which registers or how many memory cells to use for respective variables, and which operations are permitted. The second usage seemingly coincides with mathematical usage of types, but in practice programming language designers used to treat typing rules as somewhat vague declarations of intent without objecting to declarations like `divide(x : Real, y : Real) : Real` (the non-example above).
 
