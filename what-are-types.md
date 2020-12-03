@@ -55,15 +55,13 @@ To illustrate how types were used in early programming languages, let us conside
 
 There are two ways a type system can grow beyond a finite number of types: it either has to have type formers or be extensible. Type formers are built-in types with compile-time parameters like `Function<X, Y>` we saw above. Type system extensibility means one can define entirely new types inside a program.
 
-// Пояснить чего такое алгол, и почему тут вылез именно он 
+There is a common misconception, that complex type systems are a recent invention. However, a rather early programming language, Algol W, released in 1966, already had both features mentioned above:
+* it had type formers, in particular:
+* * arrays of fixed length `n` and fixed element type `T` (`Array<T, n>` in C++-esque notation);
+* * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation);
+* its type system was extensible: it supported user-defined types for typed records (also known as structures).
 
-Algol W (1966) already had both features:
-* type formers:
-* * arrays of fixed length `n` and fixed element type `T` (`Array<T, n>` in C++-esque notation) in Algol 60
-* * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation) in Algol W
-* type system was extensible: user-defined types for typed records (also known as structures).
-
-Most modern statically typed mainstream languages straightforwardly extend type system of Algol W allowing for domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
+Type systems of most modern mainstream languages have not gone far beyond Algol W. They typically allow user-defined domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
 § What's wrong with C-style type systems?
