@@ -61,7 +61,7 @@ There is a common misconception, that complex type systems are a recent inventio
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation);
 * its type system was extensible: it supported user-defined types for typed records (also known as structures).
 
-Type systems of most modern mainstream languages have not gone far beyond Algol W. They typically allow user-defined domain-specific data types (say, `Date` or `Color`) and custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
+Type systems of most modern mainstream languages have not gone far beyond Algol W. They typically allow user-defined domain-specific data types (say, `Date` or `Color`). They also allow to combine extensibility and type formers. These are typically used to provide custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
 § What's wrong with C-style type systems?
