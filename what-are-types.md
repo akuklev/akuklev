@@ -1,27 +1,31 @@
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study a particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who has some experience with a class-based programming language (like Java or C#)
 and has seen some functional programming elements (perhaps in a language like Clojure, Scala, or F#).
 
-Types are there to classify the range of variables and parameters in formal languages. Data types such as `int`, `List<int>`, etc. are the types you might be familiar with. Each formal language has its own type system, which guides its conceptual structure. However, most mainstream programming languages have ad hoc type systems that turn out to be inconsistent.
+§ What are types we're going to talk about and why do they matter?
+------------------------------------------------------------------
+
+Types are there to classify the range of variables in formal languages. Data types such as `int`, `List<int>`, etc. are the types you might be familiar with. Each formal language has its own type system, which guides its conceptual structure. However, most mainstream programming languages have ad hoc type systems that turn out to be incoherent.
 
 There are two types of formal languages: programming languages and the ones used for writing theorems and proofs. Our group works with both:
 * We are working towards developing a sound type system for programming languages that exhibit complex computational behaviours including concurrency and non-determinism;
 * We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
 
-The history of type theory is two-fold. Types were first introduced and studied by logicians and proof theorists, way before programmable computers came into existence. This part of the history began in a 1902 letter from Bertrand Russell to Gottlob Frege (both of whom were logicians), where types were introduced to solve an inconsistency in Frege's work, and culminated as Kurt Gödel (a proof theorist) developed a “programming language” of primitive recursive functionals to prove relative consistency of arithmetics by studying type theory of that language.  
-From their side, programming language designers introduced types in the late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine which register or how many memory cells to use for a given variable. Eventually statically typed programming languages with complex type systems emerged. To rectify incoherences of those ad hoc type systems, computer scientists rediscovered type theory in the 1970s. Since then, type theory has been developed by mathematicians and computer scientists hand in hand.
+The history of type theory is two-fold. Types were first introduced way before programmable computers came into existence, namely in a 1902 letter from Bertrand Russell to Gottlob Frege (both of whom were logicians), where types were introduced to solve an inconsistency in Frege's work. Logicians have studied and used type theory ever since. In 40s and 50s Kurt Gödel (a proof theorist) developed a “programming” language of primitive recursive functionals to prove relative consistency of arithmetics by studying type theory of that language. While Gödel never intended to run this language on a real machine, this was the first example of a statically typed functional programming language.
+
+Programming language designers introduced types in the late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine which register or how many memory cells to use for a given variable. Eventually statically typed programming languages with complex type systems emerged. To rectify incoherences of those ad hoc type systems, computer scientists rediscovered type theory in the 1970s. Since then, type theory has been developed by mathematicians and computer scientists hand in hand.
 
 The practical goal of redesigning type systems of general-purpose programming languages is still far from being achieved. In fact, based on their experience with languages like C++, C# or Java, many programmers believe complex type systems to be a pointless pain in the neck. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages are a type theorist's nightmare. However types are inevitable in programming languages, and carefully designing a type system in advance is the only way for typing not to be a nuissance.
 
 There are several unrelated issues to be addressed:
-* Mainstream languages tend to stick with bad typing practices where better ones are available;
-* The gap between statically typed languages and dynamically typed languages has to be closed;
-* There are computational behaviours for which good typing practices are yet to be determined.
+1) Mainstream languages tend to stick with bad typing practices where better ones are available;
+2) The gap between statically typed languages and dynamically typed languages has to be closed;
+3) There are computational behaviours for which good typing practices are yet to be determined.
 
 The first issue seems to be due to inertia and a communication gap between computer scientists and engineers.
 
-The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in ?simple? cases. These mechanisms are indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
+The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in tractable cases. One still wants to use type annotations for public APIs, settled libraries, critical sections where you need strong guarantees or for type-driven development. But omitting them is indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
 
-The issue our group primarily works on is the last one. Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for desirable computational behaviours: concurrency, mutable state, and interaction with external actors. This is because all types present in these languages are data types, while aforementioned behaviours call for object types. This will be discussed below at length.
+The issue our group primarily works on is the last one (3). Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for several desirable computational behaviours: concurrency, mutable state, and interaction with external actors. This is because all types present in these languages are data types, while aforementioned behaviours call for object types. This will be discussed below at length.
 
 
 § Types in Math
