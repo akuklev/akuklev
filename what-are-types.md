@@ -1,32 +1,30 @@
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study a particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who has some experience with a class-based programming language (like Java or C#)
 and has seen some functional programming elements (perhaps in a language like Clojure, Scala, or F#).
 
-§ What are types we're going to talk about and why do they matter?
-------------------------------------------------------------------
+§ What are types and why do they matter?
+----------------------------------------
 
-Types are there to classify the range of variables in formal languages. Data types such as `int`, `List<int>`, etc. are the types you might be familiar with. Each formal language has its own type system, which guides its conceptual structure. However, most mainstream programming languages have ad hoc type systems that turn out to be incoherent.
+Types arise in programming languages and other formalized languages such as the ones used for writing mathematical theorems and their machine-checkable proofs. Data types such as `int`, `List<int>`, etc. are the types you might be familiar with.  
+Semantically, type is a space of possible values (or more generally, possible objects) a variable can refer to. Syntactically, type is a (purely syntactic) label associated with a variable when it is declared, that determines available operations manipulating the variable and specifies behaviour of these operations. Each formalized language has its own type system, which guides its conceptual structure. Languages, where semantic and syntactic aspects of types are in harmony, are called strictly typed languages. At the moment, mainstream programming languages are not strictly typed, but have ad hoc type systems. In most cases these type systems are also incoherent in one way or the other.
 
-There are two types of formal languages: programming languages and the ones used for writing theorems and proofs. Our group works with both:
-* We are working towards developing a sound type system for programming languages that exhibit complex computational behaviours including concurrency and non-determinism;
-* We develop one of the leading interactive theorem provers called [Arend](https://arend-lang.github.io/) and its respective language.
+The history of type theory is two-fold. Types were first introduced way before programmable computers came into existence, namely, in a 1902 letter from Bertrand Russell to Gottlob Frege (both of whom were logicians). These types were introduced to solve an inconsistency in Frege's work. Logicians have studied and used type theory ever since. In the 40s and 50s Kurt Gödel (a proof theorist) developed a “programming” language of primitive recursive functionals to prove relative consistency of arithmetics by studying type theory of that language. While Gödel never intended to run this language on a real machine, this was the first example of a strictly typed programming language. In fact, nearly all modern strictly typed functional languages are its direct descendants.
 
-The history of type theory is two-fold. Types were first introduced way before programmable computers came into existence, namely in a 1902 letter from Bertrand Russell to Gottlob Frege (both of whom were logicians), where types were introduced to solve an inconsistency in Frege's work. Logicians have studied and used type theory ever since. In 40s and 50s Kurt Gödel (a proof theorist) developed a “programming” language of primitive recursive functionals to prove relative consistency of arithmetics by studying type theory of that language. While Gödel never intended to run this language on a real machine, this was the first example of a statically typed functional programming language.
+Programming language designers introduced types in the late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine which register or how many memory cells to use for a given variable. Eventually statically typed programming languages with complex type systems emerged. To rectify incoherences of those ad hoc type systems, computer scientists rediscovered mathematicians’ work on type theory in the 1970s. Since then, type theory has been developed by mathematicians and computer scientists hand in hand.
 
-Programming language designers introduced types in the late 1950s for entirely unrelated reasons: variables and parameters had to have type declarations to tell the machine which register or how many memory cells to use for a given variable. Eventually statically typed programming languages with complex type systems emerged. To rectify incoherences of those ad hoc type systems, computer scientists rediscovered type theory in the 1970s. Since then, type theory has been developed by mathematicians and computer scientists hand in hand.
-
-The practical goal of redesigning type systems of general-purpose programming languages is still far from being achieved. In fact, based on their experience with languages like C++, C# or Java, many programmers believe complex type systems to be a pointless pain in the neck. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages are a type theorist's nightmare. However types are inevitable in programming languages, and carefully designing a type system in advance is the only way for typing not to be a nuissance.
+The practical goal of redesigning type systems of general-purpose programming languages is still far from being achieved. In fact, based on their experience with languages like C++, C# or Java, many programmers believe complex type systems to be a pointless pain in the neck. While type-theoretically sound languages (e.g. the ML family) are there for almost half a century, type systems of most mainstream languages are a type theorist's nightmare. However, types are inevitable in programming languages, and carefully designing a type system in advance is the only way for typing not to be a nuisance.
 
 There are several unrelated issues to be addressed:
 1) Mainstream languages tend to stick with bad typing practices where better ones are available;
 2) The gap between statically typed languages and dynamically typed languages has to be closed;
 3) There are computational behaviours for which good typing practices are yet to be determined.
 
-The first issue seems to be due to inertia and a communication gap between computer scientists and engineers.
+The first issue seems to be due to a communication gap between computer scientists and engineers, and huge systemic inertia: one cannot simply start from scratch, there is a necessity to retain backwards compatibility, there are lots of legacy systems, and there are many millions of software developers, who cannot learn unfamiliar programming languages and adopt new practices at once. Every serious shift is a tremendous effort to the industry of that size. We hope availability of nice general-purpose languages where types are not a nuisance but an aid would help solving this issue, especially if those languages would be attractive for educators.
 
-The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omiting type annotations almost entirely in tractable cases. One still wants to use type annotations for public APIs, settled libraries, critical sections where you need strong guarantees or for type-driven development. But omitting them is indispensable for a language with a complex type system to have bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly nontrivial and not entirely understood yet. 
+The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omitting type annotations almost entirely in tractable cases. One still wants to use type annotations for public APIs, settled libraries, critical sections where you need strong guarantees or for type-driven development. Yet omitting them is indispensable for a language with a complex type system to have a bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is however highly non-trivial and not entirely understood yet.
 
-The issue our group primarily works on is the last one (3). Existing type-theoretically sound languages (ML family, Haskell etc.) are functional languages with limited or no support for several desirable computational behaviours: concurrency, mutable state, and interaction with external actors. This is because all types present in these languages are data types, while aforementioned behaviours call for object types. This will be discussed below at length.
+The issue our group works on is the last one (3). Most existing type-theoretically sound languages (ML family, Haskell etc.) are purely functional languages. That’s not because other languages cannot have good type systems, but because purely functional languages are easier to deal with. In purely functional languages, variables always refer to values, i.e. immutable pieces of data. Сonsequently, their type systems have only to deal with data types which are well understood. First class treatment of concurrency, mutable state, communication with external actors and similar complex computational behaviours goes beyond their realm. They call for entity types: types for mutable objects and non-clonable resources, such as files, IO-streams, remote services or devices, and other objects with a notion of haecceity or “thisness”. This will be discussed below at length.
 
+Before proceeding to these questions, let us breefly consider how types are understood in mathematics and programming, and discuss several most distrubing type-theoretic incoherences in mainstream programming languages.
 
 § Types in Math
 ---------------
@@ -65,7 +63,7 @@ There is a common misconception, that complex type systems are a recent inventio
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation);
 * its type system was extensible: it supported user-defined types for typed records (also known as structures).
 
-Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`). They also allow to combine extensibility and type formers. These are typically used to provide custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
+Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
 § What's wrong with C-style type systems?
@@ -77,64 +75,37 @@ In a language with implicit conversions, several subtleties have to be considere
 
 1) There can be more than one way to convert `A` to `B`, say `int16 -> int32 -> float64` and `int16 -> float32 -> float64`. They have to be equivalent. If your language has extensible type system and supports custom implicit conversions (which is the case in Scala), you have to enforce this property somehow (which cannot be done in Scala).
 
-2) If the language supports overloading (i.e. the same expression may be interpreted differently depending on types of operands), result of the expression should stay the same regardless of implicit conversions. For example in C `a / b` means integer division if `a` and `b` are integers, or real division if `a` and `b` are floating point approximations of real numbers. In this example `1 / 2 = 0` if `1` and `2` are interpreted as integer numbers, but `0.5` if they are interpreted as floats: a clear case of incoherent behavior, which can be easily fixed by using a diffrent operator for integer division (like `//` in Python). There are however more subtle cases: assume, you use `+` both for unguarded addition of `int16`s and `int32`s. Now if you add two large 16 bit integers as `int16`s you'll obtain a negative number, whereas adding them as `int32`s would yield a postive number. In case you use `+` for guarded addition of both `int16`s and `int32`s you'll get an `#OVERFLOW` in the first case and a proper number in the second one. You cannot have overloaded arithmetic operators in a low level language with implicit conversions without being incoherent! (In a high-level language you can have a proper addition operator `+`, for instance in Python `+` performs addition of fixed length integers by default, yet performs automatic fallback to arbitrary precision integer representation on overflow and underflow.  
+2) If the language supports overloading (i.e. the same expression may be interpreted differently depending on types of operands), result of the expression should stay the same regardless of implicit conversions. For example in C `a / b` means integer division if `a` and `b` are integers, or real division if `a` and `b` are floating point approximations of real numbers. In this example `1 / 2 = 0` if `1` and `2` are interpreted as integer numbers, but `0.5` if they are interpreted as floats: a clear case of incoherent behavior, which can be easily fixed by using a diffrent operator for integer division (like `//` in Python). There are however more subtle cases: assume, you use `+` both for unguarded addition of `int16`s and `int32`s. Now if you add two large 16 bit integers as `int16`s you'll obtain a negative number, whereas adding them as `int32`s would yield a postive number. In case you use `+` for guarded addition of both `int16`s and `int32`s you'll get an `#OVERFLOW` in the first case and a proper number in the second one. You cannot have overloaded arithmetic operators in a low level language with implicit conversions without being incoherent! (In a high-level language you can have a proper addition operator `+`, for instance in Python `+` performs addition of fixed length integers by default, yet performs automatic fallback to arbitrary precision integer representation on overflow and underflow.)  
 It's extremly hard to have both overloading and implicit conversions together without being incoherent.
 
-The other subtlety about implicit conversions is about avoiding accidental information loss. We already mentioned that languages normally have the implicit conversion `int16 -> int32` but never the other way round. That's because every `int16`-value can be represented by an `int32` value and unequal values never become equal due to this conversion.
+The other subtlety about implicit conversions is about avoiding accidental information loss. We already mentioned that languages normally have the implicit conversion `int16 -> int32` but never the other way round. That's because every `int16`-value can be represented by an `int32` value and unequal values never become equal due to such conversion. We are not aware of any languages with finite type systems where information loss is introduced by implicit conversions, but this is the case in many languages with custom type formers.
 
-When type formers come into play, it is quite natural to automatically extend implicit conversions along so-called covariant parameters: implicit convertibility from `X` to `Y` should imply implicit convertibility from (immutable) `List<X>` to `List<Y>`. But in can only apply to some parameters of type formers, namely covariant parameters.
+When type formers come into play, it is quite natural to automatically extend implicit conversions along so-called covariant parameters: implicit convertibility from `X` to `Y` should imply implicit convertibility from (immutable) `List<X>` to `List<Y>` and from (immutable) `Map<T, X>` to `Map<T, Y>`. Some programming languages (prime example being Scala) also derive contravariant (i.e. inverse direcion) implicit convertibility: e.g. `Map<Y, T>` to `Map<X, T>` (attention, reversed order!). Now consider a `Map<Int, T>` of the form
+```
+{ 1 => a;
+  0 => b;
+ -1 => c}
+```
+An implicit conversion from `Nat` to `Int` (which is perfectly OK) would imply an implicit conversion from `Map<Int, T>` to `Map<Nat, T>`, yielding
+```
+{ 1 => a;
+  0 => b}
+```
 
-Some programming languages (prime example being Scala) also derive implicit convertibility along contravariant parameters, not only from (immutable) `Map<T, X>` to `Map<T, Y>`, but also from `Map<Y, T>` to `Map<X, T>` (attention, reversed order!).
-
-!!!
-Such conversions should be available on demand (i.e. as explicit coersions), but not performed implicitly for they can lead to unintentional information loss.
-!!!
+A clear case of information loss due to an implicit conversion. Contravariant “conversions” (also known as “domain restrictions”) should only be available as explicit coersions.
 
 * * *
-
-§ Strictly Typed Languages
---------------------------
-
-There are several programming languages (Haskell being the most prominent example) that reconcile the mathematical notion of types with the programmers' notion: the strictly typed languages. NB!: Strictly typed does not mean statically typed: a strictly typed language can support type inference and gradual typing (i.e. “duck typing” where possible until explicit type anotations are provided): public APIs, mature libraries and safety-critical software probably should be explicitely typed in the most precise manner, but early prototypes and unsettled components should be as concise and agile as possible.
-
-Strictly typed does not mean purely functional either: most strictly typed languages are, but it is for the reason that type systems for mixed paradigm programming are still very much work in progress, while type systems for purely functional ones are rather humble extensions of systems developed by mathematicians (Alonzo Church, Kurt Gödel, et al.) over half a century ago, for the most part way before any computers even existed.
-
-The field of strictly typed languages is still in its infancy. We have not yet completely figured out how type complex computational behaviours at all, let alone doing it conveniently, comprehensibly for non-experts, and with a transparent mental model capable of estimating performance.
-
 
 § What's wrong with Java-like type systems?
 -------------------------------------------
 
-Here we'll discuss widespread flaws in type systems of statically typed class-based object oriented programming languages as exemplified by Java.
 
-Java has a small set of primitive data types (boolean, int and float) which cannot be extended, and an extensible system of reference data types. In Java and all JVM-languages, the type `int` (integer) is misnomer as a tribute to the C programming language. Java `int`-values are limited to numbers between -2'147'483'648 and 2'147'483'647 without any overflow or underflow protection by default. There are some higher level languages like Python (which has quite a different type system), whenever an integer over- or underflows, i.e. fails to fit into the register or memory cell it is intended to be stored, automatic fallback to arbitrary precision integer representation occures, a technique that can be implemented without any performance losses (in case no over-/underflow ever occures) on many CPU architectures.
-
-Primitive data types classify values (thus are _data_ types indeed) that can be passed as arguments, stored as local variables or in fields (“typed memory cells”) of (mutable) objects stored in the heap. Values of primitive data types are always passed call-by-value.
-
-Reference data types classify objects (in general, mutable) objects stored in heap or being external resources such as files, IO-streams, remote services or devices like printers or cameras. Arguments of reference types are always passed call-by-name (aka call-by-reference). In Java, there are two kinds of reference types: array types (references to fixed-length mutable arrays of values or references of the same type) and object types also called classes. One can define custom classes, but there are some predefined ("inbuilt") ones like “Object”, “Thread”, “File”, etc. In many Java-like systems, arrays are objects as well, i.e. array types are just inbuilt classes, leading to a way more uniform type system. Unfortunatelly, in Java any reference is allowed to take the special value `null` without any prior warning. (There are some JVM languages remedying both issues.)
-
-Java does not provide any way to define additional data types: types which would classify stuff that is passed call-by-value and contains only self-contained data, in particular no references to (possibly mutable) objects or external resources. But datatypes can be emulated using a special trick: when defining a class (type of possibly mutable object), one can declare one or more fields immutable. Let's call a class recursively immutable if all its fields are declared immutable and have either primitive or recursively immutable reference types. Under additional assumptions that nullability of refrerences can be limited, one can even express some nontrivial data structures, e.g.
-```Java
-@RecursivelyImmutable
-final class LinkedList<@RecursivelyImmutable T> {
-  final @NonNullable T head;
-  final @Nullable LinkedList<T> tail;
-}
-// Note: We cannot rule out circular lists in Java.
-```
-
-Recursively immutable classes represent the most mature part of Javaesque type systems, but let me show that even they are flawed.
-
-* * *
 
 Let me first name a few problems and then discuss them in detail:
-- Lack of structurally typed (aka duck-typed) tuple and record types;
-- Implicit contravariant casts are fundamentally flawed;
 - Subtyping defined by inheritance fundamentally flawed;
 - Both subtyping and inheritance clash with mutability;
 – No way to define pure functions (those with no side effects);
 – No way to define pure data structures (those with no circularities);
-– Generics inconsistent;
 – Datatype-generic programming not available (impossible to define, say, a `serialize()`-method for generically for all possible classes containing serializable fields only).
 
 
