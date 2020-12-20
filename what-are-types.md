@@ -65,7 +65,7 @@ There is a common misconception, that complex type systems are a recent inventio
 Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
-§ What's wrong with C-style type systems?
+§ What's Wrong with C-style Type Systems?
 -----------------------------------------
 
 Type system does not have to be complex to be incoherent. Even a finite type system can have nontrivial issues when implicit type conversions come into play. When a compiler encounters a case where a value of the type `X` is used in a context where values of the type `Y` is required, it can either terminate with an error message or apply an implicit conversion from `X` to `Y`. For example, most (if not all) compilers would silently agree to use an `int16` value in a context where an `int32` is required: they simply pad the binary number representation to match the length. Some languages also implicitly convert `int16` to `float32` and `int32`s to `float64` since no information loss takes place.
@@ -95,7 +95,7 @@ A clear case of information loss due to an implicit conversion. Contravariant �
 
 * * *
 
-§ What's wrong with Java-like type systems?
+§ What's Wrong with Java-Like Type Systems?
 -------------------------------------------
 
 
