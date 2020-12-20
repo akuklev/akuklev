@@ -45,7 +45,7 @@ Such grammar rules tell nothing about the intended meaning of expressions they d
 –––––––––––––––––––——
     p / q : Real
 ```
-Let us assume that `Real` denotes the type of real numbers. Then the expression `p / q` cannot be interpreted as division as there are cases for which properly typed `p` and `q` do not yield a real `p / q`. No condition like `q ≠ 0` can be imposed on constituents for it is not a condition on constituents' types. The only way for the resulting expression to be read as division, is to assign it a new type handling the division-by-zero case. For example, one could use a type (let's call it `PReal`) containing an additional value for the division-by-zero case.
+Let us assume that `Real` denotes the type of real numbers. Then the expression `p / q` cannot be interpreted as division as there are cases for which properly typed `p` and `q` do not yield a real `p / q`. No condition like `q ≠ 0` can be imposed on constituents for it is not a condition on constituents' type. The only way for the resulting expression to be read as division, is to assign it a new type that handles the division-by-zero case. For example, one could use a type (let's call it `PReal`) containing an additional value for the division-by-zero case.
 
 § Types in Programming
 ----------------------
