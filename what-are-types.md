@@ -1,5 +1,5 @@
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study a particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who has some experience with a class-based programming language (like Java or C#)
-and has seen some functional programming elements (perhaps in a language like Clojure, Scala, or F#).
+and who has seen some functional programming elements (perhaps in a language like Clojure, Scala, or F#).
 
 § What are types and why do they matter?
 ----------------------------------------
