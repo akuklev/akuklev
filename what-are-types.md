@@ -1,8 +1,8 @@
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). We study a particular kind of type systems and their applications in programming languages and pure mathematics. This article is an attempt to explain our field to an interested programmer, who has some experience with a class-based programming language (like Java or C#)
 and who has seen some functional programming elements (perhaps in a language like Clojure, Scala, or F#).
 
-§ What are types and why do they matter?
-----------------------------------------
+§ Types: a Brief Introduction
+-----------------------------
 
 Data types such as `int`, `List<int>`, etc. are the types you might be familiar with. Besides programming languages, types are also present in formalized languages for mathematical theorems and their machine-checkable proofs. Semantically, type is a space of possible values (or more generally, possible objects) a variable can refer to. Syntactically, type is a label associated with a variable on its declaration that determines available operations and specifies the behaviour of these operations. Each formalized language has its own type system, which guides its conceptual structure. Languages, where semantic and syntactic aspects of types are in harmony, are called strictly typed languages. At the moment, mainstream programming languages are not strictly typed, but have ad hoc type systems. In most cases these type systems are also incoherent in one way or another.
 
@@ -30,7 +30,7 @@ Before proceeding to these questions, let us breefly consider how types are used
 
 To give the reader an idea of what a type system is, let's introduce the type system used by Gödel for his seminal relative consistency proof. It has a single primitive type `Nat` of natural numbers and types `Function<X, Y>` of explicitly computable functions accepting a value of type `X` and yielding a value of type `Y`. Here are some examples of types in this type system: `Nat`, `Function<Nat, Nat>`, `Function<Function<Nat, Nat>, Nat>`, `Function<Function<Nat, Nat>, Function<Function<Nat, Nat>, Nat>>` and so on.
 
-In mathematics, type systems are used primarily in definitions of formal languages. A formal language is defined by a typed grammar that consists of rules like this:
+In mathematics, type systems are used primarily in definitions of formalized languages. A formalized language is defined by a typed grammar that consists of rules like this:
 ```
  f : Function<X̲, Y̲>    x : X
 —————————————————————————————
