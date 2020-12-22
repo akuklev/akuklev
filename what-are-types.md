@@ -65,10 +65,23 @@ There is a common misconception, that complex type systems are a recent inventio
 Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
 
 
-§ What's Wrong with C-style Type Systems?
------------------------------------------
+§ Digression I: What's wrong with C-style type systems?
+-------------------------------------------------------
 
-Type system does not have to be complex to be incoherent. Even a finite type system can have nontrivial issues when implicit type conversions come into play. ???grammar??? When a compiler encounters a case where a value of the type `X` is used in a context where a value of the type `Y` is required, it can either terminate with an error message or apply an implicit conversion from `X` to `Y`. For example, most (if not all) compilers would silently agree to use an `int16` value in a context where an `int32` is required: they simply pad the binary number representation to match the length. Some languages also implicitly convert `int16` to `float32` and `int32`s to `float64` since no information loss takes place.
+Type system does not have to be complex to be incoherent. Even a finite type system can have nontrivial issues when implicit type conversions come into play.
+
+Let us illustrate the notion of implicit type conversion with a simple example: the user applies a function `f(n : int32)` to a value `v` of type `int16`. The compiler has two options in this case:
+* Terminate with an error message “type mismatch on line ...”;
+* Implicitly convert `v : int16` into an `int32` (by simply padding its binary representation).
+
+In the first case, the user has to perform explicit conversion every time (in this case, apply a function converting `int16` to `int32` first). Obviously one would like to avoid being that verbose. Implicit conversions are, thus, just a matter of convenience, but they are present in most programming languages.
+
+One has to be very careful about implicit conversions. They can easily violate the principle of least astonishment (system should behave in a way that non-expert users will reasonably expect it to behave). The prime example of such a violation is notorious `1 / 2` ≠ `1 / 2.0` in C-style programming languages.
+
+Implicity conversions might introduce
+* Covert information loss
+* Ambiguities
+
 
 In a language with implicit conversions, several subtleties have to be considered. ???introduce ambiguieties, information loss, and unexpected behaviour here and then use the examples???
 
