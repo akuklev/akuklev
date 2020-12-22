@@ -79,13 +79,11 @@ In the first case, the user has to perform explicit conversion every time (in th
 One has to be very careful about implicit conversions. They can easily violate the principle of least astonishment (system should behave in a way that non-expert users will reasonably expect it to behave). The prime example of such a violation is notorious `1 / 2` ≠ `1 / 2.0` in C-style programming languages.
 
 Implicity conversions might introduce
-* Covert information loss
-* Ambiguities
+* Ambiguities;
+* Covert information loss;
+* Interference with operator overloading.
 
-
-In a language with implicit conversions, several subtleties have to be considered. ???introduce ambiguieties, information loss, and unexpected behaviour here and then use the examples???
-
-1) There can be more than one way to convert `A` to `B`, say `int16 -> int32 -> float64` and `int16 -> float32 -> float64`. They have to be equivalent. If your language has extensible type system and supports custom implicit conversions (which is the case in Scala), you have to enforce this property somehow (which cannot be done in Scala).
+Let us begin with the ways implicit conversions might introduce ambiguities into a programming language. The process of transforming implicit conversions into explicit ones is called elaboration. It is usually performed by the compiler internally. There might be cases where more than one conversion path between two types is possible, say `int16 -> int32 -> float64` and `int16 -> float32 -> float64`. In all such cases we must ensure that the results are path-independent. In a language with an extensible type system and implicit conversions (such as Scala), this property has to be enforced (which cannot be done in Scala).
 
 2) If the language supports overloading (i.e. the same expression may be interpreted differently depending on types of operands), result of the expression should stay the same regardless of implicit conversions. For example in C `a / b` means integer division if `a` and `b` are integers, or real division if `a` and `b` are floating point approximations of real numbers. In this example `1 / 2 = 0` if `1` and `2` are interpreted as integer numbers, but `0.5` if they are interpreted as floats: a clear case of incoherent behavior, which can be easily fixed by using a diffrent operator for integer division (like `//` in Python). There are however more subtle cases: assume, you use `+` both for unguarded addition of `int16`s and `int32`s. Now if you add two large 16 bit integers as `int16`s you'll obtain a negative number, whereas adding them as `int32`s would yield a postive number. In case you use `+` for guarded addition of both `int16`s and `int32`s you'll get an `#OVERFLOW` in the first case and a proper number in the second one. You cannot have overloaded arithmetic operators in a low level language with implicit conversions without being incoherent! (In a high-level language you can have a proper addition operator `+`, for instance in Python `+` performs addition of fixed length integers by default, yet performs automatic fallback to arbitrary precision integer representation on overflow and underflow.)  
 It's extremly hard to have both overloading and implicit conversions together without being incoherent.
