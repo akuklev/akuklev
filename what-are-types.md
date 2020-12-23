@@ -72,13 +72,13 @@ Type system does not have to be complex to be incoherent. Even a finite type sys
 
 Let us illustrate the notion of implicit type conversion with a simple example: the user applies a function `f(n : int32)` to a value `v` of type `int16`. The compiler has two options in this case:
 * Terminate with an error message “type mismatch on line ...”;
-* Implicitly convert `v` of `int16` into an `int32` (by simply padding its binary representation).
+* Implicitly convert `v` of type `int16` into an `int32` (by simply padding its binary representation).
 
-In the first case, the user has to perform explicit conversion every time (in this case, apply a function converting `int16` to `int32` first). Obviously one would like to avoid being that verbose. Implicit conversions are, thus, just a matter of convenience, but they are present in most programming languages.
+In the first case, the user has to explicitly convert values to match the required type every time. Obviously one would like to avoid being that verbose. Implicit conversions are, thus, just a matter of convenience, but they are present in most programming languages.
 
-One has to be very careful about implicit conversions. They can easily violate the principle of least astonishment (system should behave in a way non-expert users reasonably expect it to behave). The prime example of such a violation is notorious `1 / 2` ≠ `1 / 2.0` in C-style programming languages.
+One has to be very careful about implicit conversions. They can easily violate the principle of least astonishment that states that every system should behave in a way non-expert users reasonably expect it to behave. The typical example of such a violation is notorious `1 / 2` ≠ `1 / 2.0` in C and its descendents.
 
-Implicity conversions might introduce
+There are several issues implicit conversions often introduce:
 * Accidental information loss;
 * Ambiguities;
 * Interference with operator overloading.
