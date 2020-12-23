@@ -74,13 +74,13 @@ Let us illustrate the notion of implicit type conversion with a simple example: 
 * Terminate with an error message “type mismatch on line ...”;
 * Implicitly convert `v` of type `int16` into an `int32` (by simply padding its binary representation).
 
-In the first case, the user has to explicitly convert values to match the required type every time. Obviously one would like to avoid being that verbose. Implicit conversions are, thus, just a matter of convenience, but they are present in most programming languages.
+In the first case, the user has to explicitly convert values to match the required type every time. Obviously one would like to avoid being that verbose. Implicit conversions are, thus, just a matter of convenience, but they are present in most programming languages. In those languages, the compiler (or interpreter) has an additional elaboration phase, where it transforms implicit conversions into explicit ones.
 
 One has to be very careful about implicit conversions. They can easily violate the principle of least astonishment that states that every system should behave in a way non-expert users reasonably expect it to behave. The typical example of such a violation is notorious `1 / 2` ≠ `1 / 2.0` in C and its descendents.
 
 There are several issues implicit conversions often introduce:
 * Accidental information loss;
-* Ambiguities;
+* Elaboration ambiguities;
 * Interference with operator overloading.
 
 Let us begin with the most obvious issue. Consider a language with an implicit conversion from `int32` to `float32`. While `int32` can store numbers between -2^32 and 2^32-1, `float32` is capable representing numbers between approx. -2^23 and 2^23, so such a conversion never leads to an overflow or an underflow. Yet, it leads to a precision loss: many 32 bit integers, say 2^24 and 2^24 + 1 would be represented by the same `float32`. Such conversion does not render the program obviously wrong: many programs would still calculate sensible results. Yet, it leads to information loss that easily goes unnoticed while leading to wrong outcomes.
