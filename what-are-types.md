@@ -62,7 +62,7 @@ There is a common misconception, that complex type systems are a recent inventio
 * * pointers annotated by the type of variable they point to (`Pointer<T>` in C++-esque notation);
 * its type system was extensible: it supported user-defined types for typed records (also known as structures).
 
-Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<SomeType>`, `BinaryTree<SomeType>`, `Collection<SomeType>` and `Map<KeyType, ValueType>`.
+Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<ItemType>`, `BinaryTree<ItemType>`, `Collection<ItemType>` and `Map<KeyType, ValueType>`.
 
 
 § Digression I: What's wrong with C-style type systems?
@@ -89,7 +89,9 @@ It gets even trickier when types with parameters like `List<T>` and `Map<K, T>` 
 
 Let us consider a more complex example. The type `Map<K, T>` (of key-value dictionaries) can be seen as a generalization of type `List<T>`. `Map<K, T>` just like `List<T>` contains a finite collection of items of fixed type `T`. The difference is that the items of `Map<K, T>` are indexed not by consecutive numbers, but by keys of type `K`. Similarily to the case of lists, functions `X -> Y` can be applied to `Map<K, X>` itemwise yielding a `Map<K, Y>`. Thus, the second parameter (`T`) of `Map<K, T>` is covariant. However the first parameter, `K`, is not.
 
-It is quite natural to automatically extend implicit conversions along covariant parameters: implicit convertibility from `X` to `Y` should imply implicit convertibility from (immutable) `List<X>` to `List<Y>` and from (immutable) `Map<T, X>` to `Map<T, Y>`. Some programming languages (prime example being Scala) go beyond that and also derive contravariant (i.e. inverse direcion) implicit convertibility: e.g. `Map<Y, T>` to `Map<X, T>` (attention, reversed order!). Now consider a `Map<Int, T>` of the form
+It is quite natural to extend implicit conversions along covariant parameters: implicit convertibility from `X` to `Y` should imply implicit convertibility from (immutable) `List<X>` to `List<Y>` and from (immutable) `Map<K, X>` to `Map<K, Y>`. Some programming languages (prime example being Scala) go beyond that and also derive implicit convertibility for parameters, which are not covariant.
+
+: e.g. `Map<Y, T>` to `Map<X, T>` (attention, reversed order!). Now consider a `Map<Int, T>` of the form
 ```
 { 1 => a;
   0 => b;
