@@ -72,7 +72,7 @@ Type system does not have to be complex to be incoherent. Even a finite type sys
 
 Let us illustrate the notion of implicit type conversion with a simple example: the user applies a function `f(n : int32)` to a value `v` of type `int16`. The compiler has two options in this case:
 * Terminate with an error message “type mismatch on line ...”;
-* Implicitly convert `v : int16` into an `int32` (by simply padding its binary representation).
+* Implicitly convert `v` of `int16` into an `int32` (by simply padding its binary representation).
 
 In the first case, the user has to perform explicit conversion every time (in this case, apply a function converting `int16` to `int32` first). Obviously one would like to avoid being that verbose. Implicit conversions are, thus, just a matter of convenience, but they are present in most programming languages.
 
