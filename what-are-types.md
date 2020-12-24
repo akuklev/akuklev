@@ -83,6 +83,9 @@ There are several issues implicit conversions often introduce:
 * Elaboration ambiguities;
 * Interference with operator overloading.
 
+§§ Accidental information loss
+------------------------------
+
 Let us begin with the most obvious issue of accidental information loss. Consider a language with an implicit conversion from `int32` to `float32`. While `int32` can store numbers between -2³² and 2³²-1, `float32` is capable representing numbers between approx. -2³⁸ and 2³⁸, thus such a conversion never leads to an overflow or an underflow. Yet, it leads to a precision loss: many 32 bit integers, say 20000000 and 20000001 would be represented by the same `float32`. Such conversion does not render the program obviously wrong: many programs would still calculate sensible results. Yet, it leads to information loss that easily goes unnoticed while leading to wrong outcomes.
 
 It gets even trickier when types with parameters like `List<T>` and `Map<K, T>` come into play. A parameter `T` of a data type `SomeType<T>` is called covariant if there is a canonical way to map functions `X -> Y` onto functions `SomeType<X> -> SomeType<Y>` that preserves function composition. For example, the parameter `T` of `List<T>` is covariant: the canonical way to turn a function `f : X -> Y` into a function on lists `g : List<X> -> List<Y>` is to apply `f` to each element of the original list of type `List<X>`.
@@ -93,20 +96,23 @@ It is quite natural to extend implicit conversions along covariant parameters. I
 
 As we already mentioned, the first parameter (type of keys) in `Map<K, T>` is not covariant. However, if one has a function `f` from type `X` to type `Y`, one could in principle convert a `Map<Y, T>` into a `Map<X, T>` as follows. To obtain a dictionary of type `Map<X, T>` one first applies `f` to a key `x : X` and then uses the result as the key in the original `Map<Y, T>`.
 
-Now consider a `Map<Int, T>` of the form
+Now consider an instance of `Map<Int, T>` containing three elements:
 ```
 {1 => a;
  0 => b;
 -1 => c}
 ```
 
-An implicit conversion from non-negative integers `Nat` to integers `Int` is perfectly sensible. But in a language where implicit conversions are passed along the first parameter of `Map<K, T>` it means the above dictionary would be implicitly converted into the following `Map<Nat, T>`:
+An implicit conversion from non-negative integers `Nat` to integers `Int` is perfectly sensible in general. In a language where implicit conversions are passed along the first parameter of `Map<K, T>` it makes the dictionary above implicitly convertable into a `Map<Nat, T>`. However, there is a problem. This new dictionary would contain only two accessible elements:
 ```
 {1 => a;
  0 => b}
 ```
 
-We observe a case of accidental information loss due to an implicit conversion. Contravariant “conversions” (also known as “domain restrictions”) should only be available as explicit coersions.
+Here we observe a clear case of information loss. This fact is obscured in Java and similar languages because `Map`s are usually thought of in terms of internal data structures storing their elements, and these are left untouched by the implicit conversion. The implicit conversion above does not erase the entry `-1 => c` from the physical memory, it just makes it inaccessible and invisible as an entry of the `Map<Nat, T>`. When such conversions are take place implicitly the information loss can easily go unnoticed. Conversions of this kind should only be available as explicit coersions. However, since they are quite ubiquitous, languages should provide a lightweight syntax for them.
+
+§§ Elaboration ambiguities and overloading issues
+-------------------------------------------------
 
 Let us now move on to the next issue and consider the ways implicit conversions might introduce ambiguities into a programming language. The process of transforming implicit conversions into explicit ones is called elaboration. It is usually performed by the compiler internally. There might be cases where more than one conversion path between two types is possible, say `int16 -> int32 -> float64` and `int16 -> float32 -> float64`. In all such cases we must ensure that the results are path-independent. In a language with an extensible type system and implicit conversions (such as Scala), this property has to be enforced (which cannot be done in Scala).
 
