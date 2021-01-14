@@ -65,7 +65,7 @@ There is a common misconception, that complex type systems are a recent inventio
 Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<ItemType>`, `BinaryTree<ItemType>`, `Collection<ItemType>` and `Map<KeyType, ValueType>`.
 
 
-§ Digression I: What's wrong with C-style type systems?
+§ Digression Part I: What's wrong with C-style type systems?
 -------------------------------------------------------
 
 Type system does not have to be complex to be incoherent. Even a finite type system can have nontrivial issues when implicit type conversions come into play.
@@ -124,7 +124,7 @@ There are, however, more subtle cases. Let us assume `+` is used both for unguar
 
 The aforementioned issue of covert information loss can also be seen as a case of elaboration ambiguity. In a language with an overloaded equality operator `x = y`, its coherence with implicit conversions precludes covert information loss. Accidental information loss can be defined as two unequal things becoming equal under an implicit conversion, which whould make two possible elaborations of `x = y` unequivalent.
 
-§ What's Wrong with Java-Like Type Systems?
+§ Digression Part II: What's Wrong with Java-Like Type Systems?
 -------------------------------------------
 
 
@@ -138,7 +138,41 @@ Let me first name a few problems and then discuss them in detail:
 
 
 
-§ 
+§ ПЛАН!!!!111
+-------------
+
+После закрытие Digression, сказать: вот мы увидели, что плохо с существующими системами, а сейчас как обещали выше расскажем чего мы по этому поводу хотим сделать. 
+Вспомним, что у нас было такие вот три проблемы:
+1) Mainstream languages tend to stick with bad typing practices where better ones are available;
+2) The gap between statically typed languages and dynamically typed languages has to be closed;
+3) There are computational behaviours for which good typing practices are yet to be determined
+4) programming techniques for which good typing practices are yet to be determined  
+ADD 4 TO THE BEGINNING
+
+Первой уже посвящено много работы, и мы лишь по ходу действия коротко упомянем эти подходы. Второй проблемой мы (пока) непосредственно не занялись, и считаем что о ней пока рано думать. А вот третья  (and 4 ?) проблема это как раз то, над чем мы работаем. 
+
+Дальнейший рассказ основан на том, какие бывают классы типов. 
+Их бывают три: data types, purely abstract types, entity types. 
+-- Первые очень хорошо поняты (data types), но мы вам про них всё равно расскажем, потому что мы знаем как с ними обращаться хорошо, а этого en masse не делают. Мы покажем как, тем более что для дальнейшего рассказа это надо понимать. (это мэппится на первую проблему которые надо называть словами) 
+
+вторые и третьи позволяют решать четвёртую и третью проблему (которые надо называть словами)
+
+-- purely abstract types А дальше мы расскажем про ещё один класс типов, про него пока мало кто знает как с ним надо, но у нас вроде получилось придумать sound and complete theory.
+-- entity types
+
+Есь чо?!
+
+* Вначале есть описание, что типчеги бывают data types, entity types и purely abstract types (извините, это лучшее название которое я выдумал, и это неологизм, потому что имеющиеся в литературе названия вообще непонятнэ: icon types, ghost types, erasable types) с кучей примеров. 
+* * Тут надо сказать, что это покрывает все сущности, которые в программировании вообще возникают.
+
+* Есь описание того, как всевозможные data types порождаются двумя очень простыми и базовыми конструкциями.
+* * Тут надо показать, что это покрывает не только все иммутабельные типы, которые читатель может себе представить, но и те, которые читатель едва ли ожидал встретить (в частности, “честные” вещественные числа).
+
+* Есть кусок, где я начинаю говорить про то, как устроены эти самые purely abstract types на примере самого важного их экземпляра, и собираюсь углубиться глубоко. Потому как это как раз содержит новизну нашей работы.
+* * Это позволяет одновременно две вещи сделать: организовать datatype-generic programming (за отсутствие которого я корю выше Джаву со Скалой) и заниматься математикой прямо внутри кода, беся живых программистов.
+
+
+
 
 § Sorting the wheat from the chaff: Values, objects and abstract parameters
 ---------------------------------------------------------------------------
