@@ -65,7 +65,7 @@ There is a common misconception, that complex type systems are a recent inventio
 Type systems of most modern mainstream languages have not gone far beyond Algol W. The only essential development is more advanced extensibility. Modern languages typically allow user-defined domain-specific data types (say, `Date` or `Color`) and type formers. The latter are typically used to provide custom data structures like `List<ItemType>`, `BinaryTree<ItemType>`, `Collection<ItemType>` and `Map<KeyType, ValueType>`.
 
 
-§ Digression Part I: What's wrong with C-style type systems?
+§ Digression: What's wrong with C-style type systems?
 -------------------------------------------------------
 
 Type system does not have to be complex to be incoherent. Even a finite type system can have nontrivial issues when implicit type conversions come into play.
@@ -78,10 +78,13 @@ In the first case, the user has to explicitly convert values to match the requir
 
 One has to be very careful about implicit conversions. They can easily violate the principle of least astonishment that states that every system should behave in a way non-expert users reasonably expect it to behave. The typical example of such a violation is notorious `1 / 2` ≠ `1 / 2.0` in C and its descendents.
 
-There are several issues implicit conversions often introduce:
+There are general issues tied to implicit conversions across the languages that use them. Besides that, in class based languages (C++, Java, etc.) there are additional issues that arise from interplay of implicit conversions and inheritance.
+
+The general issues implicit conversions often introduce are:
 * Accidental information loss;
 * Elaboration ambiguities;
-* Interference with operator overloading.
+* Interference with operator overloading;
+which can be thought of as different conceptualizations of the same underlying issue.
 
 §§ Accidental information loss
 ------------------------------
@@ -124,22 +127,25 @@ There are, however, more subtle cases. Let us assume `+` is used both for unguar
 
 The aforementioned issue of covert information loss can also be seen as a case of elaboration ambiguity. In a language with an overloaded equality operator `x = y`, its coherence with implicit conversions precludes covert information loss. Accidental information loss can be defined as two unequal things becoming equal under an implicit conversion, which whould make two possible elaborations of `x = y` unequivalent.
 
-§ Digression Part II: What's Wrong with Java-Like Type Systems?
--------------------------------------------
 
-
-
-Let me first name a few problems and then discuss them in detail:
+§§ Subtyping and Inheritance
+----------------------------
+TODO:
 - Subtyping defined by inheritance fundamentally flawed;
 - Both subtyping and inheritance clash with mutability;
-– No way to define pure functions (those with no side effects);
-– No way to define pure data structures (those with no circularities);
+
+
+§ А ещё вот такая проблема ЕСТЬ!
+--------------------------------
+
 – Datatype-generic programming not available (impossible to define, say, a `serialize()`-method for generically for all possible classes containing serializable fields only).
 
 
 
 § ПЛАН!!!!111
 -------------
+
+Подумать, где и на что хорошо бы сослаться.
 
 После закрытие Digression, сказать: вот мы увидели, что плохо с существующими системами, а сейчас как обещали выше расскажем чего мы по этому поводу хотим сделать. 
 Вспомним, что у нас было такие вот три проблемы:
