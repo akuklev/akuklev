@@ -26,7 +26,7 @@ Most existing type-theoretically sound languages are purely functional languages
 
 There is also an advanced programming technique of generic programming, coarse form of which is available as “templates” in C++ and “generics” in Java. Quoting Bjarne Stroustrup: “Following \[Alexander\] Stepanov, we can define generic programming without mentioning language features: Lift algorithms and data structures from concrete examples to their most general and abstract form.” In theory, generic programming would allow to get around boilerplate code entirely. However this promise is yet to be fulfilled in a real programming language. Generic programming is available in Scala programming language in quite advanced yet rather unsatisfactory form, mainly due to lack of innate support on the level of typing. The proper handling of generic programming calls for yet another class of types: the _purely abstract_ types, which are types of “compile-time” parameters.
 
-Both _entity_ and _purely abstract_ are crucial for developing good typing discipline for desirable computational behaviours and programming techniques and will be discussed at length below.
+Both _entity_ and _purely abstract_ are crucial for developing good typing discipline for desirable computational behaviours and programming techniques and will be discussed at length below, as they constitute the central topic of our research regarding programming languages.
 
 Before proceeding to these questions, let us breefly consider how types are used in mathematics and programming, and discuss several most distrubing type-theoretic incoherences in mainstream programming languages.
 
@@ -89,7 +89,7 @@ The general issues implicit conversions often introduce are:
 * Accidental information loss;
 * Elaboration ambiguities;
 * Interference with operator overloading;
-which can be thought of as different conceptualizations of the same underlying issue.
+which can be thought of as different facettes of the same underlying issue.
 
 §§ Accidental information loss
 ------------------------------
