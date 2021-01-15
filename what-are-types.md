@@ -15,13 +15,18 @@ The practical goal of redesigning type systems of general-purpose programming la
 There are several unrelated issues to be addressed:
 1) Mainstream languages tend to stick with bad typing practices where better ones are available;
 2) The gap between statically typed languages and dynamically typed languages has to be closed;
-3) There are computational behaviours for which good typing practices are yet to be determined.
+3) There are computational behaviours and programming techniques for which good typing practices are yet to be determined.
 
 The first issue seems to be due to a communication gap between computer scientists and engineers, and huge systemic inertia: one cannot simply start from scratch, there is a necessity to retain backwards compatibility, there are lots of legacy systems, and there are many millions of software developers, who cannot learn unfamiliar programming languages and adopt new practices at once. Every serious shift is a tremendous effort to the industry of that size. We hope that availability of nice general-purpose languages where types are not a nuisance but an aid would help solving this issue, especially if those languages would be attractive for educators.
 
 The static vs. dynamic typing gap can indeed be closed by means of gradual typing and type inference: mechanisms that allow omitting type annotations almost entirely in tractable cases. One still wants to use type annotations for public APIs, settled libraries and critical sections where you need strong correctness guarantees, as well as for type-driven development. Yet, omitting them is indispensable for a language with a complex type system to have a bearable learning curve and perform well at rapid prototyping. Gradual typing and type inference are readily available in some mainstream languages including C# and Scala. The interplay between gradual typing and other features of complex type systems is, however, highly non-trivial and not entirely understood yet.
 
-The issue our group works on is the last one, that is, developing good typing practices for complex computational behaviours. Most existing type-theoretically sound languages are purely functional languages (such as Standard ML, Haskell etc). That is not because good type systems are unavailable for other languages, but rather because purely functional languages require much simpler type systems. In purely functional languages, variables always refer to values, i.e. immutable pieces of data. Сonsequently, their type systems have to deal only with _data_ types which are well understood. Here we use the term data types in this strict sense. On the other hand, types of varables referring to mutable objects and non-clonable resources (such as files, IO-streams, remote services or devices) are called _entity_ or _object_ types. Proper handling of object types is much more complex than that of data types. However, innate treatment of concurrency, mutable state and communication neccessarily requires using entity types besides data types. This will be discussed at length below.
+The issue our group works on is the last one, that is, developing good typing practices for complex computational behaviours and programming techniques.  
+Most existing type-theoretically sound languages are purely functional languages (such as Standard ML, Haskell etc). That is not because good type systems are unavailable for other languages, but rather because purely functional languages require much simpler type systems. In purely functional languages, variables always refer to values, i.e. immutable pieces of data. Сonsequently, their type systems have to deal only with _data_ types which are well understood. Here we use the term data types in this strict sense. On the other hand, types of varables referring to mutable objects and non-clonable resources (such as files, IO-streams, remote services or devices) are called _entity_ or _object_ types. Proper handling of object types is much more complex than that of data types. However, innate treatment of concurrency, mutable state and communication neccessarily requires using entity types besides data types.
+
+There is also an advanced programming technique of generic programming, coarse form of which is available as “templates” in C++ and “generics” in Java. Quoting Bjarne Stroustrup: “Following \[Alexander\] Stepanov, we can define generic programming without mentioning language features: Lift algorithms and data structures from concrete examples to their most general and abstract form.” In theory, generic programming would allow to get around boilerplate code entirely. However this promise is yet to be fulfilled in a real programming language. Generic programming is available in Scala programming language in quite advanced yet rather unsatisfactory form, mainly due to lack of innate support on the level of typing. The proper handling of generic programming calls for yet another class of types: the _purely abstract_ types, which are types of “compile-time” parameters.
+
+Both _entity_ and _purely abstract_ are crucial for developing good typing discipline for desirable computational behaviours and programming techniques and will be discussed at length below.
 
 Before proceeding to these questions, let us breefly consider how types are used in mathematics and programming, and discuss several most distrubing type-theoretic incoherences in mainstream programming languages.
 
@@ -139,6 +144,8 @@ TODO:
 --------------------------------
 
 – Datatype-generic programming not available (impossible to define, say, a `serialize()`-method for generically for all possible classes containing serializable fields only).
+
+
 
 
 
