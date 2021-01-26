@@ -89,6 +89,7 @@ The general issues implicit conversions often introduce are:
 * Accidental information loss;
 * Elaboration ambiguities;
 * Interference with operator overloading;  
+
 which can be thought of as different facettes of the same underlying issue.
 
 §§ Accidental information loss
