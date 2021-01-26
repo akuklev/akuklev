@@ -71,7 +71,7 @@ Type systems of most modern mainstream languages have not gone far beyond Algol 
 
 
 § Digression: What's wrong with C-style type systems?
--------------------------------------------------------
+-----------------------------------------------------
 
 Type system does not have to be complex to be incoherent. Even a finite type system can have nontrivial issues when implicit type conversions come into play.
 
@@ -133,19 +133,11 @@ There are, however, more subtle cases. Let us assume `+` is used both for unguar
 The aforementioned issue of covert information loss can also be seen as a case of elaboration ambiguity. In a language with an overloaded equality operator `x = y`, its coherence with implicit conversions precludes covert information loss. Accidental information loss can be defined as two unequal things becoming equal under an implicit conversion, which whould make two possible elaborations of `x = y` unequivalent.
 
 
-§§ Subtyping and Inheritance
-----------------------------
+§§ Issues with Inheritance
+--------------------------
 TODO:
-- Subtyping defined by inheritance fundamentally flawed;
-- Both subtyping and inheritance clash with mutability;
-
-
-§ А ещё вот такая проблема ЕСТЬ!
---------------------------------
-
-– Datatype-generic programming not available (impossible to define, say, a `serialize()`-method for generically for all possible classes containing serializable fields only).
-
-
+- Implicit conversions defined by inheritance fundamentally flawed;
+- Inheritance clashes with mutability;
 
 
 
@@ -160,7 +152,6 @@ TODO:
 2) The gap between statically typed languages and dynamically typed languages has to be closed;
 3) There are computational behaviours for which good typing practices are yet to be determined
 4) programming techniques for which good typing practices are yet to be determined  
-ADD 4 TO THE BEGINNING
 
 Первой уже посвящено много работы, и мы лишь по ходу действия коротко упомянем эти подходы. Второй проблемой мы (пока) непосредственно не занялись, и считаем что о ней пока рано думать. А вот третья  (and 4 ?) проблема это как раз то, над чем мы работаем. 
 
