@@ -179,6 +179,21 @@ TODO:
 * * Это позволяет одновременно две вещи сделать: организовать datatype-generic programming (за отсутствие которого я корю выше Джаву со Скалой) и заниматься математикой прямо внутри кода, беся живых программистов.
 
 
+Basic types in extended intuitionistic type theories:
+
+|                         | Data types               | Purely abstract types     |
+| ----------------------- |:------------------------:|:-------------------------:|
+| Closed-world assumption | synthetic data types     |                           |
+| Open-world assumption   | function types           | * (type of all datatypes) |
+
+For synthetic types one assumes that the only possible values are the ones we can construct, which what we mean by "closed world assumption". Examples of synthetic data types: `Bool`, `Nat`, `Int`, `List[Int]`. One can show inside the system that synthetic types are either finite (like bool) or countable (like all the other examples in the list).
+
+For function types one does not assume that space of possible values is exhausted by functions we can actually construct. For some function types one can show that they are actually exhausted by the constructible values and thus enumerable: it namely the case if domain is countable and range is finite. But for function types like `Nat -> Nat` it can neither be shown that they are countable nor that they are not. Types are not either closed, or open. Here is an example of a mixed type: `List[Nat -> Bool]`. The type of true reals (mathematical Cauchy real numbers) is also a type of mixed kind. Intuitionistic type theory supports both models where the types `Real` and `Nat -> Nat` are modelled by countable sets of computable numbers and computable functions respectively, or by uncountable sets of all real numbers and all functions which are uncountable. Futhermore, even in the latter case the type `Real -> Real` is not forced have greater cardinality than continuum: it can be modeled by all continuous or all Borel-measurable functions both of which have the same cardinality as the set of reals themselves.
+
+Similarily, one does not assume that the (purely abstract) type of all data types is exhausted by data types we can construct, which keeps the system compatible with future extensions (and, actually, with set theory).
+
+
+
 
 
 § Sorting the wheat from the chaff: Values, objects and abstract parameters
