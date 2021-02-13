@@ -18,7 +18,7 @@ In C, the procedure being executed automatically when the program is started is 
 
 The language is said to support dependent types if one can use values of variables as paremeters of types. In particular, in such a language arguments of a function can be used as parameters of other arguments' types. In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
 
-```
+```c
 main(nat argc, string[argc] argv) {
   ...
 }
