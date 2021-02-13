@@ -1,7 +1,7 @@
-What are dependent types and what are they good for?
-====================================================
+What are dependent types?
+=========================
 
-Here I attempt to explain what basic dependent types to an interested reader who knows enough C to understand the following “Hello, $name!” piece:
+Here I will attempt to explain basic dependent types to an interested reader who knows enough [C](https://en.wikipedia.org/wiki/C_(programming_language)) to understand the following “Hello, world!” piece:
 
 ```c
 main(int argc, char* argv[]) {
@@ -13,10 +13,9 @@ main(int argc, char* argv[]) {
 }
 ```
 
-In C, the procedure being executed automatically when the program is started is called `main`. It has two arguments: the 'argument count' `argc` is the number of command-line arguments and 'argument values' `argv` is the array containing them. The above program prints out "Hello, world!" if executed without command-line arguments or "Hello, {first command-line argument}!" otherwise.
+Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` which is being called. It has two arguments: the 'argument count' `argc` is the (`int`eger) number of command-line arguments and 'argument values' `argv` is the array containing them. The signature of `char* argv[]` is an archaic way to write down that `argv` is an array of character strings of unspecified length. The above program prints out "Hello, world!" if executed without command-line arguments or "Hello, {first command-line argument}!" otherwise.
 
-
-The language is said to support dependent types if one can use values of variables as paremeters of types. In particular, in such a language arguments of a function can be used as parameters of other arguments' types. In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
+Working definition: The language is said to support dependent types iff arguments of a function can be used as parameters of other arguments' types. In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
 
 ```c
 main(nat argc, string[argc] argv) {
@@ -24,9 +23,8 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-Here we assume predefined types `nat` of natural numbers (i.e. non-negative integers), `string` of character strings, and notation `some_type[n]` for arrays of fixed length `n` (where `n` is a `nat`). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
+Here we assume predefined types `nat` of natural numbers (i.e. non-negative integers), `string` of character strings, and notation `some_type[n]` for arrays of fixed length `n` (where `n` is a `nat`ural number). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
 
-Here we meet the most basic kind of dependent types: dependent tuples, which are of the form `(X x, Y<x> y,..)`. Here we mean that the first element `x` of the tuple is of type `X`, the second one `y` is of the type `Y` which may depend on `x` as a parameter, as in `(nat argc, string[argc] argv)`. And, of course, tuples with more elements than two are allowed.
 
 § Type-level functions
 ----------------------
