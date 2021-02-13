@@ -1,7 +1,9 @@
 What are dependent types?
 =========================
 
-Here I will attempt to explain basic dependent types to an interested reader who knows enough [C](https://en.wikipedia.org/wiki/C_(programming_language)) to understand the following “Hello, world!” piece:
+I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/).
+
+This article is an attempt to explain dependent types to an interested reader who knows enough [C](https://en.wikipedia.org/wiki/C_(programming_language)) to understand the following “Hello, world!” piece:
 
 ```c
 main(int argc, char* argv[]) {
@@ -15,8 +17,10 @@ main(int argc, char* argv[]) {
 
 Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` which is being called. It has two arguments: the 'argument count' `argc` is the (`int`eger) number of command-line arguments and 'argument values' `argv` is the array containing them. The signature of `char* argv[]` is an archaic way to write down that `argv` is an array of character strings of unspecified length. The above program prints out "Hello, world!" if executed without command-line arguments or "Hello, {first command-line argument}!" otherwise.
 
-Working definition: The language is said to support dependent types iff arguments of a function can be used as parameters of other arguments' types. In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
+Working definition
+: Language is said to support dependent types iff arguments of a function can be used as parameters of other arguments' types.
 
+In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
 ```c
 main(nat argc, string[argc] argv) {
   ...
