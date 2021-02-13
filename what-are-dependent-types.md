@@ -1,5 +1,5 @@
-§ What are dependent types and why do we need them?
-===================================================
+What are dependent types and what are they good for?
+====================================================
 
 Here I attempt to explain what basic dependent types to an interested reader who knows enough C to understand the following “Hello, $name!” piece:
 
