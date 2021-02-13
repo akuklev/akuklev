@@ -28,6 +28,32 @@ Here we assume predefined types `nat` of natural numbers (i.e. non-negative inte
 
 Here we meet the most basic kind of dependent types: dependent tuples, which are of the form `(X x, Y<x> y,..)`. Here we mean that the first element `x` of the tuple is of type `X`, the second one `y` is of the type `Y` which may depend on `x` as a parameter, as in `(nat argc, string[argc] argv)`. And, of course, tuples with more elements than two are allowed.
 
+§ Type-level functions
+----------------------
+
+Now let's turn our attention to the function 'print formated' `printf(string fmtstring, ...)`. It has a variable number of arguments depending on the first argument `fmtstring`. If `fmtstring` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a float. To make the signagture of `printf` precise we need to write a type-level function `printfT<fmtstring>` that parses `fmtstring` and returns the respective tuple type: `printfT<"Hello, %s! Current CPU temperature is %f."> == (string, float)`. With such a function one could write the signature of `printf` as follows:
+
+```c
+printf(string fmtstring, printfT<fmtstring> ...args)
+```
+
+Exact signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (public APIs) and in compile-time (settled libraries), thus type-level functions are a part of the signature and should be executable in compile time/on a remote machine. Thus, they have to be pure and manifestly terminating.
+
+Let me write down a very simple example of a type-level function just to give an impression. Let's assume we have a function `send(text_or_data, payload)`, where the type of payload is either `string` or `byte[]` depending on the value of the first argument:
+```c
+send(bool text_or_data, payloadT<text_or_data> payload), where
+   type payloadT<true> := string;
+   type payloadT<false> := byte[];
+```
+
+In good languages supporting dependent types, any pure and manifestly terminating function can be lifted to the type level.
+
+
+
+db.performQuery(q, queryArgumentsT<q> ...args)
+  
+
+
 * * *
 
 Now let's consider a function taking a non-negative integer `length` as an argument and generating an array of `length` integers:
