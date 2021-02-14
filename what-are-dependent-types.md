@@ -17,8 +17,9 @@ main(int argc, char* argv[]) {
 
 Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` which is being called. It has two arguments: the 'argument count' `argc` is the (`int`eger) number of command-line arguments and 'argument values' `argv` is the array containing them. The signature of `char* argv[]` is an archaic way to write down that `argv` is an array of character strings of unspecified length. The above program prints out "Hello, world!" if executed without command-line arguments or "Hello, {first command-line argument}!" otherwise.
 
-Working definition
-: Language is said to support dependent types iff arguments of a function can be used as parameters of other arguments' types.
+<dl><dt>Definition</dt>
+  <dd>A programming language is said to be dependently typed iff it allows arguments of a function to be used as parameters of other arguments' types and/or its return type.</dd>
+</dl>
 
 In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
 ```c
@@ -29,11 +30,20 @@ main(nat argc, string[argc] argv) {
 
 Here we assume predefined types `nat` of natural numbers (i.e. non-negative integers), `string` of character strings, and notation `some_type[n]` for arrays of fixed length `n` (where `n` is a `nat`ural number). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
 
+In dependent languages, types are usually written not before (`int n`), but after identifiers (`get_count() : int`), at least for functions. There is a good reason for it: return types are also allowed to depend on the arguments.
+
+```c
+generate_random_sequence(nat length) : int[length];
+```
+
+With dependent typing one can avoid manual casts (coercing values into the “right” type) altogether. {TODO: eradicate unspecific types: pointers to objects of unspecified type, arrays of unspecified length, etc.}
 
 § Type-level functions
 ----------------------
 
-Now let's turn our attention to the function 'print formated' `printf(string fmtstring, ...)`. It has a variable number of arguments depending on the first argument `fmtstring`. If `fmtstring` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a float. To make the signagture of `printf` precise we need to write a type-level function `printfT<fmtstring>` that parses `fmtstring` and returns the respective tuple type: `printfT<"Hello, %s! Current CPU temperature is %f."> == (string, float)`. With such a function one could write the signature of `printf` as follows:
+Now let's turn our attention to the function 'print formated' `printf(string fmtstring, ...)`. It has a variable number of arguments depending on the first argument `fmtstring`. If `fmtstring` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down a 
+
+To make the signagture of `printf` precise we need to write a type-level function `printfT<fmtstring>` that parses `fmtstring` and returns the respective tuple type: `printfT<"Hello, %s! Current CPU temperature is %f."> == (string, float)`. With such a function one could write the signature of `printf` as follows:
 
 ```c
 printf(string fmtstring, printfT<fmtstring> ...args)
