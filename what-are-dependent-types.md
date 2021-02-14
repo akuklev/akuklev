@@ -51,7 +51,7 @@ printf(string fmtstring, printf_args<fmtstring> ...args)
 ```
 
 where `printf_args<fmtstring>` is a “type-valued function” that parses `fmtstring` and returns the respective tuple type:
-```c
+```c++
 printf_args<"Hello, %s! Current CPU temperature is %f.">
 ===
 struct {string arg1, float arg2}
