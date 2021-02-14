@@ -36,82 +36,29 @@ In dependent languages, types are usually written not before (`int n`), but afte
 generate_random_sequence(nat length) : int[length];
 ```
 
-With dependent typing one can avoid manual casts (coercing values into the “right” type) altogether. {TODO: eradicate unspecific types: pointers to objects of unspecified type, arrays of unspecified length, etc.}
+With dependent typing one can avoid manual casts (coercing values into the “right” type) altogether.
 
-§ Type-level functions
-----------------------
+§ Type-level programming
+------------------------
 
-Now let's turn our attention to the function 'print formated' `printf(string fmtstring, ...)`. It has a variable number of arguments depending on the first argument `fmtstring`. If `fmtstring` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down a 
+Now let's turn our attention to the function 'print formated' `printf(string fmtstring, ...)`. It has a variable number of arguments depending on the first argument `fmtstring`. If `fmtstring` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down its precise signature?
 
-To make the signagture of `printf` precise we need to write a type-level function `printfT<fmtstring>` that parses `fmtstring` and returns the respective tuple type: `printfT<"Hello, %s! Current CPU temperature is %f."> == (string, float)`. With such a function one could write the signature of `printf` as follows:
-
+In a sufficiently powerful dependently typed language, we can do this:
 ```c
-printf(string fmtstring, printfT<fmtstring> ...args)
+printf(string fmtstring, printf_args<fmtstring> ...args)
 ```
 
-Exact signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (public APIs) and in compile-time (settled libraries), thus type-level functions are a part of the signature and should be executable in compile time/on a remote machine. Thus, they have to be pure and manifestly terminating.
-
-Let me write down a very simple example of a type-level function just to give an impression. Let's assume we have a function `send(text_or_data, payload)`, where the type of payload is either `string` or `byte[]` depending on the value of the first argument:
+where `printf_args<fmtstring>` is a “type-valued function” that parses `fmtstring` and returns the respective tuple type:
 ```c
-send(bool text_or_data, payloadT<text_or_data> payload), where
-   type payloadT<true> := string;
-   type payloadT<false> := byte[];
+printf_args<"Hello, %s! Current CPU temperature is %f.">
+===
+struct {string arg1, float arg2}
 ```
 
-In good languages supporting dependent types, any pure and manifestly terminating function can be lifted to the type level.
+Exact signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (public APIs) and in compile-time (settled libraries), thus type-level functions are a part of the signature and must be executable in compile time/on a remote machine. Thus, they have to be manifestly terminating and employ no side effects (no IO, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be lifted to type level. In such languages any restrictions on arguments and any contract relating arguments and result can be expressed as a part of the signature.
 
-
-
-db.performQuery(q, queryArgumentsT<q> ...args)
-  
-
-
-* * *
-
-Now let's consider a function taking a non-negative integer `length` as an argument and generating an array of `length` integers:
+For software develpoers who have experience writing database-interacting code, let me mention one more use case. Given database schema is known in advance, types of arguments and of the result for a given query can be calculated from the query itself. Since importing of the database schemata can be integrated into the build process, the following signature is possible:
 ```
-int[] generateRandomSequence(nat length);
+db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchema
 ```
-
-Here we actually know in advance which length the returned array would have, but there is no way to write it down in C. (This example also shows why types in dependently-typed languages are commonly written after identifiers and not before them.) In the fictional dependent dialect of C we could have written this as follows:
-```
-func generateRandomSequence(length : nat) : int[length];
-```
-
-Here we meet the second basic kind of dependent types: dependent functions.
-
-* * *
-
-Dependency can be more involved. One of the examples would be tagged union. Say, we have a request `open()` to the system which may result either in a filehandle or in an error message:
-```
-open() : (success : bool, payloadT<success> payload), where
-   payloadT<true> := FILEHANDLE
-   payloadT<false> := string
-```
-
-The more realistic case is a request to a database:
-```
-db.performQuery(q) : (SqlResultTypeTag tag, payloadT<tag> payload)
-```
-
-Consider the function `printf(string fmtstring, ...)`. As the first argument, it accepts a string that may contain one or several placeholders of the form "%[parameter][flags][width][.precision][length]type", say "%f" for `float`. Now if we have a pure total function `printfT<fmtstring : string>` that parses the `fmtstring`, finds out how many placeholders are there and arguments of which types do they require, and generates the respective tuple type, in the fictional dependent C dialect we could have written the exact signature of `printf`:
-```
-printf(string fmtstring, printfT<fmtstring> ...args)
-```
-
-Of course, an SQL query could be parsed equally well:
-```
-db.performQuery(q, queryArgumentsT<q> ...args) : (SqlResultTypeTag tag, payloadT<tag> payload)
-```
-
-If SQL-schema is known in advance, the result type can be also calculated from the query itself:
-```
-db.performSafeQuery(q, queryArgumentsT<q> ...args) : resultT<q> throws WrongDatabaseSchemaVersion
-```
-
-----
-
-Dependent tuple types and dependent function types in this generality are necessary and sufficient to provide exact signatures for public APIs and settled libraries, where exact means:
-- the caller will never get an unexpected `InvalidArgumentException` because argument validation can always be performed on the caller side entirely;
-- the caller will never have to “cast” the result manually;
-- (non-obvious fact that will be elucidated later: ) any mathematically expressable contract relating arguments and result can be expressed as a part of the signature.
+(the `IncompatibleDbSchema` exception being thrown if the schema of the database changed in the meantime, so application has to be rebuilt).
