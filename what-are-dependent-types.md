@@ -13,10 +13,14 @@ main(int argc, char* argv[]) {
 }
 ```
 
-Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` which is being called. It has two arguments: the 'argument count' `argc` is the (`int`eger) number of command-line arguments and 'argument values' `argv` is the array containing them. The signature of `char* argv[]` is an archaic way to write down that `argv` is an array of character strings of unspecified length. The above program prints out "Hello, world!" if executed without command-line arguments or "Hello, {first command-line argument}!" otherwise.
+Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` which is being called. It has two arguments:
+* `argc`: 'argument count' is the number of command-line arguments; 
+* `argv`: 'argument values' is the array containing them.
+
+The signature of `char* argv[]` is an archaic way to write down that `argv` is an array of character strings of unspecified length. The above program prints out `"Hello, world!"` if executed without command-line arguments or `"Hello, {first command-line argument}!"` otherwise.
 
 <dl><dt>Definition</dt>
-  <dd>A programming language is said to be dependently typed iff it allows arguments of a function to be used as parameters of other arguments' types and/or its return type.</dd>
+  <dd>A programming language is said to be dependently typed if it allows arguments of a function to be used as parameters of other arguments' types and its return type.</dd>
 </dl>
 
 In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
@@ -26,7 +30,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-Here we assume predefined types `nat` of natural numbers (i.e. non-negative integers), `string` of character strings, and notation `some_type[n]` for arrays of fixed length `n` (where `n` is a `nat`ural number). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
+Here we assume predefined types of `nat`ural numbers (= non-negative `int`egers), character `string`s, and notation `element_type[n]` for arrays of fixed length `n` (where `n` is a `nat`ural number, and `element_type` some type). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
 
 In dependent languages, types are usually written not before (`int n`), but after identifiers (`get_count() : int`), at least for functions. There is a good reason for it: return types are also allowed to depend on the arguments.
 
@@ -56,7 +60,7 @@ struct {string arg1, float arg2}
 Exact signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (public APIs) and in compile-time (settled libraries), thus type-level functions are a part of the signature and must be executable in compile time/on a remote machine. Thus, they have to be manifestly terminating and employ no side effects (no IO, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be lifted to type level. In such languages any restrictions on arguments and any contract relating arguments and result can be expressed as a part of the signature.
 
 For software develpoers who have experience writing database-interacting code, let me mention one more use case. Given database schema is known in advance, types of arguments and of the result for a given query can be calculated from the query itself. Since importing of the database schemata can be integrated into the build process, the following signature (here we use a more Java'esque syntax) would be possible:
-```
+```java
 db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchemaException
 ```
 (the `IncompatibleDbSchema` exception being thrown if the schema of the database changed in the meantime, so application has to be rebuilt).
