@@ -60,7 +60,7 @@ struct {string arg1, float arg2}
 Exact signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (public APIs) and in compile-time (settled libraries), thus type-level functions are a part of the signature and must be executable in compile time/on a remote machine. Thus, they have to be manifestly terminating and employ no side effects (no IO, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be lifted to type level. In such languages any restrictions on arguments and any contract relating arguments and result can be expressed as a part of the signature.
 
 For software develpoers who have experience writing database-interacting code, let me mention one more use case. Given database schema is known in advance, types of arguments and of the result for a given query can be calculated from the query itself. Since importing of the database schemata can be integrated into the build process, the following signature (here we use a more Java'esque syntax) would be possible:
-```java
+```C#
 db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchemaException
 ```
 (the `IncompatibleDbSchema` exception being thrown if the schema of the database changed in the meantime, so application has to be rebuilt).
