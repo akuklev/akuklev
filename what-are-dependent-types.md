@@ -24,7 +24,7 @@ The signature of `char* argv[]` is an archaic way to write down that `argv` is a
 </dl>
 
 In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
-```c#
+```c++
 main(nat argc, string[argc] argv) {
   ...
 }
