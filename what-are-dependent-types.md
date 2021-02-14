@@ -1,9 +1,7 @@
 What are dependent types?
 =========================
 
-I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/).
-
-This article is an attempt to explain dependent types to an interested reader who knows enough [C](https://en.wikipedia.org/wiki/C_(programming_language)) to understand the following “Hello, world!” piece:
+I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an attempt to explain dependent types to an interested reader who knows enough [C](https://en.wikipedia.org/wiki/C_(programming_language)) to understand the following “Hello, world!” piece:
 
 ```c
 main(int argc, char* argv[]) {
@@ -59,6 +57,6 @@ Exact signatures like this are desirable for public APIs and settled libraries s
 
 For software develpoers who have experience writing database-interacting code, let me mention one more use case. Given database schema is known in advance, types of arguments and of the result for a given query can be calculated from the query itself. Since importing of the database schemata can be integrated into the build process, the following signature (here we use a more Java'esque syntax) would be possible:
 ```
-db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchema
+db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchemaException
 ```
 (the `IncompatibleDbSchema` exception being thrown if the schema of the database changed in the meantime, so application has to be rebuilt).
