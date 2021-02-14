@@ -24,7 +24,7 @@ The signature of `char* argv[]` is an archaic way to write down that `argv` is a
 </dl>
 
 In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
-```c++
+```cpp
 main(nat argc, string[argc] argv) {
   ...
 }
@@ -51,7 +51,7 @@ printf(string fmtstring, printf_args<fmtstring> ...args)
 ```
 
 where `printf_args<fmtstring>` is a “type-valued function” that parses `fmtstring` and returns the respective tuple type:
-```c++
+```cpp
 printf_args<"Hello, %s! Current CPU temperature is %f.">
 ===
 struct {string arg1, float arg2}
