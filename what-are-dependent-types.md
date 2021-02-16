@@ -13,7 +13,7 @@ main(int argc, char* argv[]) {
 }
 ```
 
-Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` which is being called. It has two arguments:
+Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` procedure which is being called. It has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them.
 
