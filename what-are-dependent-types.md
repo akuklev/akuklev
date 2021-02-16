@@ -75,3 +75,6 @@ db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> throws 
 ```
 
 **{TODO Завершающий абзац}**
+{Закруглить, что последний пример показывает какое у них офигенное прямое практическое приминение, и сказать что but their scope goes far beyond this.}
+
+TODO: Про контракты нипанятна, особенно how useful dependent types can be for XYZ
