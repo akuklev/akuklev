@@ -32,7 +32,7 @@ main(nat argc, string[argc] argv) {
 
 Here we assume predefined the types `nat` of natural numbers (= non-negative integers) and `string` of character strings; and the notation `element_type[n]` for arrays of fixed length `n` (where `n` is a non-negative integer, and `element_type` some type). Thus the signature above states that `argc` is a non-negative integer, and `argv` is a fixed-length array of character strings, with its length given by `argc`. This signature declares how long `argv` is, so that `index out of bound`-kind errors could be checked during compile time.
 
-In dependent languages, types are usually written not at the beginning of a declaration (like in `int n`), but at its end at least for functions. For example, in Typescript, Scala, Kotlin {вписать сюда ещё три распространённых языка} declaration of a function returning an integer looks like this: `get_count() : int`.  
+In dependent languages, types are usually written not at the beginning of a declaration (like in `int n`), but at its end at least for functions. For example, in Typescript, Scala, Kotlin, F#, Agda, etc. a declaration of a function returning an integer looks as follows: `get_count() : int`.  
 There is a good reason for it: return types are also allowed to depend on the arguments.
 
 ```c
