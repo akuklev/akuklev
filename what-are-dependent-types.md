@@ -67,7 +67,7 @@ would return `(string, float)`.
 Precise signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (for public APIs) and in compile-time (for settled libraries). Type-level functions are a part of the signature and must be executable in compile time and/or on a remote machine. Therefore, they have to return a result for all inputs employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be cast to type level. In such languages **any restrictions on the arguments and any contracts relating the arguments and the result can be expressed as a part of the signature**.
 
 For software developers who have experience writing database-facing code, let me mention a use case of profound importance.  
-Given the database schema is known in advance, the types of arguments and results for a given query can be figured out by parsing the query. Since importing of the database schemata can be integrated into the build process, the following signature (here we use a more Java'esque syntax) would be possible:
+Given the database schema is known in advance, the types of arguments and results for a given query can be figured out by parsing the query. Since importing of the database schemata can be integrated into the build process, the following Java'esque signature would be possible:
 ```C#
 db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchemaException
 ```
