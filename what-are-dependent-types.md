@@ -55,10 +55,10 @@ This function has a variable number of arguments depending on the first argument
 
 In a sufficiently powerful dependently typed language, we can write down a precise signature for such a function:
 ```c
-printf(string fmtstring, printf_args<fmtstring> ...args)
+printf(string template, printf_args<template> ...args)
 ```
 
-where `printf_args<fmtstring>` is a “type-valued function” that parses `fmtstring` and returns the respective tuple type:
+where `printf_args<template>` is a “type-valued function” that parses the `template` and returns the (possibly empty) list of types of required additional arguments:
 ```cpp
 printf_args<"Hello, %s! Current CPU temperature is %f.">
 ===
