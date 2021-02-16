@@ -20,7 +20,7 @@ Each C program has a unique procedure called `main()`. When a program is execute
 The signature of `char* argv[]` is an archaic way to write down that `argv` is an array of unspecified length of character strings. The above program prints out `"Hello, world!"` if executed without command-line arguments or `"Hello, {first command-line argument}!"` otherwise.
 
 <dl><dt>Definition</dt>
-  <dd>A programming language is said to be dependently typed if it allows: One or several arguments of a function can be used to specify the types of the following arguments or the return type.</dd>
+  <dd>A programming language is said to be dependently typed if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
 In a fictional dependent dialect of C, one could have used the following signature for `main(..)` instead:
