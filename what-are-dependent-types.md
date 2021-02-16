@@ -51,9 +51,9 @@ printf( "Hello, world!" );
 printf( "Hello, %s!", argv[0] );
 ```
 
-This function has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down its precise signature?
+This function has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`.
 
-In a sufficiently powerful dependently typed language, we can do this:
+In a sufficiently powerful dependently typed language, we can write down a precise signature for such a function:
 ```c
 printf(string fmtstring, printf_args<fmtstring> ...args)
 ```
