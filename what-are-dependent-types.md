@@ -30,7 +30,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-Here we assume predefined the types `nat` of natural numbers (= non-negative integers) and `string` of character strings, and the notation `element_type[n]` for arrays of fixed length `n` (where `n` is a `nat`ural number, and `element_type` some type). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
+Here we assume predefined the types `nat` of natural numbers (= non-negative integers) and `string` of character strings; and the notation `element_type[n]` for arrays of fixed length `n` (where `n` is a `nat`ural number, and `element_type` some type). Thus the signature above states that `argc` is a non-negative integer, and and `argc` is a fixed-length array of character strings, with its length given by `argc`. Now the it is known in compile-time how long `argv` is, so that `index out of bound`-kind errors could be checked in advance.
 
 In dependent languages, types are usually written not before (`int n`), but after identifiers (`get_count() : int`), at least for functions. There is a good reason for it: return types are also allowed to depend on the arguments.
 
