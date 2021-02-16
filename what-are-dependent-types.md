@@ -13,7 +13,7 @@ main(int argc, char* argv[]) {
 }
 ```
 
-Each C program has a unique procedure called `main()`. When a program is executed, it is precisely the `main()` procedure which is being called. It has two arguments:
+Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. It has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them.
 
@@ -45,13 +45,13 @@ With dependent typing one can avoid manual casts (coercing values into the “ri
 ------------------------
 
 Now let's turn our attention to the function 'print formatted' `printf(string template, ...)`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
-```
+```c
 printf( "Hello, world!" ); 
 ...
 printf( "Hello, %s!", argv[0] );
 ```
 
-It has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down its precise signature?
+This function has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down its precise signature?
 
 In a sufficiently powerful dependently typed language, we can do this:
 ```c
