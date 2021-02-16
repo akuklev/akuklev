@@ -44,7 +44,14 @@ With dependent typing one can avoid manual casts (coercing values into the “ri
 § Type-level programming
 ------------------------
 
-Now let's turn our attention to the function 'print formatted' `printf(string template, ...)`. It has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down its precise signature?
+Now let's turn our attention to the function 'print formatted' `printf(string template, ...)`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
+```
+printf( "Hello, world!" ); 
+...
+printf( "Hello, %s!", argv[0] );
+```
+
+It has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. Can we use dependent typing to write down its precise signature?
 
 In a sufficiently powerful dependently typed language, we can do this:
 ```c
