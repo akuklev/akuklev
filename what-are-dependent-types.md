@@ -71,4 +71,4 @@ Given the database schema is known in advance, the types of arguments and result
 ```C#
 db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> @throws IncompatibleDbSchemaException
 ```
-(the `IncompatibleDbSchema` exception being thrown if the schema of the database changed in the meantime, so application has to be rebuilt).
+(the `IncompatibleDbSchema` exception being thrown if the schema of the database changed since the application was compiled, so its has to be rebuilt).
