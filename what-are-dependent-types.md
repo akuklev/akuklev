@@ -58,12 +58,11 @@ In a sufficiently powerful dependently typed language, we can write down a preci
 printf(string template, printf_args<template> ...args)
 ```
 
-where `printf_args<template>` is a “type-valued function” that parses the `template` and returns the (possibly empty) list of types of required additional arguments:
+where `printf_args<template>` is a “type-valued function” that parses the `template` and returns the list of types of the required additional arguments. In our example
 ```cpp
 printf_args<"Hello, %s! Current CPU temperature is %f.">
-===
-struct {string arg1, float arg2}
 ```
+would return `(string, float)`.
 
 Exact signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (public APIs) and in compile-time (settled libraries), thus type-level functions are a part of the signature and must be executable in compile time/on a remote machine. Thus, they have to be manifestly terminating and employ no side effects (no IO, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be lifted to type level. In such languages **any restrictions on arguments and any contracts relating arguments and result can be expressed as a part of the signature**.
 
