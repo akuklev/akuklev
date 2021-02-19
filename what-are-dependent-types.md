@@ -69,7 +69,7 @@ Precise signatures like this are desirable for public APIs and settled libraries
 
 For software developers who have experience writing database-facing code, let me mention a use case of profound importance.  
 Given the database schema is known in advance, the types of arguments and results for a given query can be figured out by parsing the query. Since importing of the database schemata can be integrated into the build process, the following Java'esque signature would be possible:
-```Java
+```Scala
 db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> throws IncompatibleDbSchemaException
 // The `IncompatibleDbSchema` exception arises if the database schema has
 // changed since the application was compiled, so it has to be rebuilt.
