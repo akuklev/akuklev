@@ -22,14 +22,14 @@ The argument `argc` is declared as an integer (`int`) and tacitly assumed to be 
 
 There is a problem with such tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and security breaches. In fact, the vast majority of security vulnerabilities are of that kind. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
-The solution is to make tacit assumptions explicit. It goes beyond capabilities of C, so we'll have to recourse to C-like pseudocode:
+The solution is to make tacit assumptions explicit. It goes beyond the capabilities of C, so we will have to recourse to C-like pseudocode:
 ```cpp
 main(nat argc, string[argc] argv) {
   ...
 }
 ```
 
-This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. But in order to express what we actually know about length of `argv` we have to allow expressions, values of which are not knowable in compile-time. We have to allow types to depend on "run-time" values. That's where the name “dependent types” comes from.
+This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. But in order to express what we actually know about length of `argv` we have to allow expressions, values of which are not determined in compile-time. In other words, we have to allow types to depend on "run-time" values — that's where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
 <dl><dt>Definition</dt>
   <dd>A programming language is said to support dependent types if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
