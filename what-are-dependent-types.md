@@ -40,7 +40,7 @@ In dependently typed languages, return types of functions have to be written not
 generate_random_sequence(nat length) : int[length];
 ```
 
-§ Type-level programming
+§ More advanced examples
 ------------------------
 
 Now let's turn our attention to the function `printf()`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
@@ -52,13 +52,10 @@ printf( "Hello, %s!", argv[0] );
 
 The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
 
-
-
-In a sufficiently powerful dependently typed language, we can write down a precise signature for such a function:
+`printf()` has been used for security attacks so often that they got their own name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
 ```c
 printf(string template, printf_args<template> ...args)
 ```
-
 where `printf_args<template>` is a “type-valued function” that parses the `template` and returns the list of types of the required additional arguments. In our example
 ```cpp
 printf_args<"Hello, %s! Current CPU temperature is %f.">
