@@ -22,7 +22,7 @@ The argument `argc` is declared as an integer (`int`) and tacitly assumed to be 
 
 There is a problem with such tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and security breaches. In fact, the vast majority of security vulnerabilities are of that kind. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
-Imagine we could write those “tacit” assumptions explicitly:
+The solution is to make tacit assumptions explicit. It goes beyond capabilities of C, so we'll have to recourse to C-like pseudocode:
 ```cpp
 main(nat argc, string[argc] argv) {
   ...
