@@ -29,7 +29,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. But in order to express what we actually know about length of `argv` we have to allow expressions, values of which are not knowable in compile-time. We have to allow types to depend on "run-time" values. That's where the name “dependent types” come from.
+This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. But in order to express what we actually know about length of `argv` we have to allow expressions, values of which are not knowable in compile-time. We have to allow types to depend on "run-time" values. That's where the name “dependent types” comes from.
 
 <dl><dt>Definition</dt>
   <dd>A programming language is said to support dependent types if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
