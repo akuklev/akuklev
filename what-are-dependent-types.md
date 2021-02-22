@@ -43,14 +43,16 @@ generate_random_sequence(nat length) : int[length];
 § Type-level programming
 ------------------------
 
-Now let's turn our attention to the function 'print formatted' `printf(string template, ...)`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
+Now let's turn our attention to the function `printf()`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
 ```c
 printf( "Hello, world!" ); 
 ...
 printf( "Hello, %s!", argv[0] );
 ```
 
-This function has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
+The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
+
+
 
 In a sufficiently powerful dependently typed language, we can write down a precise signature for such a function:
 ```c
