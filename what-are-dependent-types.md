@@ -35,7 +35,7 @@ This signature is meant to state that `argc` is a natural number (= non-negative
   <dd>A programming language is said to support dependent types if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-In dependently-typed languages, return types of functions are written not at the beginning of a declaration (like in `int n`), but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's because the return type in such languages can depend on the types of the arguments:
+In dependently-typed languages, return types of functions have to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's because the return type in such languages can depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
