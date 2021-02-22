@@ -26,21 +26,18 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of character strings with its length given by `argc`. The real C used to support fixed-length arrays of constant size only, like `int arr[3]` for an array of three integers, but in order to express what we know about length of `argv` we have to accept that types may depend on variables. That's precisely what **dependent types** are about.
+This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of character strings with its length given by `argc`. The real C used to support fixed-length arrays of constant size only, like `int arr[3]` for an array of three integers, but in order to express what we know about length of `argv` we have to accept non-constants. That's precisely what **dependent types** are about: allowing types to depend on variables exact values of which are not known in compile-time.
 
 <dl><dt>Definition</dt>
   <dd>A programming language is said to support dependent typing if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-
-In dependent languages, types are usually written not at the beginning of a declaration (like in `int n`), but at its end at least for functions. For example, in Typescript, Scala, Kotlin, F#, Agda, etc. a declaration of a function returning an integer looks as follows: `get_count() : int`.  
+In dependent languages, types are usually written not at the beginning of a declaration (like in `int n`), but at its end, at least for functions. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`.  
 There is a good reason for it: return types are also allowed to depend on the arguments.
 
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
-
-With dependent typing one can avoid manual casts (coercing values into the “right” type) altogether.
 
 § Type-level programming
 ------------------------
