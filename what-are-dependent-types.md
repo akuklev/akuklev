@@ -12,26 +12,26 @@ main(int argc, char* argv[]) {
   }
 }
 ```
-
-This example program prints out `"Hello, world!"` if executed without command-line arguments or `"Hello, {first command-line argument}!"` otherwise.
-Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. It has two arguments:
+It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line argument}!"` otherwise. Let's start from the beginning:
+Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them.
 
-The argument `argc` is declared as an integer (`int`) but it is tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to say that `argv` is an array of unspecified length of character strings. Here it is again tacitly assumed that the length of an array is the value of `argc`. It is precisely the failure of such tacit assumptions which leads to myriad of crashes and security breaches. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, #$%@...` of humongous length or in a segmentation fault (system crash).
+The argument `argc` is declared as an integer (`int`) but it is tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to say that `argv` is an array of unspecified length of character strings. Here it is again tacitly assumed that the length of an array is the value of `argc`. It is precisely the failure of such tacit assumptions which leads to myriad of crashes and security breaches. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
-Imagine, we could write those “tacit” assumptions explicitly:
+Imagine we could write those “tacit” assumptions explicitly:
 ```cpp
 main(nat argc, string[argc] argv) {
   ...
 }
 ```
 
-Here we assume our language to have types `nat` for non-negative integers, `string` for character strings, `string[n]` for fixed-length arrays of strings, and most importantly we assume we can use the first argument in the signature of the second one: we allow the type `string[argv]` of the second argument to be dependent on the value of the first argument `argc`. Types of fixed-length arrays of any given element type and length are nothing new, C readily supports them: we easily write `int arr[3]` for an array of three integers in C. Yet in C the value inside square brackets has to be a constant. What makes a difference is that we allow value of previous argument to be used in the signature of the next one.
+This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of character strings with its length given by `argc`. The real C used to support fixed-length arrays of constant size only, like `int arr[3]` for an array of three integers, but in order to express what we know about length of `argv` we have to accept that types may depend on variables. That's precisely what **dependent types** are about.
 
 <dl><dt>Definition</dt>
   <dd>A programming language is said to support dependent typing if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
+
 
 In dependent languages, types are usually written not at the beginning of a declaration (like in `int n`), but at its end at least for functions. For example, in Typescript, Scala, Kotlin, F#, Agda, etc. a declaration of a function returning an integer looks as follows: `get_count() : int`.  
 There is a good reason for it: return types are also allowed to depend on the arguments.
