@@ -14,11 +14,12 @@ main(int argc, char* argv[]) {
 ```
 It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line argument}!"` otherwise.
 
-Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
+From a more general perspective, each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them.
 
-The argument `argc` is declared as an integer (`int`) and tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to declare that `argv` is an array of unspecified length of strings. The length of `argv` is tacitly assumed to be `argc`. It is precisely the failure of such tacit assumptions which leads to myriad of crashes and security breaches. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
+The argument `argc` is declared as an integer (`int`) and tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to declare that `argv` is an array of unspecified length of strings. The length of `argv` is tacitly assumed to be `argc`.  
+There is a problem with tacit assumptions: they can be easily breached; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and security breaches. In fact, a vast majority of security breaches are of that kind. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
 Imagine we could write those “tacit” assumptions explicitly:
 ```cpp
