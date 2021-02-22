@@ -17,7 +17,7 @@ Each C program has a unique function called `main()`. When a program is executed
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them.
 
-The argument `argc` is declared as an integer (`int`) but it is tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to say that `argv` is an array of unspecified length of character strings. Here it is again tacitly assumed that the length of an array is the value of `argc`. It is precisely the failure of such tacit assumptions which leads to myriad of crashes and security breaches. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
+The argument `argc` is declared as an integer (`int`) and tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to declara that `argv` is an array of unspecified length of character strings. The length of `argv` is tacitly assumed to be `argc`. It is precisely the failure of such tacit assumptions which leads to myriad of crashes and security breaches. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
 Imagine we could write those “tacit” assumptions explicitly:
 ```cpp
@@ -26,7 +26,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of character strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. In order to express what we know about length of `argv` we have to accept length being given by expressions, values of which are not knowable in compile-time. That's precisely what **dependent types** are about: allowing types to depend on “run-time” values.
+This signature is meant to mean that `argc` is a natural number (= non-negative integer) and `argv` a fixed-length array of character strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. In order to express what we actually know about length of `argv` we have to allow expressions, values of which are not knowable in compile-time. That's precisely what **dependent types** are about: allowing types to depend on “run-time” values.
 
 <dl><dt>Definition</dt>
   <dd>A programming language is said to support dependent typing if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
