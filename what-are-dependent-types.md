@@ -12,7 +12,9 @@ main(int argc, char* argv[]) {
   }
 }
 ```
-It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line argument}!"` otherwise. Let's start from the beginning:
+It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line argument}!"` otherwise.
+
+Let's start from the beginning:
 Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them.
