@@ -12,7 +12,7 @@ main(int argc, char* argv[]) {
   }
 }
 ```
-It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line argument}!"` otherwise.
+It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line parameter}!"` otherwise.
 
 From a more general perspective, each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
@@ -54,23 +54,61 @@ The function “print formatted” `printf(string template, ...)` has a variable
 
 `printf()` has been used for security attacks so often that they got their own name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
 ```c
-printf(string template, printf_args<template> ...args)
+printf(string template, <printf_args(template)> ...args)
 ```
-where `printf_args<template>` is a “type-valued function” that parses the `template` and returns the list of types of the required additional arguments. In our example
+where `printf_args(template)` is a “type-valued function” that parses the `template` and returns the list of types of the required additional arguments. In our example
 ```cpp
-printf_args<"Hello, %s! Current CPU temperature is %f.">
+printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
 would return `(string, float)`.
 
-Precise signatures like this are desirable for public APIs and settled libraries so that argument validation can be performed beforehand (for public APIs) and in compile-time (for settled libraries). Type-level functions are a part of the signature and must be executable in compile time and/or on a remote machine. Therefore, they have to return a result for all inputs employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be cast to type level. In such languages **any restrictions on the arguments and any contracts relating the arguments and the result can be expressed as a part of the signature**.   
-{**TODO:** Про контракты нипанятна, особенно contracts relating the arguments and the result}
+Consider a typical `printf()` usage error leading to a security vulnerability:
+```cpp
+main(nat argc, string[argc] argv) {
+  if (argc != 1) throw InvalidArgumentException;
+  printf("Hello " + argv[0] + "!");
+}
+// WRONG
+```
+This program meant to exits with an `InvalidArgumentException` unless called with exactly one command-line parameter or print `Hello, {first command-line parameter}!` otherwise. However, if the command-line parameter contains one or more %-patterns it would either crash or read out specitic memory bytes. However, with dependently-typed `printf()` it wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments:
+```cpp
+main(nat argc, string[argc] argv) {
+  if (argc != 1 || printf_args(argv[0]) != ()) throw InvalidArgumentException;
+  printf("Hello " + argv[0] + "!");
+}
+```
 
-For software developers who have experience writing database-facing code, let me mention a use case of profound importance.  
-Given the database schema is known in advance, the types of arguments and results for a given query can be figured out by parsing the query. Since importing of the database schemata can be integrated into the build process, the following Java'esque signature would be possible:
+For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance.
+[![Image of Yaktocat](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)](https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables]
+
+Functions performing requests to relational databases typically look a lot like `printf()` and have very similar security problems (SQL Injection Vulnerability):
+```kotlin
+db.query("SELECT * FROM books WHERE author = ? AND year = ?", author, year)
+```
+
+If the database schema is known in advance, by we can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrage importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
+
 ```Kotlin
-db.performQuery(string q, db.query_args<q> ...args) : db.query_result<q> throws IncompatibleDbSchemaException
+db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws IncompatibleDbSchemaException
 // The `IncompatibleDbSchema` exception arises if the database schema has
 // changed since the application was compiled, so it has to be rebuilt.
 ```
+
+This way we do not only eliminate security vulnerabilities but also obliviate manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
+```
+foreach (book in db.query("SELECT * FROM books WHERE year = ?", 2000)) {
+  printf("ISBN: %s, %s", book.isbn, book.title);
+}
+```
+
+Precise signatures like these are highly desirable for public APIs and settled libraries. They prevent security vulnerabilities and allow to enforce strict argument validation each time data crosses application boundaries. At the same time they allow to perform validation in compile-time only (when applicable) without any performance penalties for validation. Additionally they allow API users to perform argument validation beforehand to ensure no InvalidArgumentExceptions could arise.
+
+Type-level functions are a part of the signature and must be executable in compile time and/or on a remote machine. Therefore, they have to return a result for all inputs employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be cast to type level.
+
+
+In such languages **any restrictions on the arguments and any contracts relating the arguments and the result can be expressed as a part of the signature**.   
+{**TODO:** Про контракты нипанятна, особенно contracts relating the arguments and the result}
+
+
 
 {**TODO Завершающий абзац:** Закруглить, что последний пример показывает какое у завтипов офигенное прямое практическое приминение, и сказать что their scope goes far beyond this. И вернуться к уровню статьи, что “мы строили-строили и наконец построили”.}
