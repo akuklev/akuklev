@@ -79,7 +79,8 @@ main(nat argc, string[argc] argv) {
 ```
 
 For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance.
-[![Image of Yaktocat](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)](https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables]
+
+![https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
 
 Functions performing requests to relational databases typically look a lot like `printf()` and have very similar security problems (SQL Injection Vulnerability):
 ```kotlin
