@@ -43,6 +43,8 @@ generate_random_sequence(nat length) : int[length];
 § More advanced examples
 ------------------------
 
+### The case of `printf()`
+
 Now let's turn our attention to the function `printf()`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
 ```c
 printf( "Hello, world!" ); 
@@ -78,11 +80,11 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance.
+### Eliminating SQL Injection Vulnerability
 
 ![https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
 
-Functions performing requests to relational databases typically look a lot like `printf()` and have very similar security problems (SQL Injection Vulnerability):
+For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance: functions performing requests to relational databases that typically look a lot like `printf()` and have very similar security problems.
 ```kotlin
 db.query("SELECT * FROM books WHERE author = ? AND year = ?", author, year)
 ```
