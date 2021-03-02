@@ -12,7 +12,7 @@ main(int argc, char* argv[]) {
   }
 }
 ```
-It prints out `"Hello, world!"` if executed without command-line parameters or `"Hello, {first command-line parameter}!"` otherwise.
+It prints out `"Hello, world!"` if executed without command-line parameters and `"Hello, {first command-line parameter}!"` otherwise.
 
 From a more general perspective, each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
@@ -29,7 +29,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an array of three integers, but the expression in square brackets had to be a compile-time constant. However, in order to state what we actually know about length of `argv` we have to allow expressions, values of which are not determined in compile-time. In other words, we have to allow types to depend on "run-time" values — that's where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
+This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an integer array of length 3, but the expression in square brackets had to be a compile-time constant. However, in order to state what we actually know about the length of `argv` we have to allow expressions, values of which are not determined in compile-time. In other words, we have to allow types to depend on "run-time" values — that's where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
 <dl><dt>Definition</dt>
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
@@ -54,7 +54,7 @@ printf( "Hello, %s!", argv[0] );
 
 The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
 
-`printf()` has been used for security attacks that frequently that they got a proper name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
+`printf()` has been used for security attacks so frequently that they got a proper name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
@@ -102,7 +102,7 @@ db.query("SELECT * FROM Records WHERE student = ? AND year = ?", student, year)
 // ok
 ```
 
-<https://xkcd.com/327/> refers precisely to implementations like the one used in the first line. Running it with student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database. Yet it is possible to eliminate such vulnerabilies by proper typing.
+[<xkcd.com/327>](http://xkcd.com/327/) refers precisely to implementations like the one used in the first line. Running it with student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database. Yet it is possible to eliminate such vulnerabilies by proper typing.
 
 If the database schema is known in advance, by we can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrage importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
 
@@ -125,8 +125,7 @@ Precise signatures like these are highly desirable for public APIs and settled l
 
 API discriptions do not include source code of the functions provided by the API, but only the signatures of those functions. However, sources of the type-level functions mentioned in those signatures are a part of the signature, because they and must be executable in compile-time and possibly on a remote machine. Therefore, they have to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages the converse is also true: all manifestly terminating side-effect free functions can be cast to type level.
 
-**any restrictions on the arguments and any contracts relating the arguments and the result can be expressed as a part of the signature**.   
-{**TODO:** Про контракты нипанятна, особенно contracts relating the arguments and the result}
+In such languages, signatures can express any restrictions on arguments, however complicated they might be.
 
 
 
