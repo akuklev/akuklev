@@ -72,7 +72,7 @@ main(int argc, char* argv[]) {
 }
 // WRONG
 ```
-This example terminates with an `InvalidArgumentException` unless called with exactly one command-line parameter. Otherwise it is meant to print `Hello, {first command-line parameter}!`. However, if executed with command-line parameter like `"Robert %d Jones"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. However, with dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
+This example terminates with an `InvalidArgumentException` unless called with exactly one command-line parameter. Otherwise it is meant to print `Hello, {first command-line parameter}!`. However, if executed with command-line parameter like `"Robert %d Jones"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc] argv) {
   if (argc != 1) throw InvalidArgumentException;
@@ -81,7 +81,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-Of course, one could simply use the solution that we used all in our first example:
+Of course, one could simply use the solution that we used all in our very first example:
 ```cpp
 main(nat argc, string[argc] argv) {
   if (argc != 1) throw InvalidArgumentException;
@@ -104,7 +104,7 @@ db.query("SELECT * FROM Records WHERE student = ? AND year = ?", student, year)
 
 [<xkcd.com/327>](http://xkcd.com/327/) refers precisely to implementations like the one used in the first line. Running it with student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database. Yet it is possible to eliminate such vulnerabilies by proper typing.
 
-If the database schema is known in advance, by we can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrage importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
+If the database schema is known in advance, one can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrate importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
 
 ```Kotlin
 db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws IncompatibleDbSchemaException
@@ -114,18 +114,18 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 
 This way we do not only eliminate security vulnerabilities but also obliviate manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
 ```
-foreach (var book in db.query("SELECT * FROM books WHERE year = ?", 2000)) {
-  printf("Title: %s, ISBN: %d", book.title, book.isbn);
+foreach (var record in db.query("SELECT * FROM Records WHERE student = ?", student)) {
+  printf("Name: %s, Grade average: %f", record.name, record.grade_average);
 }
-// Here the variable `book` automatically have the type of a record
-// with properly typed fields `author`, `title`, `isbn` etc.
+// Here the variable `record` automatically have the type of a record
+// with properly typed fields `name`, `grade_average` etc.
 ```
 
-Precise signatures like these are highly desirable for public APIs and settled libraries. They prevent security vulnerabilities and allow to enforce strict argument validation each time data crosses application boundaries. At the same time they allow to perform validation in compile-time only (when applicable) without any performance penalties for validation. Additionally they allow API users to perform argument validation beforehand to ensure no InvalidArgumentExceptions could arise.
+Precise signatures like these are highly desirable for public APIs and settled libraries. They prevent security vulnerabilities and allow to enforce strict argument validation each time data crosses application boundaries. At the same time they allow to perform validation in compile-time only (when applicable) without any performance penalties for validation. Additionally, they allow API users to perform argument validation beforehand to ensure no InvalidArgumentExceptions could arise.
 
-API discriptions do not include source code of the functions provided by the API, but only the signatures of those functions. However, sources of the type-level functions mentioned in those signatures are a part of the signature, because they and must be executable in compile-time and possibly on a remote machine. Therefore, they have to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages the converse is also true: all manifestly terminating side-effect free functions can be cast to type level.
+API discriptions do not include source code of the functions provided by the API, but only the signatures of those functions. However, sources of the type-level functions mentioned in those signatures are a part of the signature, because they have to be executable in compile-time and possibly on a remote machine. Therefore, they have to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages the converse is also true: all manifestly terminating side-effect free functions can be cast to type level.
 
-In such languages, signatures can express any restrictions on arguments, however complicated they might be.
+In such languages, signatures can express any restrictions on arguments, however complicated they might be. {TODO: Написать, что и возвращающий}
 
 
 
