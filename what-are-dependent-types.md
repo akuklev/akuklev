@@ -58,7 +58,7 @@ The function “print formatted” `printf(string template, ...)` has a variable
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-where `printf_args(template)` is a “type-valued function” that extracts the list of expected types for the additional arguments from the `template`. In our example
+Here `printf_args(template)` is a “type-valued function” that extracts the list of expected types for the additional arguments from the `template`. In our example
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
@@ -66,7 +66,7 @@ would return `(string, float)`.
 
 Here is a typical case of incorrect `printf()` usage, that leads to a security vulnerability:
 ```cpp
-main(nat argc, string[argc] argv) {
+main(int argc, char* argv[]) {
   if (argc != 1) throw InvalidArgumentException;
   printf("Hello " + argv[0] + "!");
 }
