@@ -35,7 +35,7 @@ This signature is meant to state that `argc` is a natural number (= non-negative
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-In dependently typed languages, return types of functions have to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's because the return type in such languages can depend on the arguments:
+In dependently typed languages, return types of functions have to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's because in such languages the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
@@ -54,17 +54,17 @@ printf( "Hello, %s!", argv[0] );
 
 The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
 
-`printf()` has been used for security attacks so often that they got their own name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
+`printf()` has been used for security attacks that frequently that they got a proper name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-where `printf_args(template)` is a “type-valued function” that parses the `template` and returns the list of types of the required additional arguments. In our example
+where `printf_args(template)` is a “type-valued function” that extracts the list of expected types for the additional arguments from the `template`. In our example
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
 would return `(string, float)`.
 
-Consider a typical `printf()` usage error leading to a security vulnerability:
+Here is a typical case of incorrect `printf()` usage, that leads to a security vulnerability:
 ```cpp
 main(nat argc, string[argc] argv) {
   if (argc != 1) throw InvalidArgumentException;
@@ -72,11 +72,20 @@ main(nat argc, string[argc] argv) {
 }
 // WRONG
 ```
-This program meant to exits with an `InvalidArgumentException` unless called with exactly one command-line parameter or print `Hello, {first command-line parameter}!` otherwise. However, if the command-line parameter contains one or more %-patterns it would either crash or read out specitic memory bytes. However, with dependently-typed `printf()` it wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments:
+This example terminates with an `InvalidArgumentException` unless called with exactly one command-line parameter. Otherwise it is meant to print `Hello, {first command-line parameter}!`. However, if the command-line parameter contains one or more %-patterns it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional arguments to be stored. However, with dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc] argv) {
-  if (argc != 1 || printf_args(argv[0]) != ()) throw InvalidArgumentException;
+  if (argc != 1) throw InvalidArgumentException;
+  if (printf_args(argv[0]) != ()) throw InvalidArgumentException;
   printf("Hello " + argv[0] + "!");
+}
+```
+
+Of course, one could simply use the solution that we used all in our first example:
+```cpp
+main(nat argc, string[argc] argv) {
+  if (argc != 1) throw InvalidArgumentException;
+  printf("Hello %s!", argv[0]);
 }
 ```
 
@@ -84,10 +93,16 @@ main(nat argc, string[argc] argv) {
 
 ![https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
 
-For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance: functions performing requests to relational databases that typically look a lot like `printf()` and have very similar security problems.
+For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance: functions performing requests to relational databases that typically look a lot like `printf()` and have very similar security problems. Let's consider an example:
 ```kotlin
-db.query("SELECT * FROM books WHERE author = ? AND year = ?", author, year)
+db.query("SELECT * FROM Records WHERE student = " + student + " year = " + year)
+// WRONG!!!
+
+db.query("SELECT * FROM Records WHERE student = ? AND year = ?", student, year)
+// ok
 ```
+
+<https://xkcd.com/327/> refers precisely to implementations like the one used in the first line. Running it with student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database. Yet it is possible to eliminate such vulnerabilies by proper typing.
 
 If the database schema is known in advance, by we can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrage importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
 
@@ -99,17 +114,18 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 
 This way we do not only eliminate security vulnerabilities but also obliviate manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
 ```
-foreach (book in db.query("SELECT * FROM books WHERE year = ?", 2000)) {
-  printf("ISBN: %s, %s", book.isbn, book.title);
+foreach (var book in db.query("SELECT * FROM books WHERE year = ?", 2000)) {
+  printf("Title: %s, ISBN: %d", book.title, book.isbn);
 }
+// Here the variable `book` automatically have the type of a record
+// with properly typed fields `author`, `title`, `isbn` etc.
 ```
 
 Precise signatures like these are highly desirable for public APIs and settled libraries. They prevent security vulnerabilities and allow to enforce strict argument validation each time data crosses application boundaries. At the same time they allow to perform validation in compile-time only (when applicable) without any performance penalties for validation. Additionally they allow API users to perform argument validation beforehand to ensure no InvalidArgumentExceptions could arise.
 
-Type-level functions are a part of the signature and must be executable in compile time and/or on a remote machine. Therefore, they have to return a result for all inputs employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages all manifestly terminating side-effect free functions can be cast to type level.
+API discriptions do not include source code of the functions provided by the API, but only the signatures of those functions. However, sources of the type-level functions mentioned in those signatures are a part of the signature, because they and must be executable in compile-time and possibly on a remote machine. Therefore, they have to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages the converse is also true: all manifestly terminating side-effect free functions can be cast to type level.
 
-
-In such languages **any restrictions on the arguments and any contracts relating the arguments and the result can be expressed as a part of the signature**.   
+**any restrictions on the arguments and any contracts relating the arguments and the result can be expressed as a part of the signature**.   
 {**TODO:** Про контракты нипанятна, особенно contracts relating the arguments and the result}
 
 
