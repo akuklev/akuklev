@@ -94,8 +94,7 @@ main(nat argc, string[argc] argv) {
 ```
 
 **For the ones having experience with database-facing code, let me mention the use case of profound importance:**
-![https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
-
+<a href="https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables"><img align="center" src="https://imgs.xkcd.com/comics/exploits_of_a_mom.png" alt"http://xkcd.com/327/ — Little Bobby Tables"></a>
 
 Requests to databases work very similar `printf()` and are prone to the same security problems. Let's consider an example:
 ```kotlin
