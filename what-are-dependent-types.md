@@ -31,19 +31,56 @@ main(nat argc, string[argc] argv) {
 
 This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an integer array of length 3, but the expression in square brackets had to be a compile-time constant. However, in order to state what we actually know about the length of `argv` we have to allow expressions, values of which are not determined in compile-time. In other words, we have to allow types to depend on "run-time" values — that's where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
-<dl><dt>Definition</dt>
+<dl><dt>Definition 1</dt>
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-In dependently typed languages, return types of functions have to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's because in such languages the return type of a function can also depend on the arguments:
+Above we handled only the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`), while the Def. 1 also mentions return types, so let us provide an example for this case too. In dependently typed languages, return types of functions have to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
 
-§ More advanced examples
-------------------------
+§ Refinement types and Witness types
+------------------------------------
 
-### The case of `printf()`
+In the above section we used the type `nat` of non-negative integers, i.e. restriction of integers by a predicate `n >= 0`. Such types are called refinement types:
+
+<dl><dt>Definition 2</dt>
+  <dd><i>Refinement type</i> is a type restricted by a (semidecidable) predicate which is assumed to hold for any element of the refined type.</dd>
+</dl>
+
+Examples:
+```
+nat := {int n | n >= 0}
+SortedList<T> := {List<T> list | isSorted(list)}
+```
+
+Inhabitants of `SortedList<T>` are thus precisely such lists `List<T>`, that `isSorted(l)` returns `true`. The word `semidecidable` in the Def. 2 refers to the requirement that the predicate is given by a “checking” algorithm. The algorithm is not required to terminate on every input (if it does, the predicate is called decidable). 
+
+With refinement types one can express restrictions on arguments (as we have already done with `argc` by using `nat` instead of `int` as its type) or postconditions when used for return types:
+```
+sort(List<T> list) : SortedList<T>
+```
+
+Providing a name for every refinement type would bloat the program, so one also needs a lightweight inline variant like this:
+```
+f(int i, int j, {i < j})
+```
+
+This funcion is supposed to accept an arbitrary inter `i` and an integer `j` greater than `i`. This notation can be also read as
+```
+f(int i, int j, {i < j} invisible_argument)
+```
+where `{i < j}` is the type of witnesses that `i < j` returns `true`. It is, `f` is now a function with tree arguments: two arbitrary integers and a witness that the second one is greater than the first one.
+
+<dl><dt>Definition 3</dt>
+  <dd><i>Witness type</i> for a given proposition is a type inhabited by certificates that the proposition holds.</dd>
+</dl>
+
+In particular, witness types `{expr}` are inhabited by certificates that `expr` evaluates to `true`. In presense of witness types, refinement types can be considered a special case of dependent types.
+
+§ Advanced examples
+-------------------
 
 Now let's turn our attention to the function `printf()`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
 ```c
