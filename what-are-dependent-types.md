@@ -139,7 +139,7 @@ I hope we managed to provide a very short introduction to dependent types and de
 In fact, the scope of dependent types goes even far beyond that: together with quotient types and univalent universes (two concepts to which the “HoTT”-part in our research group name refers) they enable arbitrary-precision exact real arithmetics and the whole world of abstract mathematical constructions.  
   
   
-<div style="text-align: center;">* * * * *</div>
+<div align="center">* * * * *</div>
   
 
 --------------
