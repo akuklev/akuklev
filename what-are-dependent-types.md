@@ -35,12 +35,12 @@ This signature is meant to state that `argc` is a natural number (= non-negative
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That's precisely because the return type of a function can also depend on the arguments:
+Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
 
-In the examples above we only used the unchanged values arguments as parameters (in particular array length) of types. For reasonable usage flexibility we also need to transform the values, i.e. write signatures like this one
+Above we only considerd using the arguments as parameters of types directly (in particular array length). For reasonable usage flexibility we also need to transform the values, i.e. write signatures like this one
 ```c
 f(nat length) : int[2 * length + 1]
 ```
