@@ -45,7 +45,7 @@ Above, we only considerd using the arguments as parameters of types directly as 
 f(nat length) : int[2 * length + 1]
 ```
 
-Here, we use an expression involving the argument `length` as a parameter of the return type, namely, the expression `2 * length + 1`. 
+Here, we use an expression involving the argument `length` as a parameter of the return type, namely, the expression `2 * length + 1`. However not all functions can be used in such a way.
 
 It turns out, for the type system to be sound, there is a restriction: in such expressions we are only allowed to use functions that return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have means to distinguish such (manifestly terminating side effect-free) functions. Typically, they (the "true" functions in mathematical sense) would be distinguised from “effectful” functions (also called procedures or routines) on the type level, and there would be a way to cast a “procedure” into a ”function” if the compiler manages to check that it employs no side effect and terminates on every valid input. In most dependent languages programers are required to change their ways to program and sometimes to be painfully verbose to convince the compiler that a given function is indeed a function in the mathematical sense. As it turns out, it does not have to be this way as exemplified by [Microsoft Research F*](https://fstar-lang.org/) (one of the most production-ready verification-oriented languages) which makes use of a combination of SMT solving and advanced termination-checking algorithms.
 
