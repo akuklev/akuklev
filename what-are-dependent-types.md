@@ -40,7 +40,7 @@ Above, we only handled the case where an argument of a function (`argc`) is used
 generate_random_sequence(nat length) : int[length];
 ```
 
-Above, we only considerd using the arguments as parameters of types directly as in the example of array length. For reasonable usage flexibility we also need to transform the values, i.e. write signatures like this one
+Above, we only considerd using the arguments as parameters of types directly as in the example of array length. For reasonable usage flexibility, however, we might also need to apply functions to the values:
 ```c
 f(nat length) : int[2 * length + 1]
 ```
