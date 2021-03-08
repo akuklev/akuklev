@@ -40,6 +40,13 @@ Above we handled only the case where an argument of a function (`argc`) is used 
 generate_random_sequence(nat length) : int[length];
 ```
 
+In the examples above we only used the unchanged values arguments as parameters (in particular array length) of types. For reasonable usage flexibility we also need to transform the values, i.e. write signatures like this one
+```c
+f(nat length) : int[2 * length + 1]
+```
+
+Here we use an expression involving the argument `legnth` as parameter of the return type, namely the expression `2 * length + 1`. Are we allowed to use any expressions? It turns out, for the type system to be sound, there is a restriction: in such expressions we are only allowed to use functions that return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have means to distinguish such (manifestly terminating side effect-free) functions. Typically, they (the "true" functions in mathematical sense) would be distinguised from “effectful” functions (also called procedures or routines) on the type level, and there would be a way to cast a “procedure” into a ”function” if the compiler manages to check that it employs no side effect and terminates on every valid input. In most dependent languages programers are required to change their ways to program and sometimes to be painfully verbose to convince the compiler that a given function is indeed a function in the mathematical sense. As it turns out, it does not have to be this way as exemplified by [Microsoft Research F*](https://fstar-lang.org/) (one of the most production-ready verification-oriented languages) which makes use of a combination of SMT solving and advanced termination-checking algorithms.
+
 
 § Advanced examples
 -------------------
@@ -57,7 +64,7 @@ The function “print formatted” `printf(string template, ...)` has a variable
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-Here `printf_args(template)` is a “type-valued function” that extracts the list of expected types for the additional arguments from the `template`. In our example
+Here `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. In our example
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
@@ -66,29 +73,25 @@ would return `(string, float)`.
 Here is a typical case of incorrect `printf()` usage, that leads to a security vulnerability:
 ```cpp
 main(int argc, char* argv[]) {
-  if (argc != 1) throw InvalidArgumentException;
-  printf("Hello " + argv[0] + "!");
+  if (argc == 1) printf("Hello " + argv[0] + "!");
 }
 // WRONG
 ```
-This example terminates with an `InvalidArgumentException` unless called with exactly one command-line parameter. Otherwise it is meant to print `Hello, {first command-line parameter}!`. However, if executed with command-line parameter like `"Robert %d Jones"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
+This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Robert %d Jones"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc] argv) {
-  if (argc != 1) throw InvalidArgumentException;
-  if (printf_args(argv[0]) != ()) throw InvalidArgumentException;
-  printf("Hello " + argv[0] + "!");
+  if (argc == 1 && printf_args(argv[0]) == ()) printf("Hello " + argv[0] + "!");
 }
 ```
 
 Of course, one could also employ the solution that we used all in our very first example:
 ```cpp
 main(nat argc, string[argc] argv) {
-  if (argc != 1) throw InvalidArgumentException;
-  printf("Hello %s!", argv[0]);
+  if (argc == 1) printf("Hello %s!", argv[0]);
 }
 ```
 
-**For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance:**
+**For the ones having experience with database-facing code, let me mention the use case of profound importance:**
 ![https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
 
 
@@ -117,8 +120,8 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 
 It does not only eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
 ```
-foreach (var record in db.query("SELECT * FROM Records WHERE student = ?", student)) {
-  printf("Name: %s, Grade average: %f", record.name, record.grade_average);
+foreach (var record in db.query("SELECT * FROM Records)) {
+  printf("Name: %s, Grade average: %f", record.student, record.grade_average);
 }
 // Here the variable `record` automatically have the type of a record
 // with properly typed fields `name`, `grade_average` etc.
@@ -132,17 +135,17 @@ Precise signatures like the ones given above are highly desirable for public API
 
 I hope we managed to provide a very short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.
 
-As a small outlook let me mention that scope of dependent types in fact goes far beyond that: together with quotient types and univalent universes (to which the “homotopy”-part of our research group name refers) they enable arbitrary-precision exact real arithmetics, encompass the rich world of mathematics, and pave the way for quantum computations.
+In fact, the scope of dependent types goes even far beyond that: together with quotient types and univalent universes (to which the “HoTT”-part in our research group name refers) they enable arbitrary-precision exact real arithmetics, encompass the rich world of mathematical structures, and pave the way for quantum computations.
 
 
 ========
 
-
+The claim that dependent types are sufficient to enforce argument validation of any desired complexity actually requires (mild) additional assumptions. So let's dive into the details if you're interested.
 
 § Addendum: Refinement types and Witness types
------------------------------------------------
+----------------------------------------------
 
-In the first section we used the type `nat` of non-negative integers, i.e. restriction of integers by a predicate `n >= 0`. Such types are called refinement types:
+In the first section we used the type `nat` of non-negative integers, which can be understood as restriction of integers by a predicate `n >= 0`. Such types are called refinement types:
 
 <dl><dt>Definition 2</dt>
   <dd><i>Refinement type</i> is a type restricted by a (semidecidable) predicate which is assumed to hold for any element of the refined type.</dd>
@@ -161,23 +164,19 @@ With refinement types one can express restrictions on arguments (as we have alre
 sort(List<T> list) : SortedList<T>
 ```
 
-Providing a name for every refinement type would bloat the program, so one also needs a lightweight inline variant like this:
+Finding a name for every refinement type is a bit tedious and bloats the code, so let's introduce a lightweight inline notation:
 ```
 f(int i, int j, {i < j})
 ```
 
-This funcion is supposed to accept an arbitrary inter `i` and an integer `j` greater than `i`. This notation can be also read as
+This funcion is supposed to accept an arbitrary inter `i` and an integer `j` greater than `i`. Yet this notation can be also read as
 ```
 f(int i, int j, {i < j} invisible_argument)
 ```
-where `{i < j}` is the type of witnesses that `i < j` returns `true`. It is, `f` is now a function with tree arguments: two arbitrary integers and a witness that the second one is greater than the first one.
+where `{i < j}` is the type of witnesses certifying that `i < j` returns `true`. It is, `f` is now a function with tree arguments: two arbitrary integers and a witness that the second one is greater than the first one.
 
 <dl><dt>Definition 3</dt>
-  <dd><i>Witness type</i> for a given proposition is a type inhabited by certificates that the proposition holds.</dd>
+  <dd><i>Witness type</i> for a given proposition is a "platonic" type inhabited by certificates that the proposition holds. By "platonic" we mean that arguments and variables of those types are used only in compile-time (for type-checking, termination checking and instantiation) and are so to say erased in the compilation process. Certificates do not "exist" in the run-time, they do not have any representation in terms of real bits and bytes in memory.</dd>
 </dl>
 
-In particular, witness types `{expr}` are inhabited by certificates that `expr` evaluates to `true`. In presense of witness types, refinement types can be considered a special case of dependent types.
-
-======
-
-API discriptions do not include source code of the functions provided by the API, but only the signatures of those functions. However, sources of the type-level functions mentioned in those signatures are a part of the signature, because they have to be executable in compile-time and possibly on a remote machine. Therefore, they have to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages the converse is also true: all manifestly terminating side-effect free functions can be cast to type level.
+In particular, witness types `{expr}` are inhabited by certificates that `expr` evaluates to `true`. In presense of witness types, refinement types can be considered a special case of dependent types. Witness types are either present or can be emulated in all dependently-typed languaged known to the authors.
