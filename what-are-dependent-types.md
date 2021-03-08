@@ -47,7 +47,7 @@ f(nat length) : int[2 * length + 1]
 
 Here, we use an expression involving the argument `length` as a parameter of the return type, namely, the expression `2 * length + 1`. In such expressions we are only allowed to use functions that return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions. The typical solution goes as follows:
 1) Side effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B` would be distinguised from possibly “effectful” functions `A => B` on the type level 
-2) TODO: if the compiler manages to check that that a function employs no side effect and terminates on every valid input, a (possibly effectful) function can be cast to a pure function.
+2) if the compiler manages to check that a possibly effectful function `f : A => B` employs no side effects and terminates on every valid input, than it can be cast to a pure function.
 
 In most dependent languages programers are required to change their ways to program and sometimes to be painfully verbose to convince the compiler that a given function is indeed a function in the mathematical sense. As it turns out, it does not have to be this way as exemplified by [Microsoft Research F*](https://fstar-lang.org/) (one of the most production-ready verification-oriented languages) which makes use of a combination of SMT solving and advanced termination-checking algorithms.
 
