@@ -97,17 +97,18 @@ main(nat argc, string[argc] argv) {
 
 Requests to databases work very similar `printf()` and are prone to the same security problems. Let's consider an example:
 ```kotlin
-db.query("SELECT * FROM Records WHERE (student = '" + student + "' AND year = " + year + ")")
+db.query("SELECT * FROM Students WHERE (name = '" + name + "' AND year = " + year + ")")
 // WRONG!!!
 
-db.query("SELECT * FROM Records WHERE (student = ? AND year = ?)", student, year)
+db.query("SELECT * FROM Students WHERE (name = ? AND year = ?)", name, year)
 // ok
 ```
 
 The comic [<xkcd.com/327>](http://xkcd.com/327/) refers to the vulnerability (called SQL Injection Vulnerability) that arises from the code marked `WRONG` above. Running this code for student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database by executing the query
 ```sql
-SELECT * FROM Records WHERE (student = 'Robert'); DROP TABLE Students; -- AND year = 2020)
+SELECT * FROM Students WHERE (name = 'Robert'); DROP TABLE Students; -- AND year = 2020)
 ```
+(It first lists all students named Robert and then erases the whole table by executing `DROP TABLE Students` request.)
 
 As in the case of `printf`, such vulnerabilies can be completely eliminated by dependent typing.  
 If the database schema is known in advance, one can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrate importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
@@ -120,10 +121,10 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 
 It does not only eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
 ```
-foreach (var record in db.query("SELECT * FROM Records)) {
-  printf("Name: %s, Grade average: %f", record.student, record.grade_average);
+foreach (var student in db.query("SELECT * FROM Students)) {
+  printf("Name: %s, Grade average: %f", student.name, student.grade_average);
 }
-// Here the variable `record` automatically have the type of a record
+// Here the variable `student` automatically has the type of a record
 // with properly typed fields `name`, `grade_average` etc.
 ```
 
