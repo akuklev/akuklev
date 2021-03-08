@@ -140,7 +140,7 @@ In fact, the scope of dependent types goes even far beyond that: together with q
   
   
   
-  
+<center>* * ⁂ * *</center>
   
 
 --------------
