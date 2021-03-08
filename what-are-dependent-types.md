@@ -97,7 +97,7 @@ main(nat argc, string[argc] argv) {
 
 Requests to databases work very similar `printf()` and are prone to the same security problems. Let's consider an example:
 ```kotlin
-db.query("SELECT * FROM Students WHERE (name = '" + name + "' AND year = " + year + ")")
+db.query("SELECT * FROM Students WHERE (name = '" + name + "' AND year = '" + year + "')")
 // WRONG!!!
 
 db.query("SELECT * FROM Students WHERE (name = ? AND year = ?)", name, year)
