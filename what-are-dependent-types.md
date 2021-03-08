@@ -46,8 +46,8 @@ f(nat length) : int[2 * length + 1]
 ```
 
 Here, we use an expression involving the argument `length` as a parameter of the return type, namely, the expression `2 * length + 1`. In such expressions we are only allowed to use functions that return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions. The typical solution goes as follows:
-1) Side effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B` would be distinguised from possibly “effectful” functions `A => B` on the type level 
-2) if the compiler manages to check that a possibly effectful function `f : A => B` employs no side effects and terminates on every valid input, then it can be cast to a pure function.
+1) Side effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B` would be distinguised from possibly “effectful” functions `A => B` on the type level. 
+2) If the compiler manages to check that a possibly effectful function `f : A => B` employs no side effects and terminates on every valid input, then it can be cast to a pure function.
 
 
 § Advanced examples
