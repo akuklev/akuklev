@@ -80,7 +80,9 @@ main(int argc, char* argv[]) {
 This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc] argv) {
-  if (argc == 1 && printf_args(argv[0]) == ()) printf("Hello " + argv[0] + "!");
+  if (argc == 1 && printf_args(argv[0]) == ()) {
+    printf("Hello " + argv[0] + "!");
+  }
 }
 ```
 
