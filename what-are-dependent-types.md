@@ -136,11 +136,10 @@ Precise signatures like the ones given above are highly desirable for public API
 
 I hope we managed to provide a very short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.
 
-In fact, the scope of dependent types goes even far beyond that: together with quotient types and univalent universes (two concepts to which the “HoTT”-part in our research group name refers) they enable arbitrary-precision exact real arithmetics and the whole world of abstract mathematical constructions.
+In fact, the scope of dependent types goes even far beyond that: together with quotient types and univalent universes (two concepts to which the “HoTT”-part in our research group name refers) they enable arbitrary-precision exact real arithmetics and the whole world of abstract mathematical constructions.  
   
   
-  
-<center>* * ⁂ * *</center>
+<p style="text-align: center;">* * ⁂ * *</p>
   
 
 --------------
