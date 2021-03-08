@@ -40,44 +40,6 @@ Above we handled only the case where an argument of a function (`argc`) is used 
 generate_random_sequence(nat length) : int[length];
 ```
 
-§ Refinement types and Witness types
-------------------------------------
-
-In the above section we used the type `nat` of non-negative integers, i.e. restriction of integers by a predicate `n >= 0`. Such types are called refinement types:
-
-<dl><dt>Definition 2</dt>
-  <dd><i>Refinement type</i> is a type restricted by a (semidecidable) predicate which is assumed to hold for any element of the refined type.</dd>
-</dl>
-
-Examples:
-```
-nat := {int n | n >= 0}
-SortedList<T> := {List<T> list | isSorted(list)}
-```
-
-Inhabitants of `SortedList<T>` are thus precisely such lists `List<T>`, that `isSorted(l)` returns `true`. The word `semidecidable` in the Def. 2 refers to the requirement that the predicate is given by a “checking” algorithm. The algorithm is not required to terminate on every input (if it does, the predicate is called decidable). 
-
-With refinement types one can express restrictions on arguments (as we have already done with `argc` by using `nat` instead of `int` as its type) or postconditions when used for return types:
-```
-sort(List<T> list) : SortedList<T>
-```
-
-Providing a name for every refinement type would bloat the program, so one also needs a lightweight inline variant like this:
-```
-f(int i, int j, {i < j})
-```
-
-This funcion is supposed to accept an arbitrary inter `i` and an integer `j` greater than `i`. This notation can be also read as
-```
-f(int i, int j, {i < j} invisible_argument)
-```
-where `{i < j}` is the type of witnesses that `i < j` returns `true`. It is, `f` is now a function with tree arguments: two arbitrary integers and a witness that the second one is greater than the first one.
-
-<dl><dt>Definition 3</dt>
-  <dd><i>Witness type</i> for a given proposition is a type inhabited by certificates that the proposition holds.</dd>
-</dl>
-
-In particular, witness types `{expr}` are inhabited by certificates that `expr` evaluates to `true`. In presense of witness types, refinement types can be considered a special case of dependent types.
 
 § Advanced examples
 -------------------
@@ -118,7 +80,7 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-Of course, one could simply use the solution that we used all in our very first example:
+Of course, one could also employ the solution that we used all in our very first example:
 ```cpp
 main(nat argc, string[argc] argv) {
   if (argc != 1) throw InvalidArgumentException;
@@ -126,21 +88,25 @@ main(nat argc, string[argc] argv) {
 }
 ```
 
-### Eliminating SQL Injection Vulnerability
-
+**For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance:**
 ![https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables](https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
 
-For software developers who have experience writing database-facing code, let me mention a very similar use case of profound importance: functions performing requests to relational databases that typically look a lot like `printf()` and have very similar security problems. Let's consider an example:
+
+Requests to databases work very similar `printf()` and are prone to the same security problems. Let's consider an example:
 ```kotlin
-db.query("SELECT * FROM Records WHERE student = " + student + " year = " + year)
+db.query("SELECT * FROM Records WHERE (student = '" + student + "' AND year = " + year + ")")
 // WRONG!!!
 
-db.query("SELECT * FROM Records WHERE student = ? AND year = ?", student, year)
+db.query("SELECT * FROM Records WHERE (student = ? AND year = ?)", student, year)
 // ok
 ```
 
-[<xkcd.com/327>](http://xkcd.com/327/) refers precisely to implementations like the one used in the first line. Running it with student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database. Yet it is possible to eliminate such vulnerabilies by proper typing.
+The comic [<xkcd.com/327>](http://xkcd.com/327/) refers to the vulnerability (called SQL Injection Vulnerability) that arises from the code marked `WRONG` above. Running this code for student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database by executing the query
+```sql
+SELECT * FROM Records WHERE (student = 'Robert'); DROP TABLE Students; -- AND year = 2020)
+```
 
+As in the case of `printf`, such vulnerabilies can be completely eliminated by dependent typing.  
 If the database schema is known in advance, one can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrate importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
 
 ```Kotlin
@@ -149,7 +115,7 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 // changed since the application was compiled, so it has to be rebuilt.
 ```
 
-This way we do not only eliminate security vulnerabilities but also obliviate manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
+It does not only eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
 ```
 foreach (var record in db.query("SELECT * FROM Records WHERE student = ?", student)) {
   printf("Name: %s, Grade average: %f", record.name, record.grade_average);
@@ -158,12 +124,60 @@ foreach (var record in db.query("SELECT * FROM Records WHERE student = ?", stude
 // with properly typed fields `name`, `grade_average` etc.
 ```
 
-Precise signatures like these are highly desirable for public APIs and settled libraries. They prevent security vulnerabilities and allow to enforce strict argument validation each time data crosses application boundaries. At the same time they allow to perform validation in compile-time only (when applicable) without any performance penalties for validation. Additionally, they allow API users to perform argument validation beforehand to ensure no InvalidArgumentExceptions could arise.
+
+§ Bottomline
+------------
+
+Precise signatures like the ones given above are highly desirable for public APIs and settled libraries: they provide excellent insight for the API and library users, prevent security vulnerabilities, and enforce strict argument validation when data crosses application boundaries, while eliminating time-consuming run-time validation if it can be carried out in compile-time. Additionally, precise signatures allow external API users to perform argument validation beforehand to ensure no unexpected run-time errors due to invalid arguments could arise.
+
+I hope we managed to provide a very short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.
+
+As a small outlook let me mention that scope of dependent types in fact goes far beyond that: together with quotient types and univalent universes (to which the “homotopy”-part of our research group name refers) they enable arbitrary-precision exact real arithmetics, encompass the rich world of mathematics, and pave the way for quantum computations.
+
+
+========
+
+
+
+§ Addendum: Refinement types and Witness types
+-----------------------------------------------
+
+In the first section we used the type `nat` of non-negative integers, i.e. restriction of integers by a predicate `n >= 0`. Such types are called refinement types:
+
+<dl><dt>Definition 2</dt>
+  <dd><i>Refinement type</i> is a type restricted by a (semidecidable) predicate which is assumed to hold for any element of the refined type.</dd>
+</dl>
+
+Examples:
+```
+nat := {int n | n >= 0}
+SortedList<T> := {List<T> list | isSorted(list)}
+```
+
+Inhabitants of `SortedList<T>` are thus precisely such lists `List<T>`, that `isSorted(l)` returns `true`. The word `semidecidable` in the Def. 2 refers to the requirement that the predicate is given by a “checking” algorithm. The algorithm is not required to terminate on every input (if it does, the predicate is called decidable). 
+
+With refinement types one can express restrictions on arguments (as we have already done with `argc` by using `nat` instead of `int` as its type) or postconditions when used for return types:
+```
+sort(List<T> list) : SortedList<T>
+```
+
+Providing a name for every refinement type would bloat the program, so one also needs a lightweight inline variant like this:
+```
+f(int i, int j, {i < j})
+```
+
+This funcion is supposed to accept an arbitrary inter `i` and an integer `j` greater than `i`. This notation can be also read as
+```
+f(int i, int j, {i < j} invisible_argument)
+```
+where `{i < j}` is the type of witnesses that `i < j` returns `true`. It is, `f` is now a function with tree arguments: two arbitrary integers and a witness that the second one is greater than the first one.
+
+<dl><dt>Definition 3</dt>
+  <dd><i>Witness type</i> for a given proposition is a type inhabited by certificates that the proposition holds.</dd>
+</dl>
+
+In particular, witness types `{expr}` are inhabited by certificates that `expr` evaluates to `true`. In presense of witness types, refinement types can be considered a special case of dependent types.
+
+======
 
 API discriptions do not include source code of the functions provided by the API, but only the signatures of those functions. However, sources of the type-level functions mentioned in those signatures are a part of the signature, because they have to be executable in compile-time and possibly on a remote machine. Therefore, they have to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). In “sufficiently powerful” languages the converse is also true: all manifestly terminating side-effect free functions can be cast to type level.
-
-In such languages, signatures can express any restrictions on arguments, however complicated they might be. {TODO: Написать, что и возвращающий}
-
-
-
-{**TODO Завершающий абзац:** Закруглить, что последний пример показывает какое у завтипов офигенное прямое практическое приминение, и сказать что their scope goes far beyond this. И вернуться к уровню статьи, что “мы строили-строили и наконец построили”.}
