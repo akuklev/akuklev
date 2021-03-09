@@ -8,28 +8,28 @@ main(int argc, char* argv[]) {
   if (argc == 0) {
     printf( "Hello, world!" ); 
   } else {
-    printf( "Hello, %s!", argv[0] );
+    printf( "Hello, %s!", argv[1] );
   }
 }
 ```
-It prints out `"Hello, world!"` if executed without command-line parameters and `"Hello, {first command-line parameter}!"` otherwise.
+This program prints out `"Hello, world!"` if executed without command-line parameters and `"Hello, {first command-line parameter}!"` otherwise.
 
-From a more general perspective, each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
+Let us work through this example line-by-line. Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
-* `argv`: 'argument values' is the array containing them.
+* `argv`: 'argument values' is the array containing them, supplemented by the program filename as zeroth item.
 
-The argument `argc` is declared as an integer (`int`) and tacitly assumed to be non-negative. The signature `char* argv[]` is an archaic way to declare that `argv` is an array of unspecified length of strings. The length of `argv` is tacitly assumed to be `argc`.
+The argument `argc` is declared as an integer (`int`) and tacitly assumed to be non-negative. The declaration `char* argv[]` is an archaic way to declare `argv` to be a string array of unspecified length. The length of `argv` is tacitly assumed to be `argc + 1`.
 
-There is a problem with such tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and security breaches. In fact, the vast majority of security vulnerabilities are of that kind. Running the example above with `argc = 1` while the true length of `argv` is zero would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
+There is a problem with tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and vast majority of security vulnerabilities. Mismatch between the value of `argc` and the actual length of `argv` in the above example would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
-The solution is to make tacit assumptions explicit. It goes beyond the capabilities of C, so we will have to recourse to C-like pseudocode:
+The solution is to make tacit assumptions explicit. It goes beyond the capabilities of C, so let us use C-like pseudocode:
 ```cpp
-main(nat argc, string[argc] argv) {
+main(nat argc, string[argc + 1] argv) {
   ...
 }
 ```
 
-This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc`. The real C used to support fixed-length arrays, like `int arr[3]` for an integer array of length 3, but the expression in square brackets had to be a compile-time constant. However, in order to state what we actually know about the length of `argv` we have to allow expressions, values of which are not determined in compile-time. In other words, we have to allow types to depend on "run-time" values — that's where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
+This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc + 1`. The real C used to support fixed-length arrays if their length is a compile-time constant: the declaration `int arr[3]` declares `arr` to be an integer array of length 3. To make tacit assumptions explicit, one has to go beyond compile-time constants and allow expressions, values of which are not determined in compile-time. In other words, types should be allowed to depend on "run-time" values — that is where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
 <dl><dt>Definition 1</dt>
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
@@ -40,12 +40,8 @@ Above, we only handled the case where an argument of a function (`argc`) is used
 generate_random_sequence(nat length) : int[length];
 ```
 
-We only considerd using the arguments as parameters of types directly, but in many cases performing some calculations with them might be required:
-```c
-f(nat n) : int[2 * n + 1]
-```
-
-Here, we use an expression involving the argument `n` as a parameter of the return type, namely, the expression `2 * n + 1` as length of the integer array being returned. In such expressions we are only allowed to use functions that are guaranteed to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions: 
+{TODO (argc + 1)}
+In such expressions we are only allowed to use functions that are guaranteed to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions: 
 1) There has to be a special type for effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B`. 
 2) The compiler needs some inbuilt machinery (termination checker and optionally an SMT solver) to check if a given function qualifies as pure. Note that pure functions may use mutable state, exceptions and even non-deterministic choice internally, as long side effects are guarenteed never to “leak out”. Termination checking is known to be undecidable in general, thus in many cases, at least non-trivial ones, the compiler will require some hints from the programer.
 
@@ -65,7 +61,7 @@ The function “print formatted” `printf(string template, ...)` has a variable
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-Here `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. In our example
+Here `printf_args(template)` is a “type-valued” (or “type level”) pure function that extracts the list of expected types for the additional arguments from the `template`. In our example
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
