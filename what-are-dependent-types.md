@@ -40,15 +40,14 @@ Above, we only handled the case where an argument of a function (`argc`) is used
 generate_random_sequence(nat length) : int[length];
 ```
 
-Above, we only considerd using the arguments as parameters of types directly as in the example of array length. For reasonable usage flexibility, however, we might also need to apply functions to the values:
+We only considerd using the arguments as parameters of types directly, but in many cases performing some calculations with them might be required:
 ```c
-f(nat length) : int[2 * length + 1]
+f(nat n) : int[2 * n + 1]
 ```
 
-Here, we use an expression involving the argument `length` as a parameter of the return type, namely, the expression `2 * length + 1`. In such expressions we are only allowed to use functions that return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions. The typical solution goes as follows:
-1) Side effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B` would be distinguised from possibly “effectful” functions `A => B` on the type level. 
-2) If the compiler manages to check that a possibly effectful function `f : A => B` employs no side effects and terminates on every valid input, then it can be cast to a pure function.
-
+Here, we use an expression involving the argument `n` as a parameter of the return type, namely, the expression `2 * n + 1` as length of the integer array being returned. In such expressions we are only allowed to use functions that are guaranteed to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions: 
+1) There has to be a special type for effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B`. 
+2) The compiler needs some inbuilt machinery (termination checker and optionally an SMT solver) to check if a given function qualifies as pure. Note that pure functions may use mutable state, exceptions and even non-deterministic choice internally, as long side effects are guarenteed never to “leak out”. Termination checking is known to be undecidable in general, thus in many cases, at least non-trivial ones, the compiler will require some hints from the programer.
 
 § Advanced examples
 -------------------
