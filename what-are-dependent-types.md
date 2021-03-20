@@ -63,14 +63,14 @@ Here, `printf_args(template)` is a “type-valued” (or “type level”) funct
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
-would return `(string, float)`.
+would return `{string, float}`.
 
 Here is a typical case of incorrect `printf()` usage, that leads to a security vulnerability:
 
 **Example 2**
 ```cpp
 main(int argc, char* argv[]) {
-  if (argc == 1) printf("Hello " + argv[0] + "!");
+  if (argc == 1) printf("Hello " + argv[1] + "!");
 }
 // WRONG
 ```
@@ -81,13 +81,14 @@ Now let us see how the dependent signature `printf(string template, <printf_args
 To make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc + 1] argv) {
-  if (argc == 1 && printf_args(argv[1]) == ()) {
-    printf("Hello " + argv[0] + "!");
+  if (argc == 1) {
+    string s = "Hello " + argv[1] + "!";
+    if (printf_args(s) == {}) printf(s);
   }
 }
 ```
 
-Of course, one could also employ the solution that used in the Example 1:
+However, the standard solution is the one used in the Example 1:
 ```cpp
 main(nat argc, string[argc] argv) {
   if (argc == 1) printf("Hello %s!", argv[0]);
