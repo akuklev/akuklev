@@ -125,6 +125,7 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 ```
 
 Not only does it eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
+
 **Example 4**
 ```
 foreach (var student in db.query("SELECT * FROM Students)) {
