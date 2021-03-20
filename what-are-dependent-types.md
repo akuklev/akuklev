@@ -21,7 +21,7 @@ Let us examine this example. Each C program has a unique function called `main()
 
 The argument `argc` is declared as an integer (`int argc`) and tacitly assumed to be non-negative. The argument `argv` is introduced by `char* argv[]` which is an <abbr title="C is notorious for allowing typal information on both sidies of declarandum, yielding monsters like 'char *(*(**foo[][8])())[]'">archaic way</a> to declare `argv` to be a string array of unspecified length. The length of `argv` is tacitly assumed to be `argc + 1`.
 
-There is a problem with tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and vast majority of security vulnerabilities. The mismatch between the value of `argc` and the actual length of `argv` in the above example would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
+There is a problem with tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and vast majority of security vulnerabilities. The mismatch between the value of `argc` and the actual length of `argv` in the example above would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
 The solution is to make tacit assumptions explicit. It goes beyond the capabilities of C, so let us use C-like pseudocode:
 ```cpp
