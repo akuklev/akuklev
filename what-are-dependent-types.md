@@ -32,7 +32,7 @@ main(nat argc, string[argc + 1] argv) {
 
 This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc + 1`.
 
-The real C used to support fixed-length arrays if their length is a compile-time constant. For instance, by `int arr[3]` one declares `arr` to be an integer array of length 3. To make tacit assumptions explicit, one has to go beyond compile-time constants and allow expressions, values of which are not determined in compile-time. In other words, types should be allowed to depend on "run-time" values — that is where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
+The real C used to support fixed-length arrays if their length is a compile-time constant. For instance, by `int arr[3]` one declares `arr` to be an integer array of length 3. To make such signagures possible, one has to go beyond compile-time constants and allow expressions, values of which are not determined in compile-time. In other words, types should be allowed to depend on "run-time" values — that is where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
 <dl><dt>Definition 1</dt>
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
