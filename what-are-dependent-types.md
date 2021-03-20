@@ -130,9 +130,7 @@ foreach (var student in db.query("SELECT * FROM Students)) {
 
 Precise signatures like the ones given above are highly desirable for public APIs and settled libraries: they provide excellent insight for the API and library users, prevent security vulnerabilities, and enforce strict argument validation when data crosses application boundaries, while eliminating time-consuming run-time validation if it can be carried out in compile-time. Additionally, precise signatures allow external API users to perform argument validation beforehand to ensure no unexpected run-time errors due to invalid arguments could arise.
 
-I hope we managed to provide a very short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.
-
-In fact, the scope of dependent types goes even far beyond that. For instance, they are an enabling factor for many very advanced programming techniques including exact real arithmetics.  
+I hope this article managed to provide a short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.   The scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
   
   
 <div align="center">* * * * *</div>
@@ -154,8 +152,7 @@ Thus, a language with reasonable support of dependent types has to have the mean
 
 The complexity of such machinery explains why dependent typing are still not widely adopted in general purpose languages.
 
-Furthermoer, termination checking is known to be undecidable in general, thus in some non-trivial cases, the termination checker will require some hints from the programer. SMT solvers are not almighty as well: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. This imposes a new burden onto the programmer: they are sometimes required to explain in a machine-readable form why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate. It does not only make the language more complicated by introducing a whole new sublanguage for proofs, but also requires programmers to acquire a new cognitively demanding skill.
-
+Furthermoer, termination checking is known to be undecidable in general, thus in some non-trivial cases, the termination checker ensure termination automatically. SMT solvers are not almighty as well: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. One way to deal with such cases is to require the programmer to write a “TrustMe” pragma with their name on them, and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate. But for critical applications we actually need a whole sublanguage for machine-readable proofs. It does not only make the language more complicated, but also requires programmers to acquire a new cognitively demanding skill.
 
 
 § Addendum II: Refinement types and Witness types
