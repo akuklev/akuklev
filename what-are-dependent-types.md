@@ -95,6 +95,7 @@ main(nat argc, string[argc] argv) {
 <div align="center"><a href="https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables"><img src="https://imgs.xkcd.com/comics/exploits_of_a_mom.png" alt="http://xkcd.com/327/ — Little Bobby Tables"></a></div>
 
 Requests to databases work very similar `printf()` and are prone to the same security problems. Let us consider an example:
+**Example 3**
 ```kotlin
 db.query("SELECT * FROM Students WHERE (name = '" + name + "' AND year = '" + year + "')")
 // WRONG!!!
@@ -119,6 +120,7 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 ```
 
 Not only does it eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
+**Example 4**
 ```
 foreach (var student in db.query("SELECT * FROM Students)) {
   printf("Name: %s, Grade average: %f", student.name, student.grade_average);
