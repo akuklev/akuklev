@@ -53,13 +53,13 @@ printf( "Hello, world!" );
 printf( "Hello, %s!", argv[0] );
 ```
 
-The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in our example, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
+The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in the Example 1, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
 
 `printf()` has been used for security attacks so frequently that they got a proper name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-Here `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. In our example
+Here `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. For instance,
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
@@ -72,7 +72,7 @@ main(int argc, char* argv[]) {
 }
 // WRONG
 ```
-This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
+This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example would not compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc + 1] argv) {
   if (argc == 1 && printf_args(argv[1]) == ()) {
@@ -81,18 +81,18 @@ main(nat argc, string[argc + 1] argv) {
 }
 ```
 
-Of course, one could also employ the solution that we used all in our very first example:
+Of course, one could also employ the solution that used in the Example 1:
 ```cpp
 main(nat argc, string[argc] argv) {
   if (argc == 1) printf("Hello %s!", argv[0]);
 }
 ```
 
-**For the ones having experience with database-facing code, let me mention the use case of profound importance:**
+**For the ones having experience with database-facing code, let us mention the use case of profound importance:**
 
 <div align="center"><a href="https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables"><img src="https://imgs.xkcd.com/comics/exploits_of_a_mom.png" alt="http://xkcd.com/327/ — Little Bobby Tables"></a></div>
 
-Requests to databases work very similar `printf()` and are prone to the same security problems. Let's consider an example:
+Requests to databases work very similar `printf()` and are prone to the same security problems. Let us consider an example:
 ```kotlin
 db.query("SELECT * FROM Students WHERE (name = '" + name + "' AND year = '" + year + "')")
 // WRONG!!!
@@ -107,7 +107,7 @@ SELECT * FROM Students WHERE (name = 'Robert'); DROP TABLE Students; -- AND year
 ```
 (It first lists all students named Robert and then erases the whole table by executing `DROP TABLE Students` request.)
 
-As in the case of `printf`, such vulnerabilies can be completely eliminated by dependent typing.  
+As in the case of `printf`, such vulnerabilies can be completely eliminated using dependent typing.  
 If the database schema is known in advance, one can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrate importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
 
 ```Kotlin
@@ -116,7 +116,7 @@ db.query(string q, <db.query_args(q)> ...args) : <db.query_results(q)> throws In
 // changed since the application was compiled, so it has to be rebuilt.
 ```
 
-It does not only eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
+Not only does it eliminate security vulnerabilities but also obliviates manual casts and boilerplate classes for object-relational mapping, etc. Results of a query just have the right automatically generated types:
 ```
 foreach (var student in db.query("SELECT * FROM Students)) {
   printf("Name: %s, Grade average: %f", student.name, student.grade_average);
