@@ -38,7 +38,7 @@ The real C used to support fixed-length arrays if their length is a compile-time
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Notice, that the definition also mentions the return type, so let us provide an example for this case. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
+Notice, that the definition also mentions the return type, so let us provide an example for this case. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon `:` separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
@@ -91,7 +91,7 @@ main(nat argc, string[argc + 1] argv) {
 However, the standard solution is the one used in the Example 1:
 ```cpp
 main(nat argc, string[argc] argv) {
-  if (argc == 1) printf("Hello %s!", argv[0]);
+  if (argc == 1) printf("Hello %s!", argv[1]);
 }
 ```
 
@@ -100,6 +100,7 @@ main(nat argc, string[argc] argv) {
 <div align="center"><a href="https://www.explainxkcd.com/wiki/index.php/Little_Bobby_Tables"><img src="https://imgs.xkcd.com/comics/exploits_of_a_mom.png" alt="http://xkcd.com/327/ — Little Bobby Tables"></a></div>
 
 Requests to databases work very similar `printf()` and are prone to the same security problems. Let us consider an example:
+
 **Example 3**
 ```kotlin
 db.query("SELECT * FROM Students WHERE (name = '" + name + "' AND year = '" + year + "')")
@@ -136,12 +137,19 @@ foreach (var student in db.query("SELECT * FROM Students)) {
 ```
 
 
-§ Bottomline
-------------
+§ Concluding Notes
+------------------
 
-Precise signatures like the ones given above are highly desirable for public APIs and settled libraries: they provide excellent insight for the API and library users, prevent security vulnerabilities, and enforce strict argument validation when data crosses application boundaries, while eliminating time-consuming run-time validation if it can be carried out in compile-time. Additionally, precise signatures allow external API users to perform argument validation beforehand to ensure no unexpected run-time errors due to invalid arguments could arise. (The claim that dependent types are sufficient to enforce argument validation of any desired complexity actually requires mild additional assumptions, see </refinement-types>)
+Precise signatures like the ones given above are highly desirable for public APIs and settled libraries for many reasons:
 
-I hope this article managed to provide a short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.   The scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
+* Make tacit assumptions explicit, and thus provide excellent insight for the API and library users,
+* prevent security vulnerabilities,
+* enforce strict argument validation when data crosses application boundaries, while eliminating time-consuming run-time validation if it can be carried out in compile-time.
+
+Additionally, precise signatures allow external API users to perform argument validation beforehand to ensure no unexpected run-time errors due to invalid arguments could arise. (The claim that dependent types are sufficient to enforce argument validation of any desired complexity actually requires mild additional assumptions, see /refinement-types)
+
+I hope this article managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.   
+The scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
   
   
 <div align="center">* * * * *</div>
@@ -150,7 +158,7 @@ I hope this article managed to provide a short introduction to dependent types a
 § Addendum: What Makes Dependent Typing Complicated?
 ----------------------------------------------------
 
-Let's take a closer look onto the signature
+Let's take a closer look at the signature
 ```cpp
 main(nat argc, string[argc + 1] argv) {
   ...
