@@ -55,7 +55,7 @@ printf( "Hello, %s!", argv[0] );
 
 The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in the Example 1, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
 
-`printf()` has been used for security attacks so frequently that they got a proper name: Format String Vulnerability. All of them could be prevented by a signature making tacit assumptions explicit:
+Using dependent typing, one can make these tacit assumptions on the number of additional `printf(template, ...)` arguments and their types explicit:
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
@@ -65,7 +65,7 @@ printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
 would return `{string, float}`.
 
-Here is a typical case of incorrect `printf()` usage, that leads to a security vulnerability:
+Here is a typical case of incorrect `printf()` usage, that leads to a problem:
 
 **Example 2**
 ```cpp
@@ -74,7 +74,10 @@ main(int argc, char* argv[]) {
 }
 // WRONG
 ```
-This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"`, the `printf()` function would expect an additional integer argument. This would either lead to a system crash or the program would read out specitic memory bytes where `printf` would expect its nonexistent addtional argument to be stored.
+This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"`, the `printf()` function would expect an additional integer argument but would not find it. Depending on the compiler and environment, it would lead one of several possible outcomes:
+* the system would crash,
+* the program would crash, or
+* the program would print out values of specitic memory bytes where `printf` would expect its nonexistent addtional argument to be stored.
 
 Now let us see how the dependent signature `printf(string template, <printf_args(template)> ...args)` would prevent such behaviour. When the `template` is known in compile time, the compiler would check that `printf()` is applied to the correct number of arguments. However, in `printf("Hello " + argv[0] + "!")` the `template` is not known in compile time, thus, the compiler cannot determine how many additional `printf()` arguments are required, and the example would not compile.
 
@@ -83,7 +86,11 @@ To make it compile, one has to ensure there are zero additional arguments. For e
 main(nat argc, string[argc + 1] argv) {
   if (argc == 1) {
     string s = "Hello " + argv[1] + "!";
-    if (printf_args(s) == {}) printf(s);
+    if (printf_args(s) != {}) {
+      printf( "Please don't use any percent characters!" );
+    } else {
+      printf( s );
+    }
   }
 }
 ```
@@ -94,6 +101,7 @@ main(nat argc, string[argc] argv) {
   if (argc == 1) printf("Hello %s!", argv[1]);
 }
 ```
+This solution has no problems with percent characters. It would just print out `Hello, Bobby %d Tables!`.
 
 **For the ones having experience with database-facing code, let us mention the use case of profound importance:**
 
