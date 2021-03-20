@@ -66,6 +66,8 @@ printf_args("Hello, %s! Current CPU temperature is %f.")
 would return `(string, float)`.
 
 Here is a typical case of incorrect `printf()` usage, that leads to a security vulnerability:
+
+**Example 2**
 ```cpp
 main(int argc, char* argv[]) {
   if (argc == 1) printf("Hello " + argv[0] + "!");
