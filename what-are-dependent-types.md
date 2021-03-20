@@ -15,7 +15,7 @@ main(int argc, char* argv[]) {
 ```
 This program prints out `"Hello, world!"` if executed without command-line parameters and `"Hello, {first command-line parameter}!"` otherwise.
 
-Let us work through this example line-by-line. Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
+Let us examine this example. Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them, with the addition of the program filename as the first item.
 
