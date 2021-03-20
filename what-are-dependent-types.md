@@ -18,7 +18,7 @@ Let us work through this example line-by-line. Each C program has a unique funct
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them, supplemented by the program filename as zeroth item.
 
-The argument `argc` is declared as an integer (`int`) and tacitly assumed to be non-negative. The declaration `char* argv[]` is an archaic way to declare `argv` to be a string array of unspecified length. The length of `argv` is tacitly assumed to be `argc + 1`.
+The argument `argc` is declared as an integer (`int argc`) and tacitly assumed to be non-negative. The argument `argv` is introduced by `char* argv[]` which is an <abbr title="C is notorious for allowing typal information on both sidies of declarandum, yielding monsters like 'char *(*(**foo[][8])())[]'">archaic way</a> to declare `argv` to be a string array of unspecified length. The length of `argv` is tacitly assumed to be `argc + 1`.
 
 There is a problem with tacit assumptions: they can be easily violated; mostly by mistake, but sometimes also maliciously. Failure of tacit assumptions is responsible for myriads of crashes and vast majority of security vulnerabilities. Mismatch between the value of `argc` and the actual length of `argv` in the above example would result in either printing out gibberish of the form `Hello, %$Gz#H@...` of humongous length or in a segmentation fault (system crash).
 
@@ -29,16 +29,22 @@ main(nat argc, string[argc + 1] argv) {
 }
 ```
 
-This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc + 1`. The real C used to support fixed-length arrays if their length is a compile-time constant: the declaration `int arr[3]` declares `arr` to be an integer array of length 3. To make tacit assumptions explicit, one has to go beyond compile-time constants and allow expressions, values of which are not determined in compile-time. In other words, types should be allowed to depend on "run-time" values — that is where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
+This signature is meant to state that `argc` is a natural number (= non-negative integer), and `argv` a fixed-length array of strings with its length given by `argc + 1`.
+
+The real C used to support fixed-length arrays if their length is a compile-time constant. For instance, by `int arr[3]` one declares `arr` to be an integer array of length 3. To make tacit assumptions explicit, one has to go beyond compile-time constants and allow expressions, values of which are not determined in compile-time. In other words, types should be allowed to depend on "run-time" values — that is where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
 <dl><dt>Definition 1</dt>
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`. That is precisely because the return type of a function can also depend on the arguments:
+Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum (`get_count()`) and its type (`int`). That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
+
+§ The curious case of (+ 1)
+---------------------------
+
 
 {TODO (argc + 1)}
 In such expressions we are only allowed to use functions that are guaranteed to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions: 
