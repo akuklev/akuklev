@@ -17,7 +17,7 @@ This program prints out `"Hello, world!"` if executed without command-line param
 
 Let us work through this example line-by-line. Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
-* `argv`: 'argument values' is the array containing them, supplemented by the program filename as zeroth item.
+* `argv`: 'argument values' is the array containing them, with the addition of the program filename as the first item.
 
 The argument `argc` is declared as an integer (`int argc`) and tacitly assumed to be non-negative. The argument `argv` is introduced by `char* argv[]` which is an <abbr title="C is notorious for allowing typal information on both sidies of declarandum, yielding monsters like 'char *(*(**foo[][8])())[]'">archaic way</a> to declare `argv` to be a string array of unspecified length. The length of `argv` is tacitly assumed to be `argc + 1`.
 
