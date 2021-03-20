@@ -3,6 +3,7 @@ What are dependent types?
 
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an attempt to introduce _dependent types_ for an interested reader who knows enough [C](https://en.wikipedia.org/wiki/C_(programming_language)) to understand the following “Hello, world!” piece:
 
+**Example 1**
 ```c
 main(int argc, char* argv[]) {
   if (argc == 0) {
@@ -37,7 +38,7 @@ The real C used to support fixed-length arrays if their length is a compile-time
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
+The example of dependently-typed signature of `main()` only illustrtes the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). But the definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
@@ -45,7 +46,7 @@ generate_random_sequence(nat length) : int[length];
 § Advanced examples
 -------------------
 
-Now let's turn our attention to the function `printf()`. In the example above, it was used to print “Hello, world!” and “Hello, {name}!”:
+Now let us take a closer look at the function `printf()` that was used to print “Hello, world!” and “Hello, {name}!” in the Example 1:
 ```c
 printf( "Hello, world!" ); 
 ...
@@ -139,16 +140,16 @@ I hope this article managed to provide a short introduction to dependent types a
 § Addendum: What Makes Dependent Typing Complicated?
 ----------------------------------------------------
 
-Let's return to the signature
+Let's take a closer look onto the signature
 ```cpp
 main(nat argc, string[argc + 1] argv) {
   ...
 }
 ```
 
-Consider the expression `argc + 1` which is used as a parameter for the second argument's type. An expression in such position is must be guaranteed to deterministically return a result for all possible values of variables (all possible values of `argc` in this case) while employing no side effects, i.e. without modifying anything outside, without any input/output, without throwing any exceptions etc. 
+The expression `argc + 1` is used as a parameter for the second argument's type. An expression in such position is must be guaranteed to deterministically return a result for all possible values of variables it depends on (all possible values of `argc` in this case) while employing no side effects, i.e. without modifying anything outside, without any input/output, without throwing any exceptions etc. 
 
-Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. In particular, the language has tu have a special type for effect-free manifestly terminating functions (henceforce called “pure functions”), usually denoted `A -> B`. And then the language is either restricted to pure functions only, which is hardly an option a general purpose programming language, or has to have some inbuilt machinery to check if a given function qualifies as pure: a termination checker, a side-effect tracking policy, and optionally an SMT solver which is able to determine that side effects that might happen (say an `IndexOutOfBoundsException` or a `DivisionByZeroException`) actually never happen or at least never leak out to the outer world.
+Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. In particular, the language has to have a special type for effect-free manifestly terminating functions (henceforce called “pure functions”), usually denoted `A -> B`. And then the language is either restricted to pure functions only, which is hardly an option a general purpose programming language, or has to have some inbuilt machinery to check if a given function qualifies as pure: a termination checker, a side-effect tracking policy, and optionally an SMT solver which is able to determine that side effects that might happen (say an `IndexOutOfBoundsException` or a `DivisionByZeroException`) actually never happen or at least never leak out to the outer world.
 
 The complexity of such machinery explains why dependent typing are still not widely adopted in general purpose languages.
 
