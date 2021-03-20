@@ -42,8 +42,8 @@ Above, we only handled the case where an argument of a function (`argc`) is used
 generate_random_sequence(nat length) : int[length];
 ```
 
-§ The curious case of (+ 1)
----------------------------
+§ Dependent Typing urges for functional purity 
+----------------------------------------------
 
 Let's return to the signature
 ```cpp
