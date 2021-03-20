@@ -37,26 +37,10 @@ The real C used to support fixed-length arrays if their length is a compile-time
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum (`get_count()`) and its type (`int`). That is precisely because the return type of a function can also depend on the arguments:
+Above, we only handled the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). The definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
-
-§ Dependent Typing urges for functional purity 
-----------------------------------------------
-
-Let's return to the signature
-```cpp
-main(nat argc, string[argc + 1] argv) {
-  ...
-}
-```
-
-Consider the expression `argc + 1` which is used as a parameter for the second argument's type. An expression in such position is must be guaranteed to deterministically return a result for all possible values of variables (all possible values of `argc` in this case) while employing no side effects, i.e. without modifying anything outside, without any input/output, without throwing any exceptions etc. 
-
-Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. 
-1) There has to be a special type for effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B`. 
-2) The compiler needs some inbuilt machinery (termination checker and optionally an SMT solver) to check if a given function qualifies as pure. Note that pure functions may use mutable state, exceptions and even non-deterministic choice internally, as long side effects are guarenteed never to “leak out”. Termination checking is known to be undecidable in general, thus in many cases, at least non-trivial ones, the compiler will require some hints from the programer.
 
 § Advanced examples
 -------------------
@@ -74,7 +58,7 @@ The function “print formatted” `printf(string template, ...)` has a variable
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-Here `printf_args(template)` is a “type-valued” (or “type level”) pure function that extracts the list of expected types for the additional arguments from the `template`. In our example
+Here `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. In our example
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
@@ -89,8 +73,8 @@ main(int argc, char* argv[]) {
 ```
 This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"` it would either crash or read out specitic memory bytes where `printf` would expect its nonexistent addtional argument (due to `%d` in the template) to be stored. With dependently-typed `printf()` this example wouldn't compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
-main(nat argc, string[argc] argv) {
-  if (argc == 1 && printf_args(argv[0]) == ()) {
+main(nat argc, string[argc + 1] argv) {
+  if (argc == 1 && printf_args(argv[1]) == ()) {
     printf("Hello " + argv[0] + "!");
   }
 }
@@ -148,17 +132,34 @@ Precise signatures like the ones given above are highly desirable for public API
 
 I hope we managed to provide a very short introduction to dependent types and demonstrate their tremendous practical usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.
 
-In fact, the scope of dependent types goes even far beyond that: together with quotient types and univalent universes (two concepts to which the “HoTT”-part in our research group name refers) they enable arbitrary-precision exact real arithmetics and the whole world of abstract mathematical constructions.  
+In fact, the scope of dependent types goes even far beyond that. For instance, they are an enabling factor for many very advanced programming techniques including exact real arithmetics.  
   
   
 <div align="center">* * * * *</div>
   
 
---------------
+§ Addendum: What Makes Dependent Typing Complicated?
+----------------------------------------------------
+
+Let's return to the signature
+```cpp
+main(nat argc, string[argc + 1] argv) {
+  ...
+}
+```
+
+Consider the expression `argc + 1` which is used as a parameter for the second argument's type. An expression in such position is must be guaranteed to deterministically return a result for all possible values of variables (all possible values of `argc` in this case) while employing no side effects, i.e. without modifying anything outside, without any input/output, without throwing any exceptions etc. 
+
+Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. In particular, the language has tu have a special type for effect-free manifestly terminating functions (henceforce called “pure functions”), usually denoted `A -> B`. And then the language is either restricted to pure functions only, which is hardly an option a general purpose programming language, or has to have some inbuilt machinery to check if a given function qualifies as pure: a termination checker, a side-effect tracking policy, and optionally an SMT solver which is able to determine that side effects that might happen (say an `IndexOutOfBoundsException` or a `DivisionByZeroException`) actually never happen or at least never leak out to the outer world.
+
+The complexity of such machinery explains why dependent typing are still not widely adopted in general purpose languages.
+
+Furthermoer, termination checking is known to be undecidable in general, thus in some non-trivial cases, the termination checker will require some hints from the programer. SMT solvers are not almighty as well: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. This imposes a new burden onto the programmer: they are sometimes required to explain in a machine-readable form why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate. It does not only make the language more complicated by introducing a whole new sublanguage for proofs, but also requires programmers to acquire a new cognitively demanding skill.
 
 
-§ Addendum: Refinement types and Witness types
-----------------------------------------------
+
+§ Addendum II: Refinement types and Witness types
+-------------------------------------------------
 
 The claim that dependent types are sufficient to enforce argument validation of any desired complexity actually requires (mild) additional assumptions. So let's dive into the details if you're interested.
 
