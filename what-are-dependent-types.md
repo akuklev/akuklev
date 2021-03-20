@@ -45,9 +45,16 @@ generate_random_sequence(nat length) : int[length];
 § The curious case of (+ 1)
 ---------------------------
 
+Let's return to the signature
+```cpp
+main(nat argc, string[argc + 1] argv) {
+  ...
+}
+```
 
-{TODO (argc + 1)}
-In such expressions we are only allowed to use functions that are guaranteed to return a result for all inputs while employing no side effects (no input/output, no exception throwing etc). Thus, a language with reasonable support of dependent types has to have the means to distinguish such functions: 
+Consider the expression `argc + 1` which is used as a parameter for the second argument's type. An expression in such position is must be guaranteed to deterministically return a result for all possible values of variables (all possible values of `argc` in this case) while employing no side effects, i.e. without modifying anything outside, without any input/output, without throwing any exceptions etc. 
+
+Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. 
 1) There has to be a special type for effect-free manifestly terminating functions (henceforce called “pure functions”) `A -> B`. 
 2) The compiler needs some inbuilt machinery (termination checker and optionally an SMT solver) to check if a given function qualifies as pure. Note that pure functions may use mutable state, exceptions and even non-deterministic choice internally, as long side effects are guarenteed never to “leak out”. Termination checking is known to be undecidable in general, thus in many cases, at least non-trivial ones, the compiler will require some hints from the programer.
 
