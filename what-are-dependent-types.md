@@ -59,7 +59,7 @@ The function “print formatted” `printf(string template, ...)` has a variable
 ```c
 printf(string template, <printf_args(template)> ...args)
 ```
-Here `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. For instance,
+Here, `printf_args(template)` is a “type-valued” (or “type level”) function that extracts the list of expected types for the additional arguments from the `template`. For instance,
 ```cpp
 printf_args("Hello, %s! Current CPU temperature is %f.")
 ```
