@@ -34,11 +34,11 @@ This signature is meant to state that `argc` is a natural number (= non-negative
 
 The real C used to support fixed-length arrays if their length is a compile-time constant. For instance, by `int arr[3]` one declares `arr` to be an integer array of length 3. To make such signagures possible, one has to go beyond compile-time constants and allow expressions, values of which are not determined in compile-time. In other words, types should be allowed to depend on "run-time" values — that is where the name “dependent types” comes from. Some programming languages, unlike C, support such signatures, or, more formally:
 
-<dl><dt>Definition 1</dt>
+<dl><dt>Definition</dt>
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-The example of dependently-typed signature of `main()` only illustrtes the case where an argument of a function (`argc`) is used to specify the type of the following argument (`argv`). But the definition 1 also mentions the return type, so let us provide an example for this case as well. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
+Notice, that the definition also mentions the return type, so let us provide an example for this case. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon (:) separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
