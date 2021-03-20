@@ -76,7 +76,9 @@ main(int argc, char* argv[]) {
 ```
 This example checks if it has been called with exactly one command-line parameter and is meant to print `Hello, {first command-line parameter}!` in this case. However, if executed with command-line parameter like `"Bobby %d Tables"`, the `printf()` function would expect an additional integer argument. This would either lead to a system crash or the program would read out specitic memory bytes where `printf` would expect its nonexistent addtional argument to be stored.
 
-With dependently-typed `printf()` this example would not compile because the number of additional `printf()`-arguments and their types cannot be determined in compile-time. In order to make it compile, one has to ensure there are zero additional arguments. For example, like this
+Now let us see how the dependent signature `printf(string template, <printf_args(template)> ...args)` would prevent such behaviour. When the `template` is known in compile time, the compiler would check that `printf()` is applied to the correct number of arguments. However, in `printf("Hello " + argv[0] + "!")` the `template` is not known in compile time, thus, the compiler cannot determine how many additional `printf()` arguments are required, and the example would not compile.
+
+To make it compile, one has to ensure there are zero additional arguments. For example, like this
 ```cpp
 main(nat argc, string[argc + 1] argv) {
   if (argc == 1 && printf_args(argv[1]) == ()) {
