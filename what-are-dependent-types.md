@@ -156,7 +156,7 @@ some_function(int n, int m) {
 ```
 
 By checking their arguments on each call, functions prevent security vulnerabilites and facilitate early error detection, but this approach still has several downsides:
-1) Time-consuming run-time validation is performed even if it can be carried out in compile-time (i.e. when we call `some_function(3, 2)` with fixed arguments known in compile-time) or can be seen to be unneccessary in compile-time (e.g. when we call `some_function(n, 0)` in a branch where `n > 0`).
+1) Time consuming run-time validation is performed even when it is obviously unnecessary. For example, when `some_function(n, 0)` is called in a branch where `n > 0`. Such cases could be detected and resolved in compile-time.
 2) The caller might perfer to perform validation before calling the function, but there is no way to reliably do so without inspecting the source code of the function being called (which might be unavailable or unexpectedly change by a third party in case `some_function` belongs to an external API).
 
 Both problems are arise due to assumptions on arguments being not reflected on the level of types, both problems can be fixed by allowing conditions on arguments as a part of sinature like this (again C-like pseudocode):
