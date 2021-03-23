@@ -198,7 +198,7 @@ Even most basic libraries and APIs cannot be given precise signagures without em
 
 Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
 
-I we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. 
+We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. 
   
   
 <div align="center">* * * * *</div>
