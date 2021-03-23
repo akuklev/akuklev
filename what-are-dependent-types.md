@@ -147,7 +147,7 @@ foreach (var student in db.query("SELECT * FROM Students)) {
 § Dependent types and Argument Validation
 -----------------------------------------
 
-Besides restricting the types of the arguments, one often needs to restrict their values. Without dependent types, this is typically done as follows:
+Besides restricting the types of the arguments, it is often required to restrict their values. Without dependent types, this is typically done as follows:
 ```
 f(int n, int m) {
   assert(n > m);
@@ -158,16 +158,17 @@ Here, the function `f` checks its arguments satisfy aditional assumption `n > m`
 1) Time consuming run-time validation is performed even when it is obviously unnecessary. For example, when `f(n, 0)` is called in a branch where `n > 0`. Such cases could be detected and resolved in compile-time.
 2) It might be desirable to perform validation before calling the function. Yet the only way to do so involves inspecting the source code of the function being called. In case of foreign libraries or APIs the source code might be unavailable or unexpectedly changed by a third party.
 
-Both problems are arise due to assumptions on arguments being not reflected on the level of types, both problems can be fixed by allowing conditions on arguments as a part of sinature like this (again C-like pseudocode):
+In this approach, the restrictions on the arguments are not reflected on the level of signatures, which is the root cause of both problems.
+Thus, they can both be resolved by shifting the restrictions into the signatures. In a C-like pseudocode, it could be expressed as follows:
 ```
 f(int n, int m, n > m) {
   ...
 }
 ```
 
-By making conditions a part of signature, one makes them explicitly visible to the users (of a library or an API) and to the compiler so that it can optimize away all redundant or unneccessary validations. Support of conditions in signatures is not required by the definition of dependently typed languages used in this article, it's a minor but essential extension.¹
+By making the restrictions a part of the signature, one makes them explicitly visible to the users and to the compiler so that it can optimize away all redundant or unneccessary validations. Not all dependently typed languages support restrictions in function signatures. It is a minor¹ but essential extension.
 
-To keep signatures reasonably short, types with inbuilt conditions (these are called “refinement types”) should be supported as well.
+To keep the signatures reasonably short, types with in-built restrictions on values should be supported as well.
 
 **Examples:**
 ```cpp
@@ -184,7 +185,7 @@ db.query(string<query> q, <db.query_args(q)> ...args) : <db.query_results(q)> th
 Now when the signature tells that the argument `q` must satisfy grammar `g`, the programming tools (IDEs) can also perform validation, syntax highlighting, context help, autocompletion, etc. for argument `q`.
 
 ---
-1. From theoretical point of view this extension does not add any additional complexity to the language if it readily supports dependent types and inductive data types.
+1. From theoretical perspective, this extension does not introduce any additional complexity to the language if it readily supports dependent types and inductive data types.
 
 
 § Concluding Notes
