@@ -166,9 +166,10 @@ some_function(int n, int m, n > m) {
 }
 ```
 
-By making conditions a part of signature, one makes them explicitly visible to the users (of a library or an API) and to the compiler so that it can optimize away all redundant or unneccessary validations. Support of conditions in signatures is not required by the definition of dependently typed languages used in this article, it's a minor but very useful extension.¹
+By making conditions a part of signature, one makes them explicitly visible to the users (of a library or an API) and to the compiler so that it can optimize away all redundant or unneccessary validations. Support of conditions in signatures is not required by the definition of dependently typed languages used in this article, it's a minor but essential extension.¹
 
 To keep signatures short, types with inbuilt conditions should be supported as well.
+
 **Examples:**
 ```cpp
 nat := int n, n >= 0
@@ -184,7 +185,6 @@ db.query(string<query> q, <db.query_args(q)> ...args) : <db.query_results(q)> th
 Now when the signature tells that the argument `q` must satisfy grammar `g`, the programming tools (IDEs) can also perform validation, syntax highlighting, context help, autocompletion, etc. for argument `q`.
 
 ---
-Footnotes:
 1. From theoretical point of view this extension does not add any additional complexity to the language if it readily supports dependent types and inductive data types.
 
 
