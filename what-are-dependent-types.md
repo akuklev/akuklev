@@ -191,12 +191,12 @@ Now that the programming tools (IDEs) can see that the string literal used for t
 § Concluding Notes
 ------------------
 
-Even most basic libraries and APIs cannot be given precise signagures without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases. Dependent types allow to put all the assumptions on arguments into signatures.
-* It helps preventing security vulnerabilies.
-* It promotes argument validation to a whole new level.
-* It shifts critical information from documentation (which tends to be neglected by both intended readers and writers) into signatures which cannot grow outdated. 
+Dependent types allow to put all the assumptions on arguments into function signatures. This is beneficial for multiple reasons:
+* It helps to prevent security vulnerabilies.
+* It provides the framework for argument validation that extends the possibilites (**TODO**).
+* It shifts critical information from the documentation, which tends to be neglected by both writers and intended readers, into function signatures which do not grow outdated.
 
-Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
+Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
 
 We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. 
   
