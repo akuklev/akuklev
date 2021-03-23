@@ -144,20 +144,61 @@ foreach (var student in db.query("SELECT * FROM Students)) {
 // with properly typed fields `name`, `grade_average` etc.
 ```
 
+§ Dependent types and Argument Validation
+-----------------------------------------
+
+Very often, a function starts by checking if its arguments satisfy some aditional assumptions, as in this example:
+```
+some_function(int n, int m) {
+  assert(n > m);
+  ...
+}
+```
+
+By checking their arguments on each call, functions prevent security vulnerabilites and facilitate early error detection, but this approach still has several downsides:
+1) Time-consuming run-time validation is performed even if it can be carried out in compile-time (i.e. when we call `some_function(3, 2)` with fixed arguments known in compile-time) or can be seen to be unneccessary in compile-time (e.g. when we call `some_function(n, 0)` in a branch where `n > 0`).
+2) The caller might perfer to perform validation before calling the function, but there is no way to reliably do so without inspecting the source code of the function being called (which might be unavailable or unexpectedly change by a third party in case `some_function` belongs to an external API).
+
+Both problems are arise due to assumptions on arguments being not reflected on the level of types, both problems can be fixed by allowing conditions on arguments as a part of sinature like this (again C-like pseudocode):
+```
+some_function(int n, int m, n > m) {
+  ...
+}
+```
+
+By making conditions a part of signature, one makes them explicitly visible to the users (of a library or an API) and to the compiler so that it can optimize away all redundant or unneccessary validations. Support of conditions in signatures is not required by the definition of dependently typed languages used in this article, it's a minor but very useful extension.¹
+
+To keep signatures short, types with inbuilt conditions should be supported as well.
+**Examples:**
+```cpp
+nat := int n, n >= 0
+string<Grammar g> := string s, g.matches(s)
+SortedList<Ordered T> := List<T> list, T.isSorted(list)
+```
+
+With `string<Grammar g>` one can make the signature of former SQL query method even better:
+```Kotlin
+db.query(string<query> q, <db.query_args(q)> ...args) : <db.query_results(q)> throws IncompatibleDbSchemaException
+```
+
+Now when the signature tells that the argument `q` must satisfy grammar `g`, the programming tools (IDEs) can also perform validation, syntax highlighting, context help, autocompletion, etc. for argument `q`.
+
+---
+Footnotes:
+1. From theoretical point of view this extension does not add any additional complexity to the language if it readily supports dependent types and inductive data types.
+
 
 § Concluding Notes
 ------------------
 
-Precise signatures like the ones given above are highly desirable for public APIs and settled libraries for many reasons:
+Even most basic libraries and APIs cannot be given precise signagures without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases. Dependent types allow to put all the assumptions on arguments into signatures.
+* It helps preventing security vulnerabilies.
+* It promotes argument validation to a whole new level.
+* It shifts critical information from documentation (which tends to be neglected by both intended readers and writers) into signatures which cannot grow outdated. 
 
-* Make tacit assumptions explicit, and thus provide excellent insight for the API and library users,
-* prevent security vulnerabilities,
-* enforce strict argument validation when data crosses application boundaries, while eliminating time-consuming run-time validation if it can be carried out in compile-time.
+Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
 
-Additionally, precise signatures allow external API users to perform argument validation beforehand to ensure no unexpected run-time errors due to invalid arguments could arise. (The claim that dependent types are sufficient to enforce argument validation of any desired complexity actually requires mild additional assumptions, see /refinement-types)
-
-I hope this article managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. Even most basic libraries and APIs cannot be typed precisely without employing dependent types, while in presence of dependent types precise signatures can be given even most involved cases.   
-The scope of dependent types goes even far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
+I we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. 
   
   
 <div align="center">* * * * *</div>
