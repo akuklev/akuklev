@@ -168,12 +168,12 @@ f(int n, int m, n > m) {
 
 By making the restrictions a part of the signature, one makes them explicitly visible to the users and to the compiler so that it can optimize away all redundant or unneccessary validations. Not all dependently typed languages support restrictions in function signatures. It is a minor¹ but essential extension.
 
-To keep the signatures reasonably short, types with in-built restrictions on values should be supported as well.
-
-**Examples:**
+To keep the signatures reasonably short, one can introduce shorthand names for types with restrictions on values:
 ```cpp
 nat := int n, n >= 0
+
 string<Grammar g> := string s, g.matches(s)
+
 SortedList<Ordered T> := List<T> list, T.isSorted(list)
 ```
 
