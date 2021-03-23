@@ -168,7 +168,7 @@ some_function(int n, int m, n > m) {
 
 By making conditions a part of signature, one makes them explicitly visible to the users (of a library or an API) and to the compiler so that it can optimize away all redundant or unneccessary validations. Support of conditions in signatures is not required by the definition of dependently typed languages used in this article, it's a minor but essential extension.¹
 
-To keep signatures short, types with inbuilt conditions should be supported as well.
+To keep signatures reasonably short, types with inbuilt conditions (these are called “refinement types”) should be supported as well.
 
 **Examples:**
 ```cpp
