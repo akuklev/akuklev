@@ -192,7 +192,7 @@ Now that the programming tools (IDEs) can see that the string literal used for t
 § What Makes Dependent Typing Difficult?
 ----------------------------------------
 
-Let's take a closer look at the signature
+Having seen how useful dependent typing is, one might wonder why they are not widely adopted. To answer this question, let us take a closer look at the signature
 ```cpp
 main(nat argc, string[argc + 1] argv) {
   ...
