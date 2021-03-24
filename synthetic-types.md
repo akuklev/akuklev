@@ -82,6 +82,7 @@ inductive BinaryTreeOfNaturals {
   Leaf(NaturalNumber n),
   Node(BinaryTreeOfNaturals left, BinaryTreeOfNaturals right)
 }
+
 ```
 
 Inductive types are "synthetic" in the following sense: any possible value of a variable is guaranteed to be built ("synthesised") from a fixed set of constructors 
@@ -116,7 +117,44 @@ If all equalites in a closed inductive type are directed, the equality of two va
 § More General Closed Synthetic Types
 -------------------------------------
 
-Inductive-inductives, iir (dependent types + calculation)
+There are several important extensions to inductive types.
+
+First of all, one may allow to define a family mutually dependent inductive types at once. It may be a finite number of types:
+
+**Example 6**
+```c
+inductive VariableWidthTreeOfInts, ListOfTrees {
+  Leaf(Integer n) : VariableWidthTreeOfInts,
+  Node(ListOfTrees list) : VariableWidthTreeOfInts,
+  EmptyList : ListOfTrees,
+  NonEmptyList(VariableWidthTreeOfInts head, ListOfTrees tail)
+}
+```
+
+It also may be an infinite family of types indexed by a parameter, in which case one also has to allow dependent signagures for constructors:
+
+**Example 7**
+```c
+inductive LengthIndexedListOfIntegers(NaturalNumber length) {
+   EmptyList : LengthIndexedListOfIntegers(Zero),
+   NonEmptyList(Integer head, 
+                NaturalNumber tail_length,
+                LengthIndexedListOfIntegers(tail_length) tail
+     ) : LengthIndexedListOfIntegers(tail_length + 1)
+}
+```
+
+Here, the type of the index `NaturalNumber` is defined in advance, but there is no problem in defining one or more index types simultaneously with everything else. This extension is known as inductive-inductive types. The example 7 also uses an operation (`+ 1`) defined on the index type `NaturalNumber`, which was also defined in advance. When the index type is being defined simultaneously with other types, all required operations on this type have to be also defined simultanously. This extension is known as small inductive-inductive-recursive types.
+
+With all these extensions, one can define very complex data types such as 
+* intricataly balanced trees representing internal states of advanced for data structures (such as Red-Black trees, B* trees, etc.),
+* abstract syntax trees for languages, including languages with types and binders.
+
+Notwithstanding all this extensions, the inductive types retain their basic properties:
+* Synthetic, i.e. built from fixed set of constructors and can be analysed by top-down-recursive pattern matching;
+* Closed, if paremeters of all constructors are themselves closed:
+  * Effectively enumerable;
+  * Have semidecidable equality;
 
 § Non-Closed Synthetic Types
 ----------------------------
