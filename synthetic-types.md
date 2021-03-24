@@ -122,10 +122,12 @@ Inductive-inductives, iir (dependent types + calculation)
 ----------------------------
 
 There are data types which cannot be expressed by closed synthetic types.  
+
 The most prominent examples are given by functions on infinite data types (for instance infinite sequences of digits `NaturalNumber -> Digit`) and exact real numbers `Real`. While this two types are perfectly valid data types, it is a matter of argument if infinite sequences and exact real numbers are really “data” because they cannot be stored on a finite digital carrier or sent over network in a finite amount of time.
+
 Yet it is possible to define the types of __computable__ sequences and __computable__ real numbers. That is, ones sequences that can be produced by an algorithm and real numbers that can be algorithmically computed to any desired finite precision. These are unequivocally **data** types, because they can be easily sent over network or stored in form of the respective lambda expression (or any other desired form of Turing-complete computation). These two types still cannot be represented by closed synthetic types, because closed synthetic types are by design effectively enumerable and computable sequences/computable reals are not effectively enumerable due to [halting problem](https://en.wikipedia.org/wiki/Halting_problem).
 
+The type of all lambda expressions can be certainly given by as a closed synthetic type, but it will neccesarily include some nonterminating expressions (the ones that does not correspond to any valid sequence and no valid real number respectively), and have the wrong notion of equality. As we already mentioned, equality on closes synthetic types is semidecidable in positive sense (guaranteed to terminate if the values are equal), while equality of reals and equality of discernable sequences is semidecidable in the negative sense: one can check equality of two numbers digit-by-digit (equality of sequences respectively item-by-item) and this process is guaranteed to terminate if there is a difference somewhere, but would last infinitely when values are indeed equal.
 
+To have a mathematically sound type system, one has to accept the existence of open types of functions `A -> B` (where `A` is an infinite type) which are inhabited by constructively definable functions from `A` to `B`, but not limited to them. The only thing one can be sure, is that such a function can be applied to a value of type `A` and yields a value of type `B`, otherwise an kind of “open-world assumption” applies.
 
-
-As it was already mentioned closed synthetic types are effectively enumerable. For this reason there 
