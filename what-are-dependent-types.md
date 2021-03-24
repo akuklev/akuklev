@@ -188,24 +188,9 @@ Now that the programming tools (IDEs) can see that the string literal used for t
 1. From theoretical perspective, this extension does not introduce any additional complexity to the language if it readily supports dependent types and inductive data types.
 
 
-§ Concluding Notes
-------------------
 
-Dependent types allow to put all the assumptions on arguments into function signatures. This is beneficial for multiple reasons:
-* It helps to prevent security vulnerabilies.
-* It provides the framework for argument validation that extends the possibilites (**TODO**).
-* It shifts critical information from the documentation, which tends to be neglected by both writers and intended readers, into function signatures which do not grow outdated.
-
-Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
-
-We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness. 
-  
-  
-<div align="center">* * * * *</div>
-  
-
-§ Addendum: What Makes Dependent Typing Complicated?
-----------------------------------------------------
+§ What Makes Dependent Typing Difficult?
+----------------------------------------
 
 Let's take a closer look at the signature
 ```cpp
@@ -218,6 +203,21 @@ The expression `argc + 1` is used as a parameter for the second argument's type.
 
 Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. In particular, the language has to have a special type for effect-free manifestly terminating functions (henceforce called “pure functions”), usually denoted `A -> B`. And then the language is either restricted to pure functions only, which is hardly an option a general purpose programming language, or has to have some inbuilt machinery to check if a given function qualifies as pure: a termination checker, a side-effect tracking policy, and optionally an SMT solver which is able to determine that side effects that might happen (say an `IndexOutOfBoundsException` or a `DivisionByZeroException`) actually never happen or at least never leak out to the outer world.
 
-The complexity of such machinery explains why dependent typing are still not widely adopted in general purpose languages.
+The complexity of such machinery explains why dependent typing are still not widely adopted in general purpose languages.²
 
-Furthermore, termination checking is known to be undecidable in general, thus, in some non-trivial cases, the termination checker cannot ensure termination automatically. SMT solvers also have their limitations: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. One way to deal with such cases is to require the programmer to write a “TrustMe” pragma with their name on them, and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate. But for critical applications we actually need a whole sublanguage for machine-readable proofs. It does not only make the language more complicated, but also requires programmers to acquire a new cognitively demanding skill.
+----
+2. Moreover, this machinery has inherent limitations which have to be dealt with one way or another. Termination checking is known to be undecidable in general, thus, in some non-trivial cases, the termination checker cannot ensure termination automatically. SMT solvers also have their limitations: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. A pragmatic solution would be to allow the programmers to use special “Trust Me”-directive in such cases, perhaps with a mandatory name of the responsible programmer and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate. Yet, typically dependently-typed languages also support certified programming: they have a whole sublanguage for machine-readable proofs, that can be used instead of "Trust Me"-directives. In our opinion, certified programming should be used only for critical software, because it does not only make the language more complicated, but also requires programmers to acquire a new cognitively demanding skill.
+
+§ Concluding Notes
+------------------
+
+Dependent types allow to put all the assumptions on arguments into function signatures. This is beneficial for multiple reasons:
+* It helps to prevent security vulnerabilies.
+* It provides the framework for argument validation that extends the possibilites (**TODO**).
+* It shifts critical information from the documentation, which tends to be neglected by both writers and intended readers, into function signatures which do not grow outdated.
+
+Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
+
+Dependent typing comes at a cost: design of a dependently typed language and its compiler is a challenging endeavor. Dependent typing also requires the notion of pure functions and is connected to certified programming, but it does not enforce certified or purely functional programming.
+
+We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness.
