@@ -121,5 +121,11 @@ Inductive-inductives, iir (dependent types + calculation)
 § Non-Closed Synthetic Types
 ----------------------------
 
-There are data types which cannot be expressed by closed synthetic types. 
+There are data types which cannot be expressed by closed synthetic types.  
+The most prominent examples are given by functions on infinite data types (for instance infinite sequences of digits `NaturalNumber -> Digit`) and exact real numbers `Real`. While this two types are perfectly valid data types, it is a matter of argument if infinite sequences and exact real numbers are really “data” because they cannot be stored on a finite digital carrier or sent over network in a finite amount of time.
+Yet it is possible to define the types of __computable__ sequences and __computable__ real numbers. That is, ones sequences that can be produced by an algorithm and real numbers that can be algorithmically computed to any desired finite precision. These are unequivocally **data** types, because they can be easily sent over network or stored in form of the respective lambda expression (or any other desired form of Turing-complete computation). These two types still cannot be represented by closed synthetic types, because closed synthetic types are by design effectively enumerable and computable sequences/computable reals are not effectively enumerable due to [halting problem](https://en.wikipedia.org/wiki/Halting_problem).
+
+
+
+
 As it was already mentioned closed synthetic types are effectively enumerable. For this reason there 
