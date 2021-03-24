@@ -3,8 +3,8 @@ Synthetic Types
 
 The first data types one encounters in general-purpose languages hardware-defined types. Well known examples from C-like languages are the types `int` (`int32`) and `float` (`float64`) of 32-bit integers and 64-bit floating point real numbers respectively. Yet, there are also intrinsically defined types: their definitions and behaviour are independent of any machine-related details.
 
-§ Finite closed types
----------------------
+§ Enumerations: Finite closed data types
+----------------------------------------
 
 Most simple intrinsically defined types are the enumerations:
 
@@ -26,7 +26,7 @@ enum Digit {
 
 Here, two enumeration types called `State` and `Digit` respectively are defined. `Working`, `Failed`, `D0` and so on are called constructors of respective types.
 
-Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. Closedness means that a variable of enumeration data type is guaranteed to be given by a constructor declared in the definition of the enum type. In particular enumeration types cannot be extended ulteriorly and inheritance is forbidden for them.
+Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. Closedness means that a variable of enumeration data type is guaranteed to be given by a constructor declared in the definition of the enumeration type. In particular enumeration types cannot be extended ulteriorly and inheritance is forbidden for them.
 
 There are several extensions to enums:
 1) Constructors can be allowed to have parameters;
@@ -49,7 +49,9 @@ enum Color {
 }
 ```
 
-This extensions do not spoil closedness and finiteness as long as all parameters are also given by closed finite enums.
+This extensions do not spoil closedness and finiteness as long as all parameters are also given by closed finite enumerations.
+
+Hardware-defined primitive data types such as `int32` and `float64` are closed enumeration types in disguise, because internally they are represented by finite sequences of bits.
 
 § Closed inductive types
 ------------------------
@@ -82,7 +84,10 @@ inductive BinaryTreeOfNaturals {
 }
 ```
 
-Any possible value of a variable is given by a tree of constructors of finite depth. A value of an inductive type can be thus analysed by recursive pattern matching and the recursion is guaranteed to terminate (no cycles => no infinite loops).
+Inductive types are "synthetic" in the following sense: any possible value of a variable is guaranteed to be built ("synthesised") from a fixed set of constructors 
+in a non-circular fasion. In other words any value is given by a tree of constructors of finite depth. This can be also expressed as follows:
+* A value of an inductive type can be thus exhaustively analysed by recursive pattern matching and the recursion is guaranteed to terminate (no cycles => no infinite loops).
+* A property for all values of a given inductive type can be proven by structural induction on possible values. By the way, that is why they are called inductive.
 
 Inductive types are also compatible with custom equalities:
 
@@ -115,3 +120,6 @@ Inductive-inductives, iir (dependent types + calculation)
 
 § Non-Closed Synthetic Types
 ----------------------------
+
+There are data types which cannot be expressed by closed synthetic types. 
+As it was already mentioned closed synthetic types are effectively enumerable. For this reason there 
