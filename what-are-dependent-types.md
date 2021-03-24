@@ -7,15 +7,15 @@ I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups
 ```c
 main(int argc, char* argv[]) {
   if (argc == 0) {
-    printf( "Hello, world!" ); 
+    printf("Hello, world!"); 
   } else {
-    printf( "Hello, %s!", argv[1] );
+    printf("Hello, %s!", argv[1]);
   }
 }
 ```
 This program prints out `"Hello, world!"` if executed without command-line parameters and `"Hello, {first command-line parameter}!"` otherwise.
 
-Let us examine this example. Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. `main()` has two arguments:
+Let us examine this example. Each C program has a unique function called `main()`. When a program is executed, it is precisely the `main()` function which is being called. Normally, function declarations in C begin with their return type, but for `main()` it can be omited. `main()` has two arguments:
 * `argc`: 'argument count' is the number of command-line arguments; 
 * `argv`: 'argument values' is the array containing them, with the addition of the program filename as the first item.
 
@@ -38,19 +38,21 @@ The real C used to support fixed-length arrays if their length is a compile-time
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Notice, that the definition also mentions the return type, so let us provide an example for this case. In dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon `:` separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
+Notice, that the definition also mentions the return type, so let us provide an example for this case. As opposed to C, in dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon `:` separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
+
+This syntax will be used for some of the advanced examples below.
 
 § Advanced examples
 -------------------
 
 Now let us take a closer look at the function `printf()` that was used to print “Hello, world!” and “Hello, {name}!” in the Example 1:
 ```c
-printf( "Hello, world!" ); 
+printf("Hello, world!"); 
 ...
-printf( "Hello, %s!", argv[0] );
+printf("Hello, %s!", argv[1]);
 ```
 
 The function “print formatted” `printf(string template, ...)` has a variable number of arguments depending on the first argument `template`. If `template` contains no %-patterns, `printf` has no additional arguments. If it has a single `%s`, as in the Example 1, it has an additional argument of type `string`. The pattern `%d` would require an integer argument, and `%f` a `float`. The number of %-patterns in the template determines how many additional arguments are required.
@@ -87,9 +89,9 @@ main(nat argc, string[argc + 1] argv) {
   if (argc == 1) {
     string s = "Hello " + argv[1] + "!";
     if (printf_args(s) != {}) {
-      printf( "Please don't use any percent characters!" );
+      printf("Please don't use any percent characters!");
     } else {
-      printf( s );
+      printf(s);
     }
   }
 }
@@ -101,7 +103,7 @@ main(nat argc, string[argc] argv) {
   if (argc == 1) printf("Hello %s!", argv[1]);
 }
 ```
-This solution has no problems with percent characters. It would just print out `Hello, Bobby %d Tables!`.
+This solution has no problems with percent characters whatsoever. It would just print out `Hello, Bobby %d Tables!`.
 
 **For the ones having experience with database-facing code, let us mention the use case of profound importance:**
 
@@ -182,7 +184,7 @@ With `string<Grammar g>` from the example above, one can make the signature of f
 db.query(string<query> q, <db.query_args(q)> ...args) : <db.query_results(q)> throws IncompatibleDbSchemaException
 ```
 
-Now that the programming tools (IDEs) can see that the string literal used for the argument `q` should comply with a given grammar, they can also provide the respective inline validation, syntax highlighting, context help, autocompletion, etc.
+Now that the programming tools (IDEs) can see that the string literal used for the argument `q` should comply with a given grammar, they can also provide the respective inline validation, syntax highlighting, context help, autocompletion, etc. This feature has nothing to do with dependent types per ce, but it is one of the many useful features suggested by introduction of dependent types.
 
 ---
 1. From theoretical perspective, this extension does not introduce any additional complexity to the language if it readily supports dependent types and [inductive data types](https://en.wikipedia.org/wiki/Inductive_type).
