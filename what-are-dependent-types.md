@@ -204,7 +204,7 @@ main(nat argc, string[argc + 1] argv) {
 The expression `argc + 1` is used as a parameter for the second argument's type. An expression in such position must be guaranteed to deterministically return a result for all possible values of variables it depends on (all possible values of `argc` in this case).
 It is also not allowed to employ any side effects, i.e. it is not allowed to modify any external data, employ any input/output, throw any exceptions etc. Henceforce, such effect-free manifestly terminating functions will be called “pure functions”.
 
-The language could be restricted to pure functions only, but this is hardly an option a general purpose programming language. The other option is to introduce some means for distinguishing pure functions among others. In particular, the language has to have a special type for pure functions and some in-built machinery to check if a given function qualifies as pure, namely:
+The language could be restricted to pure functions only, but this is hardly an option for a general purpose programming language. The other option is to introduce some means for distinguishing pure functions among others. In particular, the language has to have a special type for pure functions and some in-built machinery to check if a given function qualifies as pure, namely:
 * a termination checker;
 * a side-effect tracking policy;
 * optionally an SMT solver which is able to determine that side effects which might happen, say an `IndexOutOfBoundsException` or a `DivisionByZeroException`, actually never happen or at least never leak out;
@@ -227,4 +227,4 @@ Dependent types allow to put all the assumptions on arguments into function sign
 
 Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.
 
-We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness and the challenges associated with them.
+We hope we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness and the challenges associated with them.
