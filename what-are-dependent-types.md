@@ -210,9 +210,10 @@ The language could be restricted to pure functions only, but this is hardly an o
 
 Fallback mechanisms are unavoidable because of inherent limitations of other mechanisms. Termination checking is known to be undecidable in general, thus, in some non-trivial cases, the termination checker cannot ensure termination automatically (see [Halting Problem](https://en.wikipedia.org/wiki/Halting_problem)). SMT solvers also have their limitations: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. The minimalistic fallback mechanism is to allow the programmers to use special “Trust Me”-directive in such cases, perhaps with a mandatory name of the responsible programmer and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate.
 
-For critical software one would want something more reliable than "Trust Me"-directives. For this reason, most dependently-typed languages also support certified programming, which presumes a sublanguage for machine-readable proofs. Unfortunatelly, certified programming requires programmers to acquire a new cognitively demanding skill.
+For critical software one would a more reliable fallback mechanism. For this reason, most dependently-typed languages also support certified programming, which presumes a sublanguage for machine-readable proofs. Unfortunatelly, certified programming is complicated and requires programmers to acquire a new cognitively demanding skill. Thus, certified programming should be only used when "Trust me"-directives are not sufficient.
 
 The complexity of these mechanisms explains why dependent typing is still not widely adopted in general purpose languages.
+
 
 § Concluding Notes
 ------------------
@@ -222,8 +223,6 @@ Dependent types allow to put all the assumptions on arguments into function sign
 * It provides the framework for argument validation that extends the possibilites (**TODO**).
 * It shifts critical information from the documentation, which tends to be neglected by both writers and intended readers, into function signatures which do not grow outdated.
 
-Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.  
+Precise signatures made possible by dependent types are highly desirable for APIs and settled libraries, but the scope of dependent types goes far beyond that: they enable a multitude of very advanced programming techniques including exact real arithmetics.
 
-Dependent typing comes at a cost: design of a dependently typed language and its compiler is a challenging endeavor. Dependent typing also requires the notion of pure functions and is connected to certified programming, but it does not enforce certified or purely functional programming.
-
-We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness.
+We hope, we managed to provide a short introduction to dependent types and demonstrate their tremendous usefulness and the challenges associated with them.
