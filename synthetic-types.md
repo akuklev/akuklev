@@ -108,7 +108,7 @@ inductive UnorderedPairOfIntegers {
   UPair(Integer a, Integer b)
   
   // Undirected equalities:
-  (Integer A, Integer B) => UPair(a, b) = UPair(b, a)
+  Symmetry(Integer A, Integer B) : UPair(a, b) = UPair(b, a)
 }
 ```
 
