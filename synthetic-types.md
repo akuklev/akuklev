@@ -1,7 +1,7 @@
 Synthetic Types
 ===============
 
-The first data types one encounters in general-purpose languages hardware-defined types. Well known examples from C-like languages are the types `int` (`int32`) and `float` (`float64`) of 32-bit integers and 64-bit floating point real numbers respectively. Yet, there are also intrinsically defined types: their definitions and behaviour are independent of any machine-related details.
+The first data types one encounters in general-purpose languages hardware-defined types. Well known examples from C-like languages are the types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, there are also intrinsically defined types: their definitions and behaviour are independent of any machine-related details.
 
 § Enumerations: Finite closed data types
 ----------------------------------------
