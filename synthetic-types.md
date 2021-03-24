@@ -148,13 +148,16 @@ Here, the type of the index `NaturalNumber` is defined in advance, but there is 
 
 With all these extensions, one can define very complex data types such as 
 * intricataly balanced trees representing internal states of advanced for data structures (such as Red-Black trees, B* trees, etc.),
-* abstract syntax trees for languages, including languages with types and binders.
+* abstract syntax trees for languages, including languages with types and binders¹.
 
 Notwithstanding all this extensions, the inductive types retain their basic properties:
 * Synthetic, i.e. built from fixed set of constructors and can be analysed by top-down-recursive pattern matching;
-* Closed, if paremeters of all constructors are themselves closed:
+* Closed, if all paremeters of all constructors are themselves closed:
   * Effectively enumerable;
   * Have semidecidable equality;
+
+----
+1. Closed synthetic types provide syntactic models (= initial models) for all finitary extended algebraic theories, in particular for all generalized algebraic theories without sort equations. Non-closed synthetic types (see below) are capable of dealing with countably infinitary extended algebraic theories.
 
 § Non-Closed Synthetic Types
 ----------------------------
@@ -170,3 +173,5 @@ The type of all lambda expressions can be certainly given by as a closed synthet
 To have a mathematically sound type system, one has to accept the existence of open types of functions `A -> B` (where `A` is an infinite type) which are inhabited by constructively definable functions from `A` to `B`, but not limited to them. The only thing one can be sure, is that such a function can be applied to a value of type `A` and yields a value of type `B`, otherwise an kind of “open-world assumption” applies.
 
 Non-closed synthetic types are just like synthetic types, but the constructors are allowed to have parameters of open types (primarily `A -> B`). The types of exact reals `Real` and partial computations `℧(T)` can be expressed as non-closed synthetic types employing parameters of the kind `A -> B`. This also allows to define such complicated mathematicians' types as computable reals, computable functions `Comp(A, B)`, continious functions `𝒞(A, B)`, borel functions `𝔅(A, B)` measurable functions `Meas(A, B)`, etc.
+
+Another kind of Non-Closed Synthetic Types arise when the functions defined simultaneously with their domain in inductive-inductive types are allowed to be kind-valued. Such extention is known as fibered inductive types (or large inductive-inductive-recursion). Since kinds are inherently open virtual types, resulting synthetic types are non-closed as well. This extension allows defining universes and abstract syntax trees for languages with extensible type systems. In particular, such types are capable of capturing abstract syntax of their host language, which is known as “language eating itself”.
