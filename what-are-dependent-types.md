@@ -199,14 +199,20 @@ main(nat argc, string[argc + 1] argv) {
 }
 ```
 
-The expression `argc + 1` is used as a parameter for the second argument's type. An expression in such position must be guaranteed to deterministically return a result for all possible values of variables it depends on (all possible values of `argc` in this case) while employing no side effects, i.e. without modifying anything outside, without any input/output, without throwing any exceptions etc. 
+The expression `argc + 1` is used as a parameter for the second argument's type. An expression in such position must be guaranteed to deterministically return a result for all possible values of variables it depends on (all possible values of `argc` in this case).
+It is also not allowed to employ any side effects, i.e. it is not allowed to modify any external data, employ any input/output, throw any exceptions etc. Henceforce, such effect-free manifestly terminating functions will be called “pure functions”.
 
-Thus, a language with reasonable support of dependent types has to have the means to distinguish such expressions. In particular, the language has to have a special type for effect-free manifestly terminating functions (henceforce called “pure functions”), usually denoted `A -> B`. And then the language is either restricted to pure functions only, which is hardly an option a general purpose programming language, or has to have some inbuilt machinery to check if a given function qualifies as pure: a termination checker, a side-effect tracking policy, and optionally an SMT solver which is able to determine that side effects that might happen (say an `IndexOutOfBoundsException` or a `DivisionByZeroException`) actually never happen or at least never leak out to the outer world.
+The language could be restricted to pure functions only, but this is hardly an option a general purpose programming language. The other option is to introduce some means for distinguishing pure functions among others. In particular, the language has to have a special type for pure functions and some in-built machinery to check if a given function qualifies as pure, namely:
+* a termination checker;
+* a side-effect tracking policy;
+* optionally an SMT solver which is able to determine that side effects which might happen, say an `IndexOutOfBoundsException` or a `DivisionByZeroException`, actually never happen or at least never leak out;
+* a fallback mechanism for cases when termination checker or SMT solver fail to determine the purity of a function.
 
-The complexity of such machinery explains why dependent typing are still not widely adopted in general purpose languages.²
+Fallback mechanisms are unavoidable because of inherent limitations of other mechanisms. Termination checking is known to be undecidable in general, thus, in some non-trivial cases, the termination checker cannot ensure termination automatically (see [Halting Problem](https://en.wikipedia.org/wiki/Halting_problem)). SMT solvers also have their limitations: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. The minimalistic fallback mechanism is to allow the programmers to use special “Trust Me”-directive in such cases, perhaps with a mandatory name of the responsible programmer and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate.
 
-----
-2. Moreover, this machinery has inherent limitations which have to be dealt with one way or another. Termination checking is known to be undecidable in general, thus, in some non-trivial cases, the termination checker cannot ensure termination automatically. SMT solvers also have their limitations: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. A pragmatic solution would be to allow the programmers to use special “Trust Me”-directive in such cases, perhaps with a mandatory name of the responsible programmer and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate. Yet, typically dependently-typed languages also support certified programming: they have a whole sublanguage for machine-readable proofs, that can be used instead of "Trust Me"-directives. In our opinion, certified programming should be used only for critical software, because it does not only make the language more complicated, but also requires programmers to acquire a new cognitively demanding skill.
+For critical software one would want something more reliable than "Trust Me"-directives. For this reason, most dependently-typed languages also support certified programming, which presumes a sublanguage for machine-readable proofs. Unfortunatelly, certified programming requires programmers to acquire a new cognitively demanding skill.
+
+The complexity of these mechanisms explains why dependent typing is still not widely adopted in general purpose languages.
 
 § Concluding Notes
 ------------------
