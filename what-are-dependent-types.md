@@ -118,11 +118,11 @@ db.query("SELECT * FROM Students WHERE (name = ? AND year = ?)", name, year)
 // ok
 ```
 
-The comic [<xkcd.com/327>](http://xkcd.com/327/) refers to the vulnerability (called SQL Injection Vulnerability) that arises from the code marked `WRONG` above. Running this code for student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database by executing the query
+The comic [<xkcd.com/327>](http://xkcd.com/327/) refers to the so called SQL injection vulnerability that arises from the code marked `WRONG` above. Running this code for student named "Robert'); DROP TABLE Students; --" would instantaneoulsy ruin the whole database by executing the query
 ```sql
 SELECT * FROM Students WHERE (name = 'Robert'); DROP TABLE Students; -- AND year = 2020)
 ```
-(It first lists all students named Robert and then erases the whole table by executing `DROP TABLE Students` request.)
+This query first lists all students named Robert and then erases the whole table by executing `DROP TABLE Students` request.
 
 As in the case of `printf`, such vulnerabilies can be completely eliminated using dependent typing.  
 If the database schema is known in advance, one can determine that `query()` has to have two additional arguments of types `string` and `int` by parsing the query. The output type can be determined as well. One can integrate importing of the database schemata into the build process, i.e. fill in the `db.schema` field for the `db` object each time the application is compiled. That way, the following signature for `query()` function can be achieved:
