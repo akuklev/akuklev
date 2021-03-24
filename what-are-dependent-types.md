@@ -185,7 +185,7 @@ db.query(string<query> q, <db.query_args(q)> ...args) : <db.query_results(q)> th
 Now that the programming tools (IDEs) can see that the string literal used for the argument `q` should comply with a given grammar, they can also provide the respective inline validation, syntax highlighting, context help, autocompletion, etc.
 
 ---
-1. From theoretical perspective, this extension does not introduce any additional complexity to the language if it readily supports dependent types and inductive data types.
+1. From theoretical perspective, this extension does not introduce any additional complexity to the language if it readily supports dependent types and [inductive data types](https://en.wikipedia.org/wiki/Inductive_type).
 
 
 
