@@ -1,12 +1,18 @@
 Synthetic Types
 ===============
 
-The first data types one encounters in general-purpose languages hardware-defined types. Well known examples from C-like languages are the types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, there are also intrinsically defined types: their definitions and behaviour are independent of any machine-related details.
+The first data types one encounters in general-purpose languages hardware-specific types. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. There are two kinds of such data types:
+* Synthetic types (and their extensions)
+* Function types (and their extensions)
+
+Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined to be inhabited by “things” that can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. Synthetic types are defined by the way their values can be constructed (synthesized, hence the name). This article deals with synthetic types, starting with most basic ones.
+
+
 
 § Enumerations: Finite closed data types
 ----------------------------------------
 
-Most simple intrinsically defined types are the enumerations:
+Most simple intrinsically defined types are the enumerations. That's how their definitions look in C and many other C-like languages:
 
 **Example 1**
 ```c
@@ -24,13 +30,22 @@ enum Digit {
 }
 ```
 
-Here, two enumeration types called `State` and `Digit` respectively are defined. `Working`, `Failed`, `D0` and so on are called constructors of respective types.
+Here, two enumeration types called `State` and `Digit` respectively are defined. `Working`, `Failed`, `D0` and so on are called constructors of respective types. Values of enumeration types can be matched against:
+```scala
+s match {
+  case Working => do something
+  case Failed  => do something else
+}
+```
+This known as exhaustive case analysis.
+
+Definitions of enumerations do not prescribe a fixed hardware implementation. Compiler can chose the one it pressumes to be optimal. As long as matching works, implementation details are irrelevant.
 
 Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. Closedness means that a variable of enumeration data type is guaranteed to be given by a constructor declared in the definition of the enumeration type. In particular enumeration types cannot be extended ulteriorly and inheritance is forbidden for them.
 
 There are several extensions to enums:
 1) Constructors can be allowed to have parameters;
-2) Enumeration types can be allowed to have additional equalities.
+2) Enumeration types can be allowed to have postulated equalities.
 
 The following example, written in a C-like pseudocode, shows both extensions:
 
@@ -49,9 +64,9 @@ enum Color {
 }
 ```
 
-This extensions do not spoil closedness and finiteness as long as all parameters are also given by closed finite enumerations.
+This extensions do not spoil closedness and finiteness as long as all parameters are also given by enumerations.
 
-Hardware-defined primitive data types such as `int32` and `float64` are closed enumeration types in disguise, because internally they are represented by finite sequences of bits.
+Hardware-defined primitive data types such as `int32` and `float64` are enumeration types in disguise, because they can be modelled by finite sequences of bits.
 
 § Closed inductive types
 ------------------------
@@ -66,7 +81,7 @@ inductive NaturalNumber {
 }
 ```
 
-The possible values of a variable of type `NaturalNumber` are `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Such types are called closed inductive data types. They are not finite anymore, but are effectively enumberable: for each closed inductive data type one can explicitly write down a program that prints a sequence of all its possible values.
+The possible values of a variable of type `NaturalNumber` are `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Such types are finite and thus not enumerations anymore. They are called closed inductive data types. Closedness refers to TODO. While not finite, closed inductive types are effectively enumberable: for each closed inductive data type one can explicitly write down a program that prints a sequence of all its possible values.
 
 Inductive types are inherently immutable and are not allowed to contain any cycles. A number `inf = SuccessorOf(inf)` is not allowed (cycles are forbidden) and cannot be constructed because the parameters of constructors are required to be given by already defined immutable values of respective types.
 
