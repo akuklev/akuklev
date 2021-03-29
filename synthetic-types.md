@@ -8,7 +8,6 @@ The first data types one encounters in general-purpose languages hardware-specif
 Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined to be inhabited by “things” that can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. Synthetic types are defined by the way their values can be constructed (synthesized, hence the name). This article deals with synthetic types, starting with most basic ones.
 
 
-
 § Enumerations: Finite closed data types
 ----------------------------------------
 
@@ -41,7 +40,11 @@ This known as exhaustive case analysis.
 
 Definitions of enumerations do not prescribe a fixed hardware implementation. Compiler can chose the one it pressumes to be optimal. As long as matching works, implementation details are irrelevant.
 
-Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. Closedness means that a variable of enumeration data type is guaranteed to be given by a constructor declared in the definition of the enumeration type. In particular enumeration types cannot be extended ulteriorly and inheritance is forbidden for them.
+Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. 
+
+Closedness means roughly that the data type does not contain anything except stuff that was explicitly put there in its definition. TODO: present nonexamples: a function type and a “enum” with function-type parameter.
+
+Closedness means that a variable of enumeration data type is guaranteed to be given by a constructor declared in the definition of the enumeration type. In particular enumeration types cannot be extended ulteriorly and inheritance is forbidden for them.
 
 There are several extensions to enums:
 1) Constructors can be allowed to have parameters;
