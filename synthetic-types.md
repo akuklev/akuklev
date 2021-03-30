@@ -1,7 +1,7 @@
 Synthetic Types
 ===============
 
-The first data types one encounters in general-purpose languages are hardware-specific types. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. (TODO: сказать, что мы их будем называть intrinsically defined datatypes) There are two kinds of such data types: function types and synthetic types.
+The first data types one encounters in general-purpose languages are __hardware-specific types__. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. (TODO: сказать, что мы их будем называть __intrinsically defined types__) There are two kinds of such data types: function types and synthetic types.
 
 Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type inhabited by objects that can be applied to a value of type `A` and deterministically yield a value of type `B`. Synthetic types are defined by the way their values can be constructed or synthesized, hence the name. This article deals with synthetic types, starting with most basic ones.
 
@@ -14,8 +14,8 @@ The most simple intrinsically defined types are finite enumerations: (TODO: thin
 **Example 1**
 ```c
 enum State {
-  Working,
-  Failed
+  Failed,
+  Working
 }
 
 enum Digit {
@@ -30,13 +30,15 @@ enum Digit {
 Here, the two enumeration types, called `State` and `Digit`, are defined. `Working`, `Failed`, `D0` and so on are called the __constructors__ of respective types. The values of enumeration types can be inspected by exhaustive case analysis:
 ```scala
 s match {
-  case Working => do-something;
-  case Failed  => do-something-else;
+  case Failed  => do-something;
+  case Working => do-something-else;
 }
 ```
+The values of intrinsically defined types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific types. The values of enumeration types, such as the ones in the example, are normally stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `Failed` could be assigned to 0 and `Working` to 1.
 
-On the machine level enumerations are normally stored as integers of sufficent bit size (`int8`, `int16`, `int32`), and in many low-level languages including C it is possible to inspect which numeric code is used for each constructor, and to use numeric constructor codes to instantiate a variable of enumeration type. However, such practices are not only error prone, but also undermine the abstraction behind machine-independent types, and should be discouraged. In languages, where enumeration types are truly machine-independent, values of enumeration types can be created only by manifestly using constructors and inspected only by case analysis. It allows the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting.
+In many low-level languages including C it is possible to inspect which numeric code is used for which constructor, and to use numeric constructor codes to instantiate a variable of an enumeration type. (TODO: пример) However, such practices are error prone, moreover, they undermine the abstraction behind machine-independent types. In languages, where enumeration types are truly machine-independent, values of enumeration types can be created only by manifestly using constructors and inspected only by case analysis. It allows the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting.
 
+Hardware-defined primitive data types such as `int32` and `float64` are enumeration types in disguise, because they can be modelled by finite sequences of bits.
 
 § Finite function types
 -----------------------
@@ -94,7 +96,7 @@ enum Color {
 
 This extensions do not spoil closedness and finiteness as long as all parameters are also given by enumerations.
 
-Hardware-defined primitive data types such as `int32` and `float64` are enumeration types in disguise, because they can be modelled by finite sequences of bits.
+
 
 
 § Constructors with parameters
