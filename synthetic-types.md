@@ -8,8 +8,8 @@ The first data types one encounters in general-purpose languages hardware-specif
 Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type be inhabited by “things” can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. Synthetic types are defined by the way their values can be constructed (synthesized, hence the name). This article deals with synthetic types, starting with most basic ones.
 
 
-§ Enumerations: Finite synthetic data types
--------------------------------------------
+§ Finite synthetic types
+------------------------
 
 Most simple intrinsically defined types are the finite enumerations:
 
@@ -32,8 +32,8 @@ datatype Digit {
 Here, two enumeration types called `State` and `Digit` respectively are defined. `Working`, `Failed`, `D0` and so on are called constructors of respective types. Values of enumeration types can be matched against:
 ```scala
 s match {
-  case Working => do something
-  case Failed  => do something else
+  case Working => do-something;
+  case Failed  => do-something-else;
 }
 ```
 This known as exhaustive case analysis.
@@ -43,6 +43,26 @@ On the machine level enumerations are normally stored as integers of sufficent b
 
 § Finite function types
 -----------------------
+
+Function types were briefly mentioned in the introduction. Let us now consider them in more detail.
+
+For given data types `A` and `B`, the data type `A -> B` is defined as the type inhabited by values can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. For this definition to be machine-independent, the functions have to be “opaque”: the values of the type `A -> B` are not allowed to be inspected in any way except by applying them to arguments of matching type. Thus, values of function types are indistinguishable iff they yield equal results for same arguments. By identifiability of indiscernables, we have: **given `f(x) = g(x)` for each `x` of type `A`, `f = g`**.
+
+The function types `A -> B` are in general open types in the sence that type defintion does limit how values of the type `A -> B` are to be constructed: the limitation are given by the way how functions are allowed to be used and inspected. Thus on the first glance it might appear that function types are never manifestly finite.
+
+Yet, assume both `A` and `B` are finite data types, with constructors denoted by `{A₁,.., Aₙ}` and `{B₁,..,Bₘ}`. Then, there are only `mⁿ` functions `A -> B` of the following form:
+```scala
+x match {
+  case A₁ => B₍...₎;
+  case A₂ => B₍...₎;
+  ...
+  case Aₙ => B₍...₎;
+}
+```
+
+It can be easily shown that any functions `A -> B` is equal to one of these, thus the type `A -> B` is finite up to equality of its elements. In fact, the types `A -> B` are finite if and only if both `A` and `B` are finite.
+
+
 
 * * *
 
