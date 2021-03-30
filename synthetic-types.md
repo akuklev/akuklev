@@ -27,14 +27,13 @@ enum Digit {
 }
 ```
 
-Here, the two enumeration types, called `State` and `Digit`, are defined. `Working`, `Failed`, `D0` and so on are called the __constructors__ of respective types. Values of enumeration types can be matched against:
+Here, the two enumeration types, called `State` and `Digit`, are defined. `Working`, `Failed`, `D0` and so on are called the __constructors__ of respective types. The values of enumeration types can be inspected by exhaustive case analysis:
 ```scala
 s match {
   case Working => do-something;
   case Failed  => do-something-else;
 }
 ```
-This known as exhaustive case analysis.
 
 On the machine level enumerations are normally stored as integers of sufficent bit size (`int8`, `int16`, `int32`), and in many low-level languages including C it is possible to inspect which numeric code is used for each constructor, and to use numeric constructor codes to instantiate a variable of enumeration type. However, such practices are not only error prone, but also undermine the abstraction behind machine-independent types, and should be discouraged. In languages, where enumeration types are truly machine-independent, values of enumeration types can be created only by manifestly using constructors and inspected only by case analysis. It allows the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting.
 
