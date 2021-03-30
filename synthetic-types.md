@@ -3,22 +3,19 @@ Declarative Data Types
 
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is introduction to declarative data types for an interested reader familiar with some class-based programming language like C++, C# or Java.
 
-_Before proceeding, let us indicate we use the term “data types” in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time._
+_Before proceeding, let us indicate we use the term “data types” in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article._
 
 Declarative data types are user-defined data types specified in terms of _what_ they are rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and to reason about programs in a completely architecture independent fashion.
 
-There are two main classes of declarative data types: function types and synthetic types. Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type inhabited by objects that can be applied to a value of type `A` and deterministically yield a value of type `B`. Synthetic types are defined by the way their values can be constructed or synthesized, hence the name. This article deals with synthetic types, starting with most basic ones.
-
+We are going to start with basic examples of declarative types and work our way to the most advanced ones. Since no mainstream programming language supports declarative datatypes in sufficient generality, pseudocode will be used in all examples.
 
 § Variant data types
 --------------------
 
-Variant types are user-defined data types given by a finite number of named variants
-
-Let us begin with an example. The following example, a user-defined data type `BasicColor`. A `BasicColor` is either `Red`, or `Green`, or `Blue`, or `Gray` of specific intensity given by an integer number between 0 and 100.
+Variant types are a particular kind of user-defined data types. Let us begin with an example: `BasicColor` is defined as a type with allowed values `Red`, `Green`, `Blue`, and `Gray` of specific `intensity` given by an integer number between 0 and 100.
 
 **Example 1**
-```sml
+```
 
 datatype BasicColor {
   Red,
@@ -28,13 +25,16 @@ datatype BasicColor {
 }
 ```
 
-Here, the two enumeration types, called `State` and `Digit`, are defined. `Working`, `Failed`, `D0` and so on are called the __constructors__ of respective types. The values of enumeration types can be inspected by exhaustive case analysis:
+`Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a parametrized constructor, while the other three are called atomic constructors. The values of enumeration types can be inspected by exhaustive case analysis:
 ```scala
 s match {
-  case Failed  => do-something;
-  case Working => do-something-else;
+  case Red   => ...
+  case Green => ...
+  case Blue  => ...
+  case Gray(intensity) => ...
 }
 ```
+
 The values of intrinsically defined types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific types. The values of enumeration types, such as the ones in the example, are normally stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `Failed` could be assigned to 0 and `Working` to 1.
 
 In many low-level languages including C it is possible to inspect which numeric code is used for which constructor, and to use numeric constructor codes to instantiate a variable of an enumeration type. (TODO: пример) However, such practices are error prone, moreover, they undermine the abstraction behind machine-independent types. In languages, where enumeration types are truly machine-independent, values of enumeration types can be created only by manifestly using constructors and inspected only by case analysis. It allows the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting.
