@@ -9,16 +9,16 @@ Function types are defined by the way their values can be used. In particular, t
 § Finite synthetic types
 ------------------------
 
-The most simple intrinsically defined types are the finite enumerations:
+The most simple intrinsically defined types are finite enumerations: (TODO: think about the syntax; reader doesn't know what finite enumerations are)
 
 **Example 1**
 ```c
-datatype State {
+enum State {
   Working,
   Failed
 }
 
-datatype Digit {
+enum Digit {
   D0,
   D1,
   D2,
@@ -27,7 +27,7 @@ datatype Digit {
 }
 ```
 
-Here, two enumeration types called `State` and `Digit` respectively are defined. `Working`, `Failed`, `D0` and so on are called constructors of respective types. Values of enumeration types can be matched against:
+Here, the two enumeration types, called `State` and `Digit`, are defined. `Working`, `Failed`, `D0` and so on are called the __constructors__ of respective types. Values of enumeration types can be matched against:
 ```scala
 s match {
   case Working => do-something;
