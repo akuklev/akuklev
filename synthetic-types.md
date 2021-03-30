@@ -1,7 +1,7 @@
 Synthetic Types
 ===============
 
-The first data types one encounters in general-purpose languages hardware-specific types. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. There are two kinds of such data types:
+The first data types one encounters in general-purpose languages are hardware-specific types. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. There are two kinds of such data types:
 * Function types (and their extensions)
 * Synthetic types (and their extensions)
 
