@@ -1,29 +1,30 @@
-Synthetic Types
-===============
+Declarative Data Types
+======================
 
-The first data types one encounters in general-purpose languages are __hardware-specific types__. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. (TODO: сказать, что мы их будем называть __intrinsically defined types__) There are two kinds of such data types: function types and synthetic types.
+I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is introduction to declarative data types for an interested reader familiar with some class-based programming language like C++, C# or Java.
 
-Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type inhabited by objects that can be applied to a value of type `A` and deterministically yield a value of type `B`. Synthetic types are defined by the way their values can be constructed or synthesized, hence the name. This article deals with synthetic types, starting with most basic ones.
+_Before proceeding, let us indicate we use the term “data types” in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time._
+
+Declarative data types are user-defined data types specified in terms of _what_ they are rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and to reason about programs in a completely architecture independent fashion.
+
+There are two main classes of declarative data types: function types and synthetic types. Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type inhabited by objects that can be applied to a value of type `A` and deterministically yield a value of type `B`. Synthetic types are defined by the way their values can be constructed or synthesized, hence the name. This article deals with synthetic types, starting with most basic ones.
 
 
-§ Finite synthetic types
-------------------------
+§ Variant data types
+--------------------
 
-The most simple intrinsically defined types are finite enumerations: (TODO: think about the syntax; reader doesn't know what finite enumerations are)
+Variant types are user-defined data types given by a finite number of named variants
+
+Let us begin with an example. The following example, a user-defined data type `BasicColor`. A `BasicColor` is either `Red`, or `Green`, or `Blue`, or `Gray` of specific intensity given by an integer number between 0 and 100.
 
 **Example 1**
-```c
-enum State {
-  Failed,
-  Working
-}
+```sml
 
-enum Digit {
-  D0,
-  D1,
-  D2,
-  ..,
-  D9
+datatype BasicColor {
+  Red,
+  Green,
+  Blue,
+  Gray(intensity : 0..100)
 }
 ```
 
