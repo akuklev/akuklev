@@ -3,7 +3,7 @@ Synthetic Types
 
 The first data types one encounters in general-purpose languages are hardware-specific types. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. There are two kinds of such data types: function types and synthetic types.
 
-Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type inhabited by objects that can be applied to a value of type `A` and deterministically yield a value of type `B`. Synthetic types are defined by the way their values can be constructed (synthesized, hence the name). This article deals with synthetic types, starting with most basic ones.
+Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type inhabited by objects that can be applied to a value of type `A` and deterministically yield a value of type `B`. Synthetic types are defined by the way their values can be constructed or synthesized, hence the name. This article deals with synthetic types, starting with most basic ones.
 
 
 § Finite synthetic types
