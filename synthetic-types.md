@@ -2,25 +2,25 @@ Synthetic Types
 ===============
 
 The first data types one encounters in general-purpose languages hardware-specific types. Well known examples from C-like languages are the data types `int` (`int32`) and `float` (`float32`) of 32-bit integers and floating point real numbers respectively. Yet, many languages also support data types defined independently of any of machine-related aspects. There are two kinds of such data types:
-* Synthetic types (and their extensions)
 * Function types (and their extensions)
+* Synthetic types (and their extensions)
 
-Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined to be inhabited by “things” that can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. Synthetic types are defined by the way their values can be constructed (synthesized, hence the name). This article deals with synthetic types, starting with most basic ones.
+Function types are defined by the way their values can be used. In particular, the type `A -> B` is defined as the type be inhabited by “things” can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. Synthetic types are defined by the way their values can be constructed (synthesized, hence the name). This article deals with synthetic types, starting with most basic ones.
 
 
-§ Enumerations: Finite closed data types
-----------------------------------------
+§ Enumerations: Finite synthetic data types
+-------------------------------------------
 
-Most simple intrinsically defined types are the enumerations. That's how their definitions look in C and many other C-like languages:
+Most simple intrinsically defined types are the finite enumerations:
 
 **Example 1**
 ```c
-enum State {
+datatype State {
   Working,
   Failed
 }
 
-enum Digit {
+datatype Digit {
   D0,
   D1,
   D2,
@@ -38,7 +38,15 @@ s match {
 ```
 This known as exhaustive case analysis.
 
-Definitions of enumerations do not prescribe a fixed hardware implementation. Compiler can chose the one it pressumes to be optimal. As long as matching works, implementation details are irrelevant.
+On the machine level enumerations are normally stored as integers of sufficent bit size (`int8`, `int16`, `int32`), and in many low-level languages including C it is possible to inspect which numeric code is used for each constructor, and to use numeric constructor codes to instantiate a variable of enumeration type. However, such practices are not only error prone, but also undermine the abstraction behind machine-independent types, and should be discouraged. In languages, where enumeration types are truly machine-independent, values of enumeration types can be created only by manifestly using constructors and inspected only by case analysis. It allows the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting.
+
+
+§ Finite function types
+-----------------------
+
+* * *
+
+
 
 Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. 
 
@@ -70,6 +78,12 @@ enum Color {
 This extensions do not spoil closedness and finiteness as long as all parameters are also given by enumerations.
 
 Hardware-defined primitive data types such as `int32` and `float64` are enumeration types in disguise, because they can be modelled by finite sequences of bits.
+
+
+§ Constructors with parameters
+------------------------------
+
+
 
 § Closed inductive types
 ------------------------
