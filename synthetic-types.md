@@ -25,7 +25,7 @@ datatype BasicColor {
 }
 ```
 
-`Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a parametrized constructor, while the other three are called atomic constructors. The values of enumeration types can be inspected by exhaustive case analysis:
+`Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a parametrized constructor, while the other three are called indigenous constructors. The values of enumeration types can be inspected by exhaustive case analysis:
 ```scala
 s match {
   case Red   => ...
@@ -38,7 +38,7 @@ s match {
 **Definition 1**
 > Variant data types are specified by a finite list of named constructors with a finite number (zero or more) parameters each. All parameters are required to have types (data types) defined beforehand. Values of variant datatypes are only allowed (1) to be created by manifestly using a constructor from the list, (2) to be inspected by case analysis.
 
-Variant data types with atomic constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
+Variant data types with indigenous constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
 
@@ -100,6 +100,9 @@ datatype Nat {
 ```
 
 The possible values of a variable of type `Nat` are thus `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Cycles are, however, not allowed. In particular there can be no such `n : Nat` that `n = SuccessorOf(n)`.
+
+For inductive datatypes, it makes sense to redefine indigenous constructors to include parametrized constructors as long as all their parameters are of the type being defined. Using this updated terminology, both constructors of `Nat` are indigenous.
+
 
 Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `SuccessorOf(n)`. For inductive types, exhaustive case analysis turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `SuccessorOf(n)` under assumption that `f(n)` is already known.
 
@@ -164,9 +167,27 @@ datatype Int {
   Negate(Neg(Succ(n))) => Pos(Succ(n))
 }
 ```
-Here, the cases `Pos(Zero)` and `Neg(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case. Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
+Here, the cases `Pos(Zero)` and `Neg(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case. 
 
-TODO: Hereditarliy inductive types.
+Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
+
+
+§ Quotient Inductive Types
+--------------------------
+
+
+Basic inductive types are not sufficient to handle the natural definition of rational types. Let us consider an extension to basic inductive types that makes them possible.
+
+TODO
+
+Tell that we're still to weak to encompass real numbers, but we have to wait before defining them.
+
+
+§ Synthetic types
+-----------------
+
+Recall that variant types are not only finite if all their constructors are indigenous. They also remain finite with parametrized constructors as long as all of them do only have parameters of finite type. Similarily let us call an inductive type synthetic either if it has only indigenous constructors or if all paremeters of its parametrized constructors are synthetic as well.
+
 
 § Function types
 ----------------
