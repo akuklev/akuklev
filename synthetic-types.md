@@ -188,6 +188,12 @@ Tell that we're still to weak to encompass real numbers, but we have to wait bef
 
 Recall that variant types are not only finite if all their constructors are indigenous. They also remain finite with parametrized constructors as long as all of them do only have parameters of finite type. Similarily let us call an inductive type synthetic either if it has only indigenous constructors or if all paremeters of its parametrized constructors are synthetic as well.
 
+Synthetic types are particularily well-behaved: each possible value of a synthetic type can be given as a finite tree of constructors. In particular, it means that synthetic types are effectively enumerable: one can write down an algorithm that prints out possible values of a given type and will eventually print out any of them.
+
+Synthetic types that do not employ postulated identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
+
+TODO: few words about synthetic types and abstract syntax trees.
+
 
 § Function types
 ----------------
@@ -210,65 +216,31 @@ x match {
 
 It can be easily shown that any functions `A -> B` is equal to one of these, thus the type `A -> B` is finite up to equality of its elements. In fact, the types `A -> B` are finite if and only if both `A` and `B` are finite.
 
+Along the same line of reasoning one can show that the type `A -> B` is a synthetic type in disguise if `A` is finite and `B` synthetic. The next section argues that this is the only case when function types are equivalent to synthetic types.
+
+§ Non-Synthetic Types
+---------------------
+
+There are data types which cannot be expressed as synthetic types.  
+
+The most prominent examples are given by functions on infinite data types (for instance infinite sequences of booleans `Nat -> Bool`) and exact real numbers `Real`. While this two types are perfectly valid data types, it is a matter of argument if infinite sequences and exact real numbers are data in the most narrow sense of the word because they cannot be stored on a finite digital carrier or sent over network in a finite amount of time.
+
+Yet it is possible to define the types of _computable_ sequences and _computable_ real numbers. That is, ones sequences that can be produced by an algorithm and real numbers that can be algorithmically computed to any desired finite precision. These are unequivocally **data** types, because they can be easily sent over network or stored in form of the respective lambda expression (or any other desired form of Turing-complete computation). These two types still cannot be represented by closed synthetic types, because closed synthetic types are by design effectively enumerable and computable sequences/computable reals are not effectively enumerable due to [halting problem](https://en.wikipedia.org/wiki/Halting_problem).
+
+The type of all lambda expressions can be certainly given by as a closed synthetic type, but it will neccesarily include some nonterminating expressions (the ones that does not correspond to any valid sequence and no valid real number respectively), and have the wrong notion of equality. As we already mentioned, equality on synthetic types is verifiable, while equality of reals and equality of sequences is not. Actually, it's the other way around. The equality on reals and discernable sequences is refutable: one can check equality of two numbers digit-by-digit (equality of sequences respectively item-by-item) and this process is guaranteed to terminate if there is a difference somewhere, but would last infinitely when values are indeed equal.
+
+To have a mathematically sound type system, one has to accept the existence of open types of functions `A -> B` (where `A` is an infinite type) which are inhabited by constructively definable functions from `A` to `B`, but not limited to them. The only thing one can be sure, is that such a function can be applied to a value of type `A` and yields a value of type `B`. Function types inherently satisfy a potential open-world assumption.
+
+§ The Power of Non-Synthetic Quotient Inductive-Inductive types: Defining reals
+-------------------------------------------------------------------------------
+
+Define reals, partial computations `℧(T)`, computable reals, computable functions, borel-measurable functions `𝔅(A, B)`.
+
+Provide initial models for contably-infinitary algebraic theories (like the theory of compact Hausdorff spaces).
 
 
-* * *
+* * * 
 
-
-
-Enumerations are finite and closed data types. Finite means that a variable of enumeration data type can attain only a finite set of values. 
-
-Closedness means roughly that the data type does not contain anything except stuff that was explicitly put there in its definition. TODO: present nonexamples: a function type and a “enum” with function-type parameter.
-
-Closedness means that a variable of enumeration data type is guaranteed to be given by a constructor declared in the definition of the enumeration type. In particular enumeration types cannot be extended ulteriorly and inheritance is forbidden for them.
-
-There are several extensions to enums:
-1) Constructors can be allowed to have parameters;
-2) Enumeration types can be allowed to have postulated equalities.
-
-The following example, written in a C-like pseudocode, shows both extensions:
-
-**Example 2**
-```c
-enum Color {
-  Red,
-  Green,
-  Blue,
-  CustomColor(Digit r, Digit g, Digit b),
-  
-  // Equalities:
-  Red   => CustomColor(D9, D0, D0),
-  Green => CustomColor(D0, D9, D0),
-  Blue  => CustomColor(D0, D0, D9)
-}
-```
-
-This extensions do not spoil closedness and finiteness as long as all parameters are also given by enumerations.
-
-
-
-
-§ Constructors with parameters
-------------------------------
-
-
-
-§ Closed inductive types
-------------------------
-
-One can go beyond finitness by allowing parameters of the constructors to have the type being defined. Let's consider the most basic example:
-
-**Example 3**
-```c
-inductive NaturalNumber {
-  Zero,
-  SuccessorOf(NaturalNumber n)
-}
-```
-
-The possible values of a variable of type `NaturalNumber` are `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Such types are finite and thus not enumerations anymore. They are called closed inductive data types. Closedness refers to TODO. While not finite, closed inductive types are effectively enumberable: for each closed inductive data type one can explicitly write down a program that prints a sequence of all its possible values.
-
-Inductive types are inherently immutable and are not allowed to contain any cycles. A number `inf = SuccessorOf(inf)` is not allowed (cycles are forbidden) and cannot be constructed because the parameters of constructors are required to be given by already defined immutable values of respective types.
 
 Let's consider a few other examples:
 **Example 4**
@@ -284,26 +256,6 @@ inductive BinaryTreeOfNaturals {
 }
 
 ```
-
-Inductive types are "synthetic" in the following sense: any possible value of a variable is guaranteed to be built ("synthesised") from a fixed set of constructors 
-in a non-circular fasion. In other words any value is given by a tree of constructors of finite depth. This can be also expressed as follows:
-* A value of an inductive type can be thus exhaustively analysed by recursive pattern matching and the recursion is guaranteed to terminate (no cycles => no infinite loops).
-* A property for all values of a given inductive type can be proven by structural induction on possible values. By the way, that is why they are called inductive.
-
-Inductive types are also compatible with custom equalities:
-
-**Example 5**
-```c
-
-inductive UnorderedPairOfIntegers {
-  UPair(Integer a, Integer b)
-  
-  // Undirected equalities:
-  Symmetry(Integer A, Integer B) : UPair(a, b) = UPair(b, a)
-}
-```
-
-If all equalites in a closed inductive type are directed, the equality of two values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. If some of the equalities ere not directed (see UnorderedPair in the Example 5), the equality checking is only guaranteed to be semidecidable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
 
 § More General Closed Synthetic Types
 -------------------------------------
@@ -350,23 +302,7 @@ Notwithstanding all this extensions, the inductive types retain their basic prop
 ----
 1. Closed synthetic types provide syntactic models (= initial models) for all finitary extended algebraic theories, in particular for all generalized algebraic theories without sort equations. Non-closed synthetic types (see below) are capable of dealing with countably infinitary extended algebraic theories.
 
-§ Non-Closed Synthetic Types
-----------------------------
-
-There are data types which cannot be expressed by closed synthetic types.  
-
-The most prominent examples are given by functions on infinite data types (for instance infinite sequences of digits `NaturalNumber -> Digit`) and exact real numbers `Real`. While this two types are perfectly valid data types, it is a matter of argument if infinite sequences and exact real numbers are really “data” because they cannot be stored on a finite digital carrier or sent over network in a finite amount of time.
-
-Yet it is possible to define the types of __computable__ sequences and __computable__ real numbers. That is, ones sequences that can be produced by an algorithm and real numbers that can be algorithmically computed to any desired finite precision. These are unequivocally **data** types, because they can be easily sent over network or stored in form of the respective lambda expression (or any other desired form of Turing-complete computation). These two types still cannot be represented by closed synthetic types, because closed synthetic types are by design effectively enumerable and computable sequences/computable reals are not effectively enumerable due to [halting problem](https://en.wikipedia.org/wiki/Halting_problem).
-
-The type of all lambda expressions can be certainly given by as a closed synthetic type, but it will neccesarily include some nonterminating expressions (the ones that does not correspond to any valid sequence and no valid real number respectively), and have the wrong notion of equality. As we already mentioned, equality on closes synthetic types is semidecidable in positive sense (guaranteed to terminate if the values are equal), while equality of reals and equality of discernable sequences is semidecidable in the negative sense: one can check equality of two numbers digit-by-digit (equality of sequences respectively item-by-item) and this process is guaranteed to terminate if there is a difference somewhere, but would last infinitely when values are indeed equal.
-
-To have a mathematically sound type system, one has to accept the existence of open types of functions `A -> B` (where `A` is an infinite type) which are inhabited by constructively definable functions from `A` to `B`, but not limited to them. The only thing one can be sure, is that such a function can be applied to a value of type `A` and yields a value of type `B`, otherwise an kind of “open-world assumption” applies.
-
-Non-closed synthetic types are just like synthetic types, but the constructors are allowed to have parameters of open types (primarily `A -> B`). The types of exact reals `Real` and partial computations `℧(T)` can be expressed as non-closed synthetic types employing parameters of the kind `A -> B`. This also allows to define such complicated mathematicians' types as computable reals, computable functions `Comp(A, B)`, continious functions `𝒞(A, B)`, borel functions `𝔅(A, B)` measurable functions `Meas(A, B)`, etc.
-
-Non-closed types are not effectively enumerable anymore. If non-closedness arises form constructor parameters of types `A -> B` where `A` infinite, they are not positively semidecidable anymore. They might be discernable (i.e. have negatively semidecidable equality) or entirely undecidable.
-
-Non-closed synthetic types provide initial models for contably-infinitary algebraic theories (like the theory of compact Hausdorff spaces), but these cannot be called syntactic models anymore.
+§ Universes and other fibered inductive-inductive types
+-------------------------------------------------------
 
 Another kind of non-closedness arises when the functions defined simultaneously with their domain in inductive-inductive types are allowed to be kind-valued. Such extention is known as fibered inductive types (or large inductive-inductive-recursion). Since kinds are inherently open virtual types, resulting synthetic types are non-closed as well. This extension allows defining universes and abstract syntax trees for languages with extensible type systems. In particular, such types are capable of capturing abstract syntax of their host language, which is known as “language eating itself”. In the latter case, types remain positively semidecidable and effectively enumerable relative to the host language, which allows calling them syntactic models, at least in relativised sense.
