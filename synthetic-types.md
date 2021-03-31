@@ -40,9 +40,33 @@ s match {
 
 Variant data types with atomic constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
 
-The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in the RAM.
+The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
 
-Hardware-defined primitive data types such as `int32` and `float64` are enumeration types in disguise, because they can be modelled by finite sequences of bits.
+Hardware-defined primitive data types such as `int32` and `float64` can be seen as finite variant types in disguise, because they can be modelled by finite sequences of bits.
+
+§ Inductive types
+-----------------
+
+The realization that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are. That is not true under assumption that computer memory is potentially infinite. The prime examples of infinite data types are the types of (unlimited) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
+
+To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the inductive types. 
+
+One can go beyond finitness by allowing parameters of the constructors to have the type being defined. Let's consider the most basic example:
+
+**Example 3**
+```c
+datatype Nat {
+  Zero,
+  SuccessorOf(n : Nat)
+}
+```
+
+The possible values of a variable of type `NaturalNumber` are `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Such types are finite and thus not enumerations anymore. They are called closed inductive data types. Closedness refers to TODO. While not finite, closed inductive types are effectively enumberable: for each closed inductive data type one can explicitly write down a program that prints a sequence of all its possible values.
+
+Inductive types are inherently immutable and are not allowed to contain any cycles. A number `inf = SuccessorOf(inf)` is not allowed (cycles are forbidden) and cannot be constructed because the parameters of constructors are required to be given by already defined immutable values of respective types.
+
+
+
 
 § Finite function types
 -----------------------
