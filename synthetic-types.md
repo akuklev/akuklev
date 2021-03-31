@@ -42,18 +42,56 @@ Variant data types with atomic constructors only are finite, i.e. variables of t
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
 
-Hardware-defined primitive data types such as `int32` and `float64` can be seen as finite variant types in disguise, because they can be modelled by finite sequences of bits.
+§ Variant Types with Bundled operations
+---------------------------------------
+
+There is a handy extension to variant types: one can allow constructors that reduce to other constructors. Reductible constructors are exempt to the rule that parameters must have types defind beforehand. In particular they are allowed to have parameters of the type being defined. Consider the following example:
+
+**Example 2**
+```
+datatype Bool {
+  True,
+  False,
+  Not(a : Bool),
+  And(a : Bool, b : Bool),
+  
+  Not(True) => False,
+  Not(False) => True,
+  
+  And(True, True) => True,
+  And(True, False) => False,
+  And(False, True) => False,
+  And(False, False) => False,
+}
+```
+
+Reducible constructors have to reduce to a non-reducible one for any combination of parameters.
+
+Hardware-defined primitive data types such as `int32` and `float64` can be seen as finite variant types in disguise, because they can be modelled by finite sequences of bits:
+
+**Example 3**
+```
+datatype Int8 {
+  Int8(b1 : Bool, b2 : Bool,.., b8 : Bool),
+  BitwiseAnd(a : Int8, b : Int8),
+  BitwiseXor(a : Int8, b : Int8)
+  Add(a : Int8, b : Int8),
+  Mul(a : Int8, b : Int8),
+  
+  BitwiseAnd(Int8(a1,.., a8), Int8(b1,..,b8)) => Int8(And(a1, b1), And(a2, b2),.., And(a8, b8))
+  
+  ... // likewise define BitwiseXor and then addition via bitwise operations and multiplication via addition
+}
+```
 
 § Inductive types
 -----------------
 
 The realization that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are. That is not true under assumption that computer memory is potentially infinite. The prime examples of infinite data types are the types of (unlimited) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
 
-To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the inductive types. 
+To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the inductive types. In their simplest form, inductive types are cousins of variant types with recursive defintions allowed. That is, constructors of inductive types are allowed to have parameters of the type being defined:
 
-One can go beyond finitness by allowing parameters of the constructors to have the type being defined. Let's consider the most basic example:
-
-**Example 3**
+**Example 4**
 ```c
 datatype Nat {
   Zero,
@@ -61,7 +99,39 @@ datatype Nat {
 }
 ```
 
-The possible values of a variable of type `NaturalNumber` are `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Such types are finite and thus not enumerations anymore. They are called closed inductive data types. Closedness refers to TODO. While not finite, closed inductive types are effectively enumberable: for each closed inductive data type one can explicitly write down a program that prints a sequence of all its possible values.
+The possible values of a variable of type `Nat` are thus `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Cycles are, however, not allowed. In particular there can be no such `n : Nat` that `n = SuccessorOf(n)`.
+
+Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `SuccessorOf(n)`. For inductive types, exhaustive case analysis turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `SuccessorOf(n)` under assumption that `f(n)` is already known.
+
+**Example 5**
+```
+def isEven(n : Nat) : Boolean
+  Zero => True
+  SuccessorOf(n) => Not(isEven(n))
+```
+
+Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
+
+Inductive types may have structurally recursive reducible constructors. Let us define some bundled operations for `Nat` to provide a solid example:
+
+**Example 6**
+```
+datatype Nat {
+  Zero,
+  Succ(n : Nat),
+  
+  Add(n : Nat, m : Nat)
+  Mul(n : Nat, m : Nat)
+  
+  Add(n, Zero) => n
+  Add(n, Succ(m)) => Succ(Add(n, m))
+  
+  Mul(n, Zero) => Zero
+  Mul(n, Succ(m)) => Add(n, Mul(n, m))
+}
+```
+
+Such types are finite and thus not enumerations anymore. They are called closed inductive data types. Closedness refers to TODO. While not finite, closed inductive types are effectively enumberable: for each closed inductive data type one can explicitly write down a program that prints a sequence of all its possible values.
 
 Inductive types are inherently immutable and are not allowed to contain any cycles. A number `inf = SuccessorOf(inf)` is not allowed (cycles are forbidden) and cannot be constructed because the parameters of constructors are required to be given by already defined immutable values of respective types.
 
