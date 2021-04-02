@@ -3,9 +3,25 @@ Declarative Data Types
 
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is introduction to declarative data types for an interested reader familiar with some class-based programming language like C++, C# or Java.
 
-_Before proceeding, let us indicate we use the term “data types” in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article._
+_**Disclaimer:** Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article._
+
+General purpose data types:
+* Finite data types: a binary flag (yes/no), a ternary flag (pos/neutral/neg), a fixed range of integers, an alphabetic character;
+* Numeric data types: a natural, integer, rational, or real number;
+* Immutable container data types: a pair, a list, a binary tree or variadic tree of values;
+* Potentially infinite containers: sequences, functions, potentially infinite trees.
+
+Domain-specific data types:
+* Abstract syntax trees for various formalized languages;
+* Types for specific types of graphs (ordered, unordered, weighted, multigraphs, hypergraphs, etc.), networks, automata, combinatorial configuration spaces, etc.
 
 Declarative data types are user-defined data types specified in terms of _what_ they are rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and to reason about programs in a completely architecture independent fashion.
+
+
+There two approaches to declarative definitions 
+* Synthetic approach (closed): Bottom-up
+* Behaviorial approach (open): 
+* Mixed: neccessary to define real numbers.
 
 We are going to start with basic examples of declarative types and work our way to the most advanced ones. Since no mainstream programming language supports declarative datatypes in sufficient generality, pseudocode will be used in all examples.
 
