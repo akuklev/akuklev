@@ -20,14 +20,15 @@ Domain-specific data types:
 
 Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
 
-Declarative definitions 
+There are two general approaches to declarative type definitions:
+* Synthetic (or closed) paradigm: To define a type, one specifies how values of that type are built bottom-up.
+* Behaviorial (or open) paradigm: To define a type, one specifies how values of that type have behave, without explicitly limiting how they are built.
 
-There two approaches to declarative definitions 
-* Synthetic approach (closed): Bottom-up
-* Behaviorial approach (open): 
-* Mixed: neccessary to define real numbers.
+Types defined using the first paradigm are closed in the sense they do not contain anything one has not explicitly put there. Number of inhabitants of a synthetic type is known upfront. If it is infinite, than it has to be countably infinite, i.e. all possible inhabitants can be numbered by whole numbers. In contrast, for behaviorially defined types one does not assume that they are exhausted by values known upfront. Behaviorially defined types obey the duck typing principle: "if it walks like a duck and it quacks like a duck, then it's duck", so in general one only knows a lower bound on their size.
 
-We are going to start with basic examples of declarative types and work our way to the most advanced ones. Since no mainstream programming language supports declarative datatypes in sufficient generality, pseudocode will be used in all examples.
+To define the types mentioned as examples above, one needs both approaches. In fact, for the most advanced examples (in particular, for real numbers) one has to use both paradigms simultaneously.
+
+Now let us begin with the basic examples and work our way to the most advanced ones. Since no mainstream programming language supports declarative data types in sufficient generality, pseudocode will be used in all examples.
 
 § Variant data types
 --------------------
