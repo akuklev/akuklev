@@ -154,7 +154,7 @@ def isEven(n : Nat) : Boolean
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
 
 
-§ Defining Unbounded Integers: Inductive types with reducible constructors
+§ Defining integers: Inductive types with reducible constructors
 --------------------------------------------------------------------------
 
 Inductive types may have structurally recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
@@ -223,7 +223,7 @@ For each inductive type `T` with reducible constructors, one could define a type
 
 **Note for experts:** Availability of partially reducible constructors substantially increase the strength of inductive types. They allow to enforce _literal_ equalities on functions from a given type without introducing strict equality types into the type system. In particular, they render semi-simplicial types definable a univalent type theory.
 
-§ Defining Rationals: Quotient Inductive Types
+§ Defining rationals: Quotient Inductive Types
 ----------------------------------------------
 
 Let us briefly mention another feature that enables definition of rational numbers.
@@ -241,9 +241,40 @@ datatype Rational {
   ReduceFraction(num : Int, den : Int.Pos, q : Int.Pos) : 
     Frac(num · q, den · q) = Frac(num, den)
 }
+``` 
+
+§ Defining containers: Polymorphic Inductive Types
+--------------------------------------------------
+
+With inductive types we can also container types such as lists:
+
+**Example 6**
+```
+datatype ListOfNats {
+  EmptyList,
+  NonEmptyList(head : Nat, tail : ListOfNats)
+}
 ```
 
-This feature also allows defining such unordered pairs, cycles (“linked lists without distinguised starting point”), collections (“lists up to permutations”), etc.
+It is of course desirable to have a generic defintion of lists regardless of their element type. For this occasion, types are allowed to have parameters themselves. This feature is known as parametric polymorphism.
+
+**Example 7**
+```
+datatype List<T : *> {
+  EmptyList,
+  NonEmptyList(head : T, tail : List<T>)
+}
+```
+
+Here the parameter `T` if of type “data type” which is written as `*`. In the type specification the parameter `T` is used as type for the first parameter `head` of the `NonEmptyList` constructor and as a parameter of the type `List<T>` for its second parameter `tail`. The type `*` itself is not a _data_ type, it belongs to another class of types known as virtual types: these are the types of so called compile time parameters, that never appear in the run-time. 
+
+**Technical remark:** Constructors of different specializations of generic types are distinct constructors. In rare cases when disambiguation is necessary, their qualified names look like `List<Nat>.EmptyList` or `List<Int>.NonEmptyList`. Shorthands like `NonEmptyList<Int>` are also possible.
+
+Types may have parameters of other types as well. For example one can define the type `Array<Type : *, length : Nat>` of lists of predefined length. However we'll postpone the definition to the section [Advanced inductive types].
+
+* * *
+
+By combining parametric polymorphism with custom identification one can define such containers as unordered pairs, cycles (“linked lists without distinguised starting point”), collections (“lists up to permutations”), etc.
 
 **Example 10**
 ```
@@ -264,37 +295,7 @@ higher datatype UnorderedPairOfInts {
     UPair(a, b) = UPair(b, a)
 }
 ```
-which does not assume that for `loop(a) := Swap(a, b)` the equation `loop • loop = loop` holds. That's precisely the point where homotopic considerations arise in the type theory. 
-
-
-§ Defining containers: Inductive Types with Parameters
-------------------------------------------------------
-
-With inductive types we can also container types such as lists:
-
-**Example 6**
-```
-datatype ListOfNats {
-  EmptyList,
-  NonEmptyList(head : Nat, tail : ListOfNats)
-}
-```
-
-It is of course desirable to a generic defintion of lists regardless of their element type. For this occasion, types are allowed to have parameters themselves:
-
-**Example 7**
-```
-datatype List<T : *> {
-  EmptyList,
-  NonEmptyList(head : T, tail : List<T>)
-}
-```
-
-Here the parameter `T` if of type “data type” which is written as `*`. In the type specification the parameter `T` is used as type for the first parameter `head` of the `NonEmptyList` constructor and as a parameter of the type `List<T>` for its second parameter `tail`. The type `*` itself is not a _data_ type, it belongs to another class of types known as virtual types: these are the types of so called compile time parameters, that never appear in the run-time.
-
-**Technical remark:** Constructors of different specializations of generic types are distinct constructors. In rare cases when disambiguation is necessary, their qualified names look like `List<Nat>.EmptyList` or `List<Int>.NonEmptyList`. Shorthands like `NonEmptyList<Int>` are also possible.
-
-Types may have parameters of other types as well. For example one can define the type `Array<Type : *, length : Nat>` of lists of predefined length. However we'll postpone the definition to the section [Advanced inductive types].
+which does not assume that for `loop(a) := Swap(a, b)` the equation `loop • loop = loop` holds. That's precisely the point where homotopic considerations arise in the type theory.
 
 
 § Synthetic types
@@ -307,7 +308,7 @@ Recall that variant types are finite if they have no parametric constructors or 
  
 Synthetic types are particularily well-behaved: each possible value of a synthetic type can be given as a finite tree of constructors. In particular, it means that synthetic types are effectively enumerable: one can write down an algorithm that prints out possible values of a given type and will eventually print out any of them.
 
-Synthetic types that do not employ postulated identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
+Synthetic types that do not employ user-defined identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
 
 TODO: few words about synthetic types and abstract syntax trees.
 
