@@ -1,22 +1,26 @@
 Declarative Data Types
 ======================
 
-I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is introduction to declarative data types for an interested reader familiar with some class-based programming language like C++, C# or Java.
+I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an introduction to declarative data types for interested software engineers.
 
-_**Disclaimer:** Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article._
+Declarative data types are user-defined data types specified in terms of _what_ they are and good for, rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and makes it a lot easier to reason about programs. Let us give a list of example data types that can be described declaratively:
 
 General purpose data types:
-* Finite data types: a binary flag (yes/no), a ternary flag (pos/neutral/neg), a fixed range of integers, an alphabetic character;
-* Numeric data types: a natural, integer, rational, or real number;
-* Immutable container data types: a pair, a list, a binary tree or variadic tree of values;
-* Potentially infinite containers: sequences, functions, potentially infinite trees.
+* Finite data types: a binary flag (yes/no), an alphabetic character, a fixed range integer (1..10);
+* Numeric data types: a natural, an integer, a rational, or a real number;
+* Immutable container data types: a pair, a list, or a binary tree of values;
+* Potentially infinite containers: a sequence, a function, a potentially infinite tree.
 
 Domain-specific data types:
+* Configiration for a specific application;
+* Records in a specific table of a database;
+* Messages in a specific communication protocol;
 * Abstract syntax trees for various formalized languages;
-* Types for specific types of graphs (ordered, unordered, weighted, multigraphs, hypergraphs, etc.), networks, automata, combinatorial configuration spaces, etc.
+* Specific types of graphs, networks, automata, combinatorial configuration spaces, etc.
 
-Declarative data types are user-defined data types specified in terms of _what_ they are rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and to reason about programs in a completely architecture independent fashion.
+Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
 
+Declarative definitions 
 
 There two approaches to declarative definitions 
 * Synthetic approach (closed): Bottom-up
