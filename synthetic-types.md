@@ -145,7 +145,7 @@ Inductive types may have structurally recursive reducible constructors. These ge
 ```
 datatype Nat {
   Zero,
-  Succ(n : Nat),
+  Succ(pred : Nat),
   
   Add(n : Nat, m : Nat)
   Mul(n : Nat, m : Nat)
@@ -163,12 +163,12 @@ By allowing partially reducible constructors, one opens a way to define the type
 **Example 7**
 ```
 datatype Int {
-  Pos(n : Nat),
-  Neg(n : Nat),
+  P(n : Nat),
+  N(n : Nat),
   Zero,
   
-  Pos(Zero) => Zero
-  Neg(Zero) => Zero
+  P(Zero) => Zero
+  N(Zero) => Zero
 }
 ```
 
@@ -178,22 +178,43 @@ When performing exhausitve case analysis, reducible cases do not appear. Let us 
 **Example 8**
 ```
 datatype Int {
-  Pos(n : Nat),
-  Neg(n : Nat),
+  P(n : Nat),
+  N(n : Nat),
   Zero,
   Negate(n : Int),
   
-  Pos(Zero) => Zero
-  Neg(Zero) => Zero
+  P(Zero) => Zero
+  N(Zero) => Zero
   
   Negate(Zero) => Zero
-  Negate(Pos(Succ(n))) => Neg(Succ(n))
-  Negate(Neg(Succ(n))) => Pos(Succ(n))
+  Negate(P(Succ(n))) => Neg(Succ(n))
+  Negate(N(Succ(n))) => Pos(Succ(n))
 }
 ```
-Here, the cases `Pos(Zero)` and `Neg(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case. 
+Here, the cases `P(Zero)` and `N(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
 
 Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
+
+§ Quotient Inductive Types
+--------------------------
+
+Let us briefly mention another feature that enables definition of rational numbers. Rational numbers are fractions with integer numerator and denominator, and their the usual definition of rational numbers goes as follows:
+> Rational numbers are pairs of an integer called numerator and a strictly-positive integer called denumerator, up to identification of pairs `(num, den)` and `(num · q, den · q)` where `q` is a positive integer.
+
+It is possible to allow custom identifications in inductive types. We'll 
+
+**Example 9**
+```
+datatype Rational {
+  Fraction(num : Int, den : Int.Pos)
+  
+  ReduceFraction(num : Int, den : Int.Pos, q : Int.Pos)(i : 𝕀)
+  ReduceFraction(num, den, q)(lt) => Frac(num · q, den · q)
+  ReduceFraction(num, den, q)(rt) => Frac(num, den)
+}
+```
+
+
 
 
 § Generic definitions: Inductive Types with Parameters
@@ -231,19 +252,17 @@ datatype Array<T : *, length : Nat> = length match {
   Zero => {
     EmptyArray
   };
-  SuccessorOf(n : Nat) => {
+  Succ(n : Nat) => {
     NonEmptyArray(head : T, tail : Array(T, n))
   };
 }
 ```
 
-In this example, the definition of `Array(T, l)` depends on `l`. In the case `l = Zero` the type has the single constructor `EmptyArray`. In case `l = SuccessorOf(n : Nat)` the type has another single constructor of signature `NonEmptyArray(head : T, tail : Array(T, n))`.
+In this example, the definition of `Array(T, l)` depends on `l`. In the case `l = Zero` the type has the single constructor `EmptyArray`. In case `l = Succ(n : Nat)` the type has another single constructor of signature `NonEmptyArray(head : T, tail : Array(T, n))`.
 
 
-§ Quotient Inductive Types
---------------------------
 
-Inductive types are not sufficient to handle the definition of rational types, unless we consider one more extension.
+
 
 TODO
 
