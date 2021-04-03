@@ -46,7 +46,7 @@ datatype BasicColor {
 }
 ```
 
-`Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a parametrized constructor, while the other three are called indigenous constructors. The values of enumeration types can be inspected by exhaustive case analysis:
+`Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a parametrized constructor, while the other three are called atomic. The values of enumeration types can be inspected by exhaustive case analysis:
 ```scala
 s match {
   case Red   => ...
@@ -59,7 +59,7 @@ s match {
 **Definition 1**
 > Variant data types are specified by a finite list of named constructors with a finite number (zero or more) parameters each. All parameters are required to have types (data types) defined beforehand. Values of variant datatypes are only allowed (1) to be created by manifestly using a constructor from the list, (2) to be inspected by case analysis.
 
-Variant data types with indigenous constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
+Variant data types without parametized constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
 
@@ -108,7 +108,7 @@ datatype Int8 {
 § Inductive types
 -----------------
 
-The realization that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are. That is not true under assumption that computer memory is potentially infinite. The prime examples of infinite data types are the types of (unlimited) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
+The realization that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are finite. That is not true under assumption that computer memory is potentially infinite. The prime examples of infinite data types are the types of (unlimited) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
 
 To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the inductive types. In their simplest form, inductive types are cousins of variant types with recursive defintions allowed. That is, constructors of inductive types are allowed to have parameters of the type being defined:
 
@@ -122,9 +122,6 @@ datatype Nat {
 
 The possible values of a variable of type `Nat` are thus `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Cycles are, however, not allowed. In particular there can be no such `n : Nat` that `n = SuccessorOf(n)`.
 
-For inductive datatypes, it makes sense to redefine indigenous constructors to include parametrized constructors as long as all their parameters are of the type being defined. Using this updated terminology, both constructors of `Nat` are indigenous.
-
-
 Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `SuccessorOf(n)`. For inductive types, exhaustive case analysis turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `SuccessorOf(n)` under assumption that `f(n)` is already known.
 
 **Example 5**
@@ -135,6 +132,7 @@ def isEven(n : Nat) : Boolean
 ```
 
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
+
 
 Inductive types may have structurally recursive reducible constructors. Let us define some bundled operations for `Nat` to provide a solid example:
 
@@ -207,8 +205,13 @@ Tell that we're still to weak to encompass real numbers, but we have to wait bef
 § Synthetic types
 -----------------
 
-Recall that variant types are not only finite if all their constructors are indigenous. They also remain finite with parametrized constructors as long as all of them do only have parameters of finite type. Similarily let us call an inductive type synthetic either if it has only indigenous constructors or if all paremeters of its parametrized constructors are synthetic as well.
 
+
+Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `SuccessorOf(n : Nat)`) and the ones with parameters of foreighn types (exogenic constructors). Atomic constructors should be considered endogenic as well.
+
+**Definition**
+> Inductive types are called synthetic if they have no exogenic constructors or if their exogenic constructors have only synthetic parameters.
+ 
 Synthetic types are particularily well-behaved: each possible value of a synthetic type can be given as a finite tree of constructors. In particular, it means that synthetic types are effectively enumerable: one can write down an algorithm that prints out possible values of a given type and will eventually print out any of them.
 
 Synthetic types that do not employ postulated identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
