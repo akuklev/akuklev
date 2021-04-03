@@ -63,6 +63,8 @@ Variant data types without parametized constructors only are finite, i.e. variab
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
 
+For all declarative types, the compiler will be able to generate at least one default implementation. But for a programming language to be really versatile, custom implementations have to be supported as well.
+
 **Technical remark:** It may happen that multiple variant types have equally named constructors. For disambiguation, qualified names such as `BasicColor.Red` can be used.
 
 § Variant Types with bundled operations
@@ -85,10 +87,14 @@ datatype Bool {
   And(True, False) => False,
   And(False, True) => False,
   And(False, False) => False,
+  
+  ... // all other logical operations 
 }
 ```
 
-Reducible constructors have to reduce to a non-reducible one for any combination of parameters.
+Reducible constructors have to reduce to a non-reducible one for any combination of parameters. Of course one can define all these operations such as external functions by performing exhaustive case analysis, but there are two subtle differences:
+* Bundled operations (the ones given in form of reducible constructors) are the ones the implementors are allowed to redefine when they provide custom implementations for declarative types;
+* Bundled operations are available in compile-time context, this will be disussed at length in the section about generic functions.
 
 Hardware-defined primitive data types such as `int32` and `float64` can be seen as finite variant types in disguise, because they can be modelled by finite sequences of bits:
 
@@ -96,16 +102,28 @@ Hardware-defined primitive data types such as `int32` and `float64` can be seen 
 ```
 datatype Int8 {
   Int8(b1 : Bool, b2 : Bool,.., b8 : Bool),
+  
+  // Bitwise logical operations:
+  BitwiseNot(x : Int8),
   BitwiseAnd(a : Int8, b : Int8),
-  BitwiseXor(a : Int8, b : Int8)
+  BitwiseXor(a : Int8, b : Int8),
+  
+  // Arithmetic operations:
+  Negate(a : Int8),
   Add(a : Int8, b : Int8),
+  Sub(a : Int8, b : Int8),
   Mul(a : Int8, b : Int8),
+  Div(a : Int8, b : Int8),
+  Mod(a : Int8, b : Int8),
   
   BitwiseAnd(Int8(a1,.., a8), Int8(b1,..,b8)) => Int8(And(a1, b1), And(a2, b2),.., And(a8, b8))
+  BitwiseXor(Int8(a1,.., a8), Int8(b1,..,b8)) => Int8(Xor(a1, b1), Xor(a2, b2),.., Xor(a8, b8))
   
-  ... // likewise define BitwiseXor and then addition via bitwise operations and multiplication via addition
+  // now all arithmetical operations can be defined in terms of bitwise ones...
 }
 ```
+
+One can describe all primitive numeric datatypes declaratively and see their native implementations as predifined “custom implementations”.
 
 § Inductive types
 -----------------
@@ -118,11 +136,13 @@ To construct the types of natural and integer numbers declaratively, one needs a
 ```c
 datatype Nat {
   Zero,
-  SuccessorOf(n : Nat)
+  Succ(pred : Nat)   // successor of other natural number
 }
 ```
 
-The possible values of a variable of type `Nat` are thus `Zero`, `SuccessorOf(Zero)`, `SuccessorOf(SuccessorOf(Zero))`, etc. Cycles are, however, not allowed. In particular there can be no such `n : Nat` that `n = SuccessorOf(n)`.
+The possible values of a variable of type `Nat` are thus `Zero`, `Succ(Zero)`, `Succ(Succ(Zero))`, etc. Cycles are, however, not allowed. In particular there can be no such `n : Nat` that `n = Succ(n)`.
+
+**Technical remark:** From now on, let us treat numeric literals like `124` as shorthands for `Succ(...Succ(Zero))` with the correct number of `Succ` constructors.
 
 Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `SuccessorOf(n)`. For inductive types, exhaustive case analysis turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `SuccessorOf(n)` under assumption that `f(n)` is already known.
 
@@ -130,7 +150,7 @@ Now recall what mathematical induction is: to prove a statement for all natural 
 ```
 def isEven(n : Nat) : Boolean
   Zero => True
-  SuccessorOf(n) => Not(isEven(n))
+  Succ(pred) => Not(isEven(pred))
 ```
 
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
@@ -158,19 +178,21 @@ datatype Nat {
 }
 ```
 
-By allowing partially reducible constructors, one opens a way to define the type of integers:
+Partially reducible constructors, are constructors for which reductions are defined by non-exhaustive case analysis:
 
 **Example 7**
 ```
 datatype Int {
-  P(n : Nat),
-  N(n : Nat),
+  FromNat(n : Nat),
+  Negated(n : Nat),
   Zero,
   
-  P(Zero) => Zero
-  N(Zero) => Zero
+  FromNat(Zero) => Zero
+  Negated(Zero) => Zero
 }
 ```
+
+**Technical remark:** From now on, we'll be using notation `+n` for `FromNat(n)` and `-n` for `Negated(n)`.
 
 When performing exhausitve case analysis, reducible cases do not appear. Let us define negation for integers to illustrate:
 
@@ -178,22 +200,35 @@ When performing exhausitve case analysis, reducible cases do not appear. Let us 
 **Example 8**
 ```
 datatype Int {
-  P(n : Nat),
-  N(n : Nat),
+  FromNat(n : Nat),
+  AntiNat(n : Nat),
   Zero,
   Negate(n : Int),
   
-  P(Zero) => Zero
-  N(Zero) => Zero
+  FromNat(Zero) => Zero
+  AntiNat(Zero) => Zero
   
   Negate(Zero) => Zero
-  Negate(P(Succ(n))) => Neg(Succ(n))
-  Negate(N(Succ(n))) => Pos(Succ(n))
+  Negate(FromNat(Succ(n))) => AntiNat(Succ(n))
+  Negate(AntiNat(Succ(n))) => FromNat(Succ(n))
 }
 ```
-Here, the cases `P(Zero)` and `N(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
+Here, the cases `FromNat(Zero)` and `AntiNat(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
 
 Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
+
+Reducible constructors can be 
+**Example 7**
+```
+datatype Int {
+  FromNat(n : Nat),
+  AntiNat(n : Nat),
+  Zero,
+  
+  FromNat(Zero) => Zero
+  AntiNat(Zero) => Zero
+}
+```
 
 § Quotient Inductive Types
 --------------------------
