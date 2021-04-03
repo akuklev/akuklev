@@ -18,7 +18,7 @@ Domain-specific data types:
 * Abstract syntax trees for various formalized languages;
 * Specific types of graphs, networks, automata, combinatorial configuration spaces, etc.
 
-Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to data, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
+Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
 
 There are two general approaches to declarative type definitions:
 * Synthetic (or closed) paradigm: To define a type, one specifies how values of that type are built bottom-up.
@@ -62,6 +62,8 @@ s match {
 Variant data types without parametized constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
+
+**Technical remark:** It may happen that multiple variant types have equally named constructors. For disambiguation, qualified names such as `BasicColor.Red` can be used.
 
 § Variant Types with bundled operations
 ---------------------------------------
@@ -134,7 +136,10 @@ def isEven(n : Nat) : Boolean
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
 
 
-Inductive types may have structurally recursive reducible constructors. Let us define some bundled operations for `Nat` to provide a solid example:
+§ Inductive types with reducible constructors
+---------------------------------------------
+
+Inductive types may have structurally recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
 
 **Example 6**
 ```
@@ -153,7 +158,7 @@ datatype Nat {
 }
 ```
 
-To define the type of integers, it is handy to allow partially reducible constructors:
+By allowing partially reducible constructors, one opens a way to define the type of integers:
 
 **Example 7**
 ```
@@ -191,11 +196,54 @@ Here, the cases `Pos(Zero)` and `Neg(Zero)` are not mentioned at all because `Ne
 Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
 
 
+§ Generic definitions: Inductive Types with Parameters
+------------------------------------------------------
+
+With inductive types we can also container types such as lists:
+
+**Example 6**
+```
+datatype ListOfNats {
+  EmptyList,
+  NonEmptyList(head : Nat, tail : ListOfNats)
+}
+```
+
+It is of course desirable to a generic defintion of lists regardless of their element type. For this occasion, types are allowed to have parameters themselves:
+
+**Example 7**
+```
+datatype List<T : *> {
+  EmptyList,
+  NonEmptyList(head : T, tail : List<T>)
+}
+```
+
+Here the parameter `T` if of type “data type” which is written as `*`. In the type specification the parameter `T` is used as type for the first parameter `head` of the `NonEmptyList` constructor and as a parameter of the type `List<T>` for its second parameter `tail`. The type `*` itself is not a _data_ type, it belongs to another class of types known as virtual types: these are the types of so called compile time parameters, that never appear in the run-time.
+
+**Technical remark:** Constructors of different specializations of generic types are distinct constructors. In rare cases when disambiguation is necessary, their qualified names look like `List<Nat>.EmptyList` or `List<Int>.NonEmptyList`. Shorthands like `NonEmptyList<Int>` are also possible.
+
+Types may have parameters of other types as well. For example let us define the type `Array<Type : *, length : Nat>`:
+
+**Example 8**
+```
+datatype Array<T : *, length : Nat> = length match {
+  Zero => {
+    EmptyArray
+  };
+  SuccessorOf(n : Nat) => {
+    NonEmptyArray(head : T, tail : Array(T, n))
+  };
+}
+```
+
+In this example, the definition of `Array(T, l)` depends on `l`. In the case `l = Zero` the type has the single constructor `EmptyArray`. In case `l = SuccessorOf(n : Nat)` the type has another single constructor of signature `NonEmptyArray(head : T, tail : Array(T, n))`.
+
+
 § Quotient Inductive Types
 --------------------------
 
-
-Basic inductive types are not sufficient to handle the natural definition of rational types. Let us consider an extension to basic inductive types that makes them possible.
+Inductive types are not sufficient to handle the definition of rational types, unless we consider one more extension.
 
 TODO
 
@@ -266,20 +314,6 @@ Provide initial models for contably-infinitary algebraic theories (like the theo
 * * * 
 
 
-Let's consider a few other examples:
-**Example 4**
-```c
-inductive ListOfNaturals {
-  EmptyList,
-  NonEmptyList(NaturalNumber head, ListOfNaturals tail)
-}
-
-inductive BinaryTreeOfNaturals {
-  Leaf(NaturalNumber n),
-  Node(BinaryTreeOfNaturals left, BinaryTreeOfNaturals right)
-}
-
-```
 
 § More General Closed Synthetic Types
 -------------------------------------
