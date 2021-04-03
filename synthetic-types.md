@@ -199,21 +199,13 @@ When performing exhausitve case analysis, reducible cases do not appear. Let us 
 
 **Example 8**
 ```
-datatype Int {
-  FromNat(n : Nat),
-  AntiNat(n : Nat),
-  Zero,
-  Negate(n : Int),
-  
-  FromNat(Zero) => Zero
-  AntiNat(Zero) => Zero
-  
-  Negate(Zero) => Zero
-  Negate(FromNat(Succ(n))) => AntiNat(Succ(n))
-  Negate(AntiNat(Succ(n))) => FromNat(Succ(n))
+def Negate(z : Int) : Int
+  Zero => Zero
+  FromNat(Succ(n)) => Negated(Succ(n))
+  Negated(Succ(n)) => FromNat(Succ(n))
 }
 ```
-Here, the cases `FromNat(Zero)` and `AntiNat(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
+Here, the cases `FromNat(Zero)` and `Negated(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
 
 Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
 
