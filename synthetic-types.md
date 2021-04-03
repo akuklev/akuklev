@@ -30,18 +30,17 @@ To define the types mentioned as examples above, one needs both approaches. In f
 
 Now let us begin with the basic examples and work our way to the most advanced ones. Since no mainstream programming language supports declarative data types in sufficient generality, pseudocode will be used in all examples.
 
-§ Variant data types
---------------------
+§ Defining finite types: Variant data types
+-------------------------------------------
 
 Variant types are a particular kind of user-defined data types. Let us begin with an example: `BasicColor` is defined as a type with allowed values `Red`, `Green`, `Blue`, and `Gray` of specific `intensity` given by an integer number between 0 and 100.
 
 **Example 1**
-```
-
+```scala
 datatype BasicColor {
-  Red,
-  Green,
-  Blue,
+  Red
+  Green
+  Blue
   Gray(intensity : 0..100)
 }
 ```
@@ -67,26 +66,26 @@ For all declarative types, the compiler will be able to generate at least one de
 
 **Technical remark:** It may happen that multiple variant types have equally named constructors. For disambiguation, qualified names such as `BasicColor.Red` can be used.
 
-§ Variant Types with bundled operations
----------------------------------------
+§ Recovering primitive types: Variant Types with bundled operations
+-------------------------------------------------------------------
 
 There is a handy extension to variant types: one can allow constructors that reduce to other constructors. Reductible constructors are exempt to the rule that parameters must have types defind beforehand. In particular they are allowed to have parameters of the type being defined. Consider the following example:
 
 **Example 2**
 ```
 datatype Bool {
-  True,
-  False,
-  Not(a : Bool),
-  And(a : Bool, b : Bool),
+  True
+  False
+  Not(a : Bool)
+  And(a : Bool, b : Bool)
   
-  Not(True) => False,
-  Not(False) => True,
+  Not(True) => False
+  Not(False) => True
   
-  And(True, True) => True,
-  And(True, False) => False,
-  And(False, True) => False,
-  And(False, False) => False,
+  And(True, True) => True
+  And(True, False) => False
+  And(False, True) => False
+  And(False, False) => False
   
   ... // all other logical operations 
 }
@@ -101,20 +100,19 @@ Hardware-defined primitive data types such as `int32` and `float64` can be seen 
 **Example 3**
 ```
 datatype Int8 {
-  Int8(b1 : Bool, b2 : Bool,.., b8 : Bool),
+  Int8(b1 : Bool, b2 : Bool,.., b8 : Bool)
   
   // Bitwise logical operations:
-  BitwiseNot(x : Int8),
-  BitwiseAnd(a : Int8, b : Int8),
-  BitwiseXor(a : Int8, b : Int8),
+  BitwiseNot(x : Int8)
+  BitwiseAnd(a : Int8, b : Int8)
+  BitwiseXor(a : Int8, b : Int8)
   
   // Arithmetic operations:
-  Negate(a : Int8),
-  Add(a : Int8, b : Int8),
-  Sub(a : Int8, b : Int8),
-  Mul(a : Int8, b : Int8),
-  Div(a : Int8, b : Int8),
-  Mod(a : Int8, b : Int8),
+  Negated(a : Int8)
+  Sum(a : Int8, b : Int8)
+  Product(a : Int8, b : Int8)
+  Quotient(a : Int8, b : Int8)
+  Remainder(a : Int8, b : Int8)
   
   BitwiseAnd(Int8(a1,.., a8), Int8(b1,..,b8)) => Int8(And(a1, b1), And(a2, b2),.., And(a8, b8))
   BitwiseXor(Int8(a1,.., a8), Int8(b1,..,b8)) => Int8(Xor(a1, b1), Xor(a2, b2),.., Xor(a8, b8))
@@ -125,8 +123,8 @@ datatype Int8 {
 
 One can describe all primitive numeric datatypes declaratively and see their native implementations as predifined “custom implementations”.
 
-§ Inductive types
------------------
+§ Beyond finite types: Inductive types
+--------------------------------------
 
 The realization that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are finite. That is not true under assumption that computer memory is potentially infinite. The prime examples of infinite data types are the types of (unlimited) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
 
@@ -144,7 +142,7 @@ The possible values of a variable of type `Nat` are thus `Zero`, `Succ(Zero)`, `
 
 **Technical remark:** From now on, let us treat numeric literals like `124` as shorthands for `Succ(...Succ(Zero))` with the correct number of `Succ` constructors.
 
-Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `SuccessorOf(n)`. For inductive types, exhaustive case analysis turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `SuccessorOf(n)` under assumption that `f(n)` is already known.
+Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `Succ(n)`. For inductive types, exhaustive case analysis gets recursive and turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known.
 
 **Example 5**
 ```
@@ -156,8 +154,8 @@ def isEven(n : Nat) : Boolean
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
 
 
-§ Inductive types with reducible constructors
----------------------------------------------
+§ Defining Unbounded Integers: Inductive types with reducible constructors
+--------------------------------------------------------------------------
 
 Inductive types may have structurally recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
 
@@ -167,14 +165,14 @@ datatype Nat {
   Zero,
   Succ(pred : Nat),
   
-  Add(n : Nat, m : Nat)
-  Mul(n : Nat, m : Nat)
+  Sum(n : Nat, m : Nat)
+  Prod(n : Nat, m : Nat)
   
-  Add(n, Zero) => n
-  Add(n, Succ(m)) => Succ(Add(n, m))
+  Sum(n, Zero) => n
+  Sum(n, Succ(m)) => Succ(Add(n, m))
   
-  Mul(n, Zero) => Zero
-  Mul(n, Succ(m)) => Add(n, Mul(n, m))
+  Prod(n, Zero) => Zero
+  Prod(n, Succ(m)) => Sum(n, Prod(n, m))
 }
 ```
 
@@ -196,7 +194,6 @@ datatype Int {
 
 When performing exhausitve case analysis, reducible cases do not appear. Let us define negation for integers to illustrate:
 
-
 **Example 8**
 ```
 def Negate(z : Int) : Int
@@ -207,44 +204,70 @@ def Negate(z : Int) : Int
 ```
 Here, the cases `FromNat(Zero)` and `Negated(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
 
-Reducible and partially reducible constructors do not increase strength of basic inductive types, but they do increase strength of their further generalizations that will be considered later.
-
-Reducible constructors can be 
-**Example 7**
+Note, that the decision which constructors are reducible is non-unique. For example, one could have also defined integers as follows:
+**Example 9**
 ```
 datatype Int {
-  FromNat(n : Nat),
-  AntiNat(n : Nat),
-  Zero,
+  Pos(n : Nat.Succ)
+  Neg(n : Nat.Succ)
+  Zero
+  
+  FromNat(n : Nat)
   
   FromNat(Zero) => Zero
-  AntiNat(Zero) => Zero
+  FromNat(Succ(n)) => Pos(Succ(n))
 }
 ```
 
-§ Quotient Inductive Types
---------------------------
+For each inductive type `T` with reducible constructors, one could define a type of “raw terms” `RawT`: the type with exactly the same constructors but without any reduction rules. Any function `f` on the original type `T` is also a function on the type of raw terms `RawT` under the hood, yet with a property that on values `x : RawT` and `y : RawT` which reduce to the same value if seen as `T`-value, `f` yields _literally_ the same results. This property is guaranteed by opaqueness of declarative types, which means that functions one defines are only allowed to inspect values of inductive types by exhaustive case analysis, and the way exhaustive case analysis works for reducible constructors (see example 8).
 
-Let us briefly mention another feature that enables definition of rational numbers. Rational numbers are fractions with integer numerator and denominator, and their the usual definition of rational numbers goes as follows:
+**Note for experts:** Availability of partially reducible constructors substantially increase the strength of inductive types. They allow to enforce _literal_ equalities on functions from a given type without introducing strict equality types into the type system. In particular, they render semi-simplicial types definable a univalent type theory.
+
+§ Defining Rationals: Quotient Inductive Types
+----------------------------------------------
+
+Let us briefly mention another feature that enables definition of rational numbers.
+
+Rational numbers are fractions with integer numerator and denominator, and their the usual definition of rational numbers goes as follows:
 > Rational numbers are pairs of an integer called numerator and a strictly-positive integer called denumerator, up to identification of pairs `(num, den)` and `(num · q, den · q)` where `q` is a positive integer.
 
-It is possible to allow custom identifications in inductive types. We'll 
+It turns out to be possible to allow custom identifications in inductive types. Without going any deeper into the matter right now, let us just write down a definition:
 
 **Example 9**
 ```
 datatype Rational {
   Fraction(num : Int, den : Int.Pos)
   
-  ReduceFraction(num : Int, den : Int.Pos, q : Int.Pos)(i : 𝕀)
-  ReduceFraction(num, den, q)(lt) => Frac(num · q, den · q)
-  ReduceFraction(num, den, q)(rt) => Frac(num, den)
+  ReduceFraction(num : Int, den : Int.Pos, q : Int.Pos) : 
+    Frac(num · q, den · q) = Frac(num, den)
 }
 ```
 
+This feature also allows defining such unordered pairs, cycles (“linked lists without distinguised starting point”), collections (“lists up to permutations”), etc.
+
+**Example 10**
+```
+datatype UnorderedPairOfInts {
+  UPair(a : Int, b : Int)
+  
+  Swap(a : Int, b : Int) :
+    UPair(a, b) = UPair(b, a)
+}
+```
+
+**Note for experts:** It is tempting to think that the right way to define a symmetric binary relation on a type `T` is to define it on `UPair<T>`. It turns out that this approach unfairly trivializes the case when both elements of the pair are the same. The right way to deal with symmetric binary relations is to use the higher inductive type
+```
+higher datatype UnorderedPairOfInts {
+  HUPair(a : Int, b : Int)
+  
+  Swap(a : Int, b : Int) :
+    UPair(a, b) = UPair(b, a)
+}
+```
+which does not assume that for `loop(a) := Swap(a, b)` the equation `loop • loop = loop` holds. That's precisely the point where homotopic considerations arise in the type theory. 
 
 
-
-§ Generic definitions: Inductive Types with Parameters
+§ Defining containers: Inductive Types with Parameters
 ------------------------------------------------------
 
 With inductive types we can also container types such as lists:
@@ -271,35 +294,11 @@ Here the parameter `T` if of type “data type” which is written as `*`. In th
 
 **Technical remark:** Constructors of different specializations of generic types are distinct constructors. In rare cases when disambiguation is necessary, their qualified names look like `List<Nat>.EmptyList` or `List<Int>.NonEmptyList`. Shorthands like `NonEmptyList<Int>` are also possible.
 
-Types may have parameters of other types as well. For example let us define the type `Array<Type : *, length : Nat>`:
-
-**Example 8**
-```
-datatype Array<T : *, length : Nat> = length match {
-  Zero => {
-    EmptyArray
-  };
-  Succ(n : Nat) => {
-    NonEmptyArray(head : T, tail : Array(T, n))
-  };
-}
-```
-
-In this example, the definition of `Array(T, l)` depends on `l`. In the case `l = Zero` the type has the single constructor `EmptyArray`. In case `l = Succ(n : Nat)` the type has another single constructor of signature `NonEmptyArray(head : T, tail : Array(T, n))`.
-
-
-
-
-
-TODO
-
-Tell that we're still to weak to encompass real numbers, but we have to wait before defining them.
+Types may have parameters of other types as well. For example one can define the type `Array<Type : *, length : Nat>` of lists of predefined length. However we'll postpone the definition to the section [Advanced inductive types].
 
 
 § Synthetic types
 -----------------
-
-
 
 Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `SuccessorOf(n : Nat)`) and the ones with parameters of foreighn types (exogenic constructors). Atomic constructors should be considered endogenic as well.
 
