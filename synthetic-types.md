@@ -72,7 +72,7 @@ For all declarative types, the compiler will be able to generate at least one de
 There is a handy extension to variant types: one can allow constructors that reduce to other constructors. Reductible constructors are exempt to the rule that parameters must have types defind beforehand. In particular they are allowed to have parameters of the type being defined. Consider the following example:
 
 **Example 2**
-```
+```scala
 datatype Bool {
   True
   False
@@ -98,7 +98,7 @@ Reducible constructors have to reduce to a non-reducible one for any combination
 Hardware-defined primitive data types such as `int32` and `float64` can be seen as finite variant types in disguise, because they can be modelled by finite sequences of bits:
 
 **Example 3**
-```
+```scala
 datatype Int8 {
   Int8(b1 : Bool, b2 : Bool,.., b8 : Bool)
   
@@ -131,9 +131,9 @@ The realization that all low level primitive datatypes like `int32` are finite t
 To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the inductive types. In their simplest form, inductive types are cousins of variant types with recursive defintions allowed. That is, constructors of inductive types are allowed to have parameters of the type being defined:
 
 **Example 4**
-```c
+```scala
 datatype Nat {
-  Zero,
+  Zero
   Succ(pred : Nat)   // successor of other natural number
 }
 ```
@@ -145,7 +145,7 @@ The possible values of a variable of type `Nat` are thus `Zero`, `Succ(Zero)`, `
 Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `Succ(n)`. For inductive types, exhaustive case analysis gets recursive and turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known.
 
 **Example 5**
-```
+```scala
 def isEven(n : Nat) : Boolean
   Zero => True
   Succ(pred) => Not(isEven(pred))
@@ -160,7 +160,7 @@ Functions defined in such a way are said to be structurally recursive. Acircular
 Inductive types may have structurally recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
 
 **Example 6**
-```
+```scala
 datatype Nat {
   Zero,
   Succ(pred : Nat),
@@ -196,13 +196,13 @@ When performing exhausitve case analysis, reducible cases do not appear. Let us 
 
 **Example 8**
 ```
-def Negate(z : Int) : Int
-  Zero => Zero
-  FromNat(Succ(n)) => Negated(Succ(n))
-  Negated(Succ(n)) => FromNat(Succ(n))
+def Incremented(z : Int) : Int
+  Zero => FromNat(Succ(Zero))
+  Negated(Succ(n)) => Negated(n)
+  FromNat(Succ(n)) => FromNat(Succ(Succ(n)))
 }
 ```
-Here, the cases `FromNat(Zero)` and `Negated(Zero)` are not mentioned at all because `Negate` _has_ to reduce to `Negate(Zero)` in this case.
+Here, the cases `FromNat(Zero)` and `Negated(Zero)` are not mentioned at all because `Incremented` _has_ to reduce to the same value as `Incremented(Zero)` in this case.
 
 Note, that the decision which constructors are reducible is non-unique. For example, one could have also defined integers as follows:
 **Example 9**
@@ -239,7 +239,7 @@ datatype Rational {
   Fraction(num : Int, den : Int.Pos)
   
   ReduceFraction(num : Int, den : Int.Pos, q : Int.Pos) : 
-    Frac(num · q, den · q) = Frac(num, den)
+    Frac(Prod(num, q), Prod(den, q)) = Frac(num, den)
 }
 ``` 
 
@@ -274,7 +274,7 @@ Types may have parameters of other types as well. For example one can define the
 
 * * *
 
-By combining parametric polymorphism with custom identification one can define such containers as unordered pairs, cycles (“linked lists without distinguised starting point”), collections (“lists up to permutations”), etc.
+By combining parametric polymorphism with custom identifications one can define such containers as unordered pairs, cycles (“linked lists without distinguised starting point”), collections (“lists up to permutations”), etc.
 
 **Example 10**
 ```
