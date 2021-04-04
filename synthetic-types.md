@@ -13,7 +13,7 @@ We believe, the best way to approach this hefty topic is to work our way through
 * [**Defining finite types:** Variant data types]()
 * [**Recovering primitive types:** Variant Types with bundled operations]()
 * [**Beyond finite types:** Inductive types]()
-* [**Defining integers:** Inductive types with reducible constructors]()
+* [**Defining integers:** Inductive Types with reduction rules]()
 * [**Defining rationals:** Quotient Inductive Types]()
 * [**Defining containers:** Polymorphic Inductive Types]()
 * [**Towards reals:** Synthetic and Behaviorial paradigms]()
@@ -142,8 +142,8 @@ def isEven(n : Nat) : Boolean
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
 
 
-§ Defining integers: Inductive types with reducible constructors
-----------------------------------------------------------------
+§ Defining integers: Inductive Types with reduction rules
+---------------------------------------------------------
 
 Inductive types may have structurally recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
 
@@ -209,9 +209,9 @@ datatype Int {
 
 For each inductive type `T` with reducible constructors, one could define a type of “raw terms” `RawT`: the type with exactly the same constructors but without any reduction rules. Any function `f` on the original type `T` is also a function on the type of raw terms `RawT` under the hood, yet with a property that on values `x : RawT` and `y : RawT` which reduce to the same value if seen as `T`-value, `f` yields _literally_ the same results. This property is guaranteed by opaqueness of declarative types, which means that functions one defines are only allowed to inspect values of inductive types by exhaustive case analysis, and the way exhaustive case analysis works for reducible constructors (see example 8).
 
-<details><summary>A note for experts</summary>
+<details><summary><b>Note for experts</b></summary>
 <p>
-**Note for experts:** Availability of partially reducible constructors substantially increase the strength of inductive types. They allow to enforce _literal_ equalities on functions from a given type without introducing strict equality types into the type system. In particular, they render semi-simplicial types definable a univalent type theory.
+Availability of partially reducible constructors substantially increase the strength of inductive types. They allow to enforce _literal_ equalities on functions from a given type without introducing strict equality types into the type system. In particular, they render semi-simplicial types definable in a univalent type theory.
 </p>
 </details>
 
@@ -279,9 +279,13 @@ datatype UnorderedPairOfInts {
 }
 ```
 
-**Note for experts:** It is tempting to think that the right way to define a symmetric binary relation on a type `T` is to define it on `UPair<T>`. It turns out that this approach unfairly trivializes the case when both elements of the pair are the same. The right way to deal with symmetric binary relations is to use the higher inductive type
-```
-higher datatype UnorderedPairOfInts {
+
+<details><summary><b>Note for experts</b></summary>
+<p>
+It is tempting to think that the right way to define a symmetric binary relation on a type `T` is to define it on `UPair<T>`. It turns out that this approach unfairly trivializes the case when both elements of the pair are the same. The right way to deal with symmetric binary relations is to use the higher inductive type
+
+```scala
+higher-datatype UnorderedPairOfInts {
   HUPair(a : Int, b : Int)
   
   Swap(a : Int, b : Int) :
@@ -289,19 +293,12 @@ higher datatype UnorderedPairOfInts {
 }
 ```
 which does not assume that for `loop(a) := Swap(a, b)` the equation `loop • loop = loop` holds. That's precisely the point where homotopic considerations arise in the type theory.
+</p>
+</details>
 
 
-§ Synthetic types
------------------
-
-Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `SuccessorOf(n : Nat)`) and the ones with parameters of foreighn types (exogenic constructors). Atomic constructors should be considered endogenic as well.
-
-**Definition**
-> Inductive types are called synthetic if they have no exogenic constructors or if their exogenic constructors have only synthetic parameters.
- 
-Synthetic types are particularily well-behaved: each possible value of a synthetic type can be given as a finite tree of constructors. In particular, it means that synthetic types are effectively enumerable: one can write down an algorithm that prints out possible values of a given type and will eventually print out any of them.
-
-Synthetic types that do not employ user-defined identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
+§ Synthetic and Behaviorial paradigms
+-------------------------------------
 
 There are two general approaches to declarative type definitions:
 * Synthetic (or closed) paradigm: To define a type, one specifies how values of that type are built bottom-up.
@@ -309,12 +306,18 @@ There are two general approaches to declarative type definitions:
 
 Types defined using the first paradigm are closed in the sense they do not contain anything one has not explicitly put there. Number of inhabitants of a synthetic type is known upfront. If it is infinite, than it has to be countably infinite, i.e. all possible inhabitants can be numbered by whole numbers. In contrast, for behaviorially defined types one does not assume that they are exhausted by values known upfront. Behaviorially defined types obey the duck typing principle: "if it walks like a duck and it quacks like a duck, then it's duck", so in general one only knows a lower bound on their size.
 
-To define the types mentioned as examples above, one needs both approaches. In fact, for the most advanced examples (in particular, for real numbers) one has to use both paradigms simultaneously.
+All types defined so far were in fact synthetic types, but they are not sufficient to accomodate potentially unbounded containers such as (infinite) sequences `Seq<T>`, infinite trees and most fundamentally, function types `A -> B`. In order to declaratively define (exact) real numbers one actually has to go even beyond, and mix paradigms.
 
+Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `Succ(n : Nat)`) and the ones with parameters of foreighn types (exogenic constructors). Atomic constructors should be considered endogenic as well.
 
+**Definition**
+> Inductive types are called synthetic if they have no exogenic constructors or if their exogenic constructors have only synthetic parameters.
 
-TODO: few words about synthetic types and abstract syntax trees.
+Synthetic types are particularily well-behaved: each possible value of a synthetic type can be given as a finite tree of constructors. In particular, it means that synthetic types are effectively enumerable: one can write down an algorithm that prints out possible values of a given type one-by-one and will eventually print out each of them.
 
+Synthetic types that do not employ user-defined identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
+
+Inductive types can be combined with dependent signatures, yielding so called inductive type families. This can be pushed even further by allowing to define the (synthetic) type the family is indexed by simultaneously with indictive family itself. Such types are called inductive-inductive types. Quotient inductive-inductive types are excelent tool for defining types of abstract syntax trees for various formalized languages. In fact, syntactic model of every finitary generalized algebraic theory can be described in this way. It goes even beyond this: in terms of inductive-inductive types with reduction rules it is possible to describe syntactic models of all finitary extended algebraic theories and thus capture the language of type theories within type theories. While very advanced, all these examples do not go beyond synthetic types.
 
 § Function types
 ----------------
