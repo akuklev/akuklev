@@ -3,41 +3,20 @@ Declarative Data Types
 
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an introduction to declarative data types for interested software engineers.
 
-Declarative data types are user-defined data types specified in terms of _what_ they are and good for, rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and makes it a lot easier to reason about programs. Let us give a list of example data types that can be described declaratively:
+Declarative data types are user-defined data types specified in terms of _what_ they are and good for, rather than _how_ they are implemented. Working with declarative data types allows to conceptualize the problem domain and makes it a lot easier to reason about programs.
 
-General purpose data types:
-* Finite data types: a binary flag (yes/no), an alphabetic character, a fixed range integer (1..10);
-* Numeric data types: a natural, an integer, a rational, or a real number;
-* Immutable container data types: a pair, a list, or a binary tree of values;
-* Potentially infinite containers: a sequence, a function, a potentially infinite tree.
+**Clarification:** Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
 
-Domain-specific data types:
-* Configiration for a specific application;
-* Records in a specific table of a database;
-* Messages in a specific communication protocol;
-* Abstract syntax trees for various formalized languages;
-* Specific types of graphs, networks, automata, combinatorial configuration spaces, etc.
-
-Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
-
-There are two general approaches to declarative type definitions:
-* Synthetic (or closed) paradigm: To define a type, one specifies how values of that type are built bottom-up.
-* Behaviorial (or open) paradigm: To define a type, one specifies how values of that type have behave, without explicitly limiting how they are built.
-
-Types defined using the first paradigm are closed in the sense they do not contain anything one has not explicitly put there. Number of inhabitants of a synthetic type is known upfront. If it is infinite, than it has to be countably infinite, i.e. all possible inhabitants can be numbered by whole numbers. In contrast, for behaviorially defined types one does not assume that they are exhausted by values known upfront. Behaviorially defined types obey the duck typing principle: "if it walks like a duck and it quacks like a duck, then it's duck", so in general one only knows a lower bound on their size.
-
-To define the types mentioned as examples above, one needs both approaches. In fact, for the most advanced examples (in particular, for real numbers) one has to use both paradigms simultaneously.
-
-Now let us begin with the basic examples and work our way to the most advanced ones. Since no mainstream programming language supports declarative data types in sufficient generality, pseudocode will be used in all examples.
+We believe, the best way to approach this huge topic is to work our way through with examples starting with most basic ones. Since no mainstream programming language supports declarative data types in sufficient generality, pseudocode will be used in all examples.
 
 **Table of contents**
 * [**Defining finite types:** Variant data types]()
-* [Recovering primitive types: Variant Types with bundled operations]()
-* [Beyond finite types: Inductive types]()
-* [Defining integers: Inductive types with reducible constructors]()
-* [Defining rationals: Quotient Inductive Types]()
-* [Defining containers: Polymorphic Inductive Types]()
-
+* [**Recovering primitive types:** Variant Types with bundled operations]()
+* [**Beyond finite types:** Inductive types]()
+* [**Defining integers:** Inductive types with reducible constructors]()
+* [**Defining rationals:** Quotient Inductive Types]()
+* [**Defining containers:** Polymorphic Inductive Types]()
+* [**Towards reals:** Synthetic and Behaviorial paradigms]()
 
 § Defining finite types: Variant data types
 -------------------------------------------
@@ -318,6 +297,16 @@ Recall that variant types are finite if they have no parametric constructors or 
 Synthetic types are particularily well-behaved: each possible value of a synthetic type can be given as a finite tree of constructors. In particular, it means that synthetic types are effectively enumerable: one can write down an algorithm that prints out possible values of a given type and will eventually print out any of them.
 
 Synthetic types that do not employ user-defined identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. to terminate if the values are equal indeed. If the values are distinct, equality checking might run into an infinite loop. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
+
+There are two general approaches to declarative type definitions:
+* Synthetic (or closed) paradigm: To define a type, one specifies how values of that type are built bottom-up.
+* Behaviorial (or open) paradigm: To define a type, one specifies how values of that type have behave, without explicitly limiting how they are built.
+
+Types defined using the first paradigm are closed in the sense they do not contain anything one has not explicitly put there. Number of inhabitants of a synthetic type is known upfront. If it is infinite, than it has to be countably infinite, i.e. all possible inhabitants can be numbered by whole numbers. In contrast, for behaviorially defined types one does not assume that they are exhausted by values known upfront. Behaviorially defined types obey the duck typing principle: "if it walks like a duck and it quacks like a duck, then it's duck", so in general one only knows a lower bound on their size.
+
+To define the types mentioned as examples above, one needs both approaches. In fact, for the most advanced examples (in particular, for real numbers) one has to use both paradigms simultaneously.
+
+
 
 TODO: few words about synthetic types and abstract syntax trees.
 
