@@ -405,6 +405,28 @@ TODO: Tell how reification + reflection give transport between equivalent types 
 Let us call the type theory based on declaratively defined datatypes as presented above, virtual types reflecting parametrically polymorphic definitions, reification principle and reflection principle Univalent Calculus of Constructions. We conjecture that this theory can be seen as conservative extension of the [ZMC/S](https://golem.ph.utexas.edu/category/2009/11/feferman_set_theory.html) set theory and thus equiconsistent with ZMC.
 
 
+### Parametricity
+
+Take
+```
+f : (T : *) -> T -> T
+```
+
+We can relativise `f` to a universe `U`, yielding
+```
+f^U : (T : U) -> <T> -> <T>`
+```
+
+Every function does that:
+```
+f (e : A = B) (e' : x =[e]= y) : f(x) =[e]= f(y)
+```
+
+Parametricity is a combination of application to heteroequaluty and relativization:
+```
+f (r : A ⋈ B) (r' : x =[r]= y) : f^r(0)(x) =[e]= f^r(1)(y)
+```
+
 § The Power of Non-Synthetic Quotient Inductive-Inductive types: Defining reals
 -------------------------------------------------------------------------------
 
