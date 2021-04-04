@@ -1,5 +1,3 @@
-
-
 Let `a b : X` be two inhabitants of some type `X`. Let us denote the type of identifications between those inhabitants by `a = b`.
 An identification `e : (a = b)` witnesses that `a` and `b` are equivalent and provides a way to turn any constructions and any proofs involving `a` into
 constructions and proofs involving `b`. That is we can “apply” functions `f(x : X) : Y` not only to elements `x` of `X` but also to eqialities. Applying `f`
@@ -44,3 +42,45 @@ structure DepUBridge<T : II -> *> {
   connection : (origin =[T]= terminus)
 }
 ```
+
+* * *
+
+Now let us try to understand the nature of identification types a bit better.
+
+Consider a function
+```
+f(x : X, y : Y) : Z
+```
+
+We may require that it depends on one or more of its inputs _uniformly_ this way:
+```
+f(x : X, y : 0Y) : Z
+```
+
+Uniform dependence means that the return value does not repend on this argument, only the return type. While for the particular type, there are lots of functions `T -> T` there is only one that can be defined uniformly for all types, the identity. Uniform dependence forms an intersection of them: `f : ∀(T : *), T -> T` does only contain the identity function, this type contains the bare minimum: the "greatest common denominator" or all types of such form. 
+
+Functions can only depend on their kind arguments uniformly, because elements of kinds are types which cannot be used in the body of the function in any way. But this does not apply to type formers.
+
+Type formers depend on their type parameters non-uniformly, they use them to generate a return value, namely the type. When we generate type formers manifestly, by taking a function for universe `f(t : U) : U` and lifting it to `f* : * -> *`, we see it would not work if the function would have used universe uniformly `f(t : 0U) : *`.
+
+Can there be a type former depending on its type arguments uniformly?
+Consider the type former with signature `I(T : 0*) : T -> T -> *`. For type `T` it produces a type dependent on pairs `(x y : T)`, i.e. a proof-relevant relation on the type `T`. It should be a relation uniformly definable for all types `T`. The relation uniformly definable for all types should be precisely the equality on this type.
+
+Now we have only written down the signature for `I`. Can we also write down its body?
+```
+// только нарушая, используя T в теле:
+f(T : 0U) := \(x y : T), {II -> T with lt => x, rt => y}
+```
+
+```
+structure Bridge<T : *> {
+  lt : T
+  rt : T
+  conn : T -> T -> *
+}
+
+structure PolyBridge<Bridge<*>> {
+}
+```
+
+Релейшины — это просто I -> (ϰ) не для типов, а для кайндов.
