@@ -308,7 +308,7 @@ Types defined using the first paradigm are closed in the sense they do not conta
 
 All types defined so far were in fact synthetic types, but they are not sufficient to accomodate potentially unbounded containers such as (infinite) sequences `Seq<T>`, infinite trees and most fundamentally, function types `A -> B`. In order to declaratively define (exact) real numbers one actually has to go even beyond, and mix paradigms.
 
-Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `Succ(n : Nat)`) and the ones with parameters of foreighn types (exogenic constructors). Atomic constructors should be considered endogenic as well.
+Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `Succ(n : Nat)`) and the ones with parameters of foreign types (exogenic constructors). Atomic constructors should be considered endogenic as well.
 
 **Definition**
 > Inductive types are called synthetic if they have no exogenic constructors or if their exogenic constructors have only synthetic parameters.
@@ -319,18 +319,58 @@ Synthetic types that do not employ user-defined identifications, equality of val
 
 Inductive types can be combined with dependent signatures, yielding so called inductive type families. This can be pushed even further by allowing to define the (synthetic) type the family is indexed by simultaneously with indictive family itself. Such types are called inductive-inductive types. Quotient inductive-inductive types are excelent tool for defining types of abstract syntax trees for various formalized languages. In fact, syntactic model of every finitary generalized algebraic theory can be described in this way. It goes even beyond this: in terms of inductive-inductive types with reduction rules it is possible to describe syntactic models of all finitary extended algebraic theories and thus capture the language of type theories within type theories. While very advanced, all these examples do not go beyond synthetic types.
 
-Now consider the type of computable bit sequences `Seq<Bool>`. It is a valid data type beyond any doubt. While being infinite sequences, its values can even be sent over the network as finite pieces of data: the computability requirement means that every such sequence can be represented as a Turing machine that produces its bits one-by-one. This Turing machine can be encoded as a finite piece of data and sent over the network.
+Now consider the type of computable bit sequences `CSeq<Bool>`. It is a valid data type beyond any doubt. While being infinite sequences, its values can even be sent over the network as finite pieces of data: the computability requirement means that every such sequence can be represented as a Turing machine that produces its bits one-by-one. This Turing machine can be encoded as a finite piece of data and sent over the network.
 
 Now let us assume this type can be specified as a synthetic data type. Than it would have verifiable equality. But that cannot be the case for sequences, even for computable ones. Their equality is of precisely opposite nature: it is not verifiable, but refutable. In order to check if two bit sequences are equal one has to compare their bits one by one. This process is guaranteed to terminate if there is a difference at some point, but would run indefinitely if the sequences are equal. Equality of sequences (no matter if computable or unrestricted) being not verifiable contradicts the assumption that their type can be specified in a synthetic fashion.
+
+The type of sequences (unrestricted ones this time) can be given the following behaviorial definition:
+
+**Example 11**
+```scala
+structure Seq<T : *> {
+  head : T
+  tail : Seq<T>
+}
+```
+
+This definition says, a sequence `Seq<T>` is anything for which two operations are defined: `head` yielding a value of type `T`, and `tail` yielding a value of `Seq<T>`. Since _data_ types deal only with data (indefinitely copyable pieces of information), it both operations are implicitly guaranteed to be deterministic and side-effect free.
+Mixed paradigm types can be constructed as inductive types with exogenic constructors having non-synthetic parameters:
+
+**Example 12**
+```scala
+datatype InfinitelyBranchingTree<T : *>:
+  Leaf(value : T)
+  Node(branches : Seq<InfinitelyBranchingTree<T>>)
+```
+
+Such types as real numbers, computable real numbers, computable sequences, etc. are defined as quotient inductive types with exogenic constructors.
+
+Non-expressability of those types by synthetic types only, means that by the very nature of things, one has to accept the existence of open types like `Seq<Bool>` that are inhabited by constructively definable sequences, but not limited to them. Cardinality of the type `Seq<Bool>` has a lower bound but not a specific value: within constructive setting the Cantorian diagonal argument does not imply that cardinalty of `Seq<Bool>` is strictly larger than countable, but rather that the assumption that one can systematically list all inhabitants of `Seq<Bool>` is contradictory. In the constructive setting Cantorian argument states that types like `Seq<Bool>` inherently satisfy an open-world assumption.
+
+<details><summary><b>Note for experts</b></summary>
+<p>
+As it was mentioned, in the constructive setting cardinality of `Seq<Bool>` does not have a specific value but only a lower bound of being countably infinite. It is not a weakness of constructive setting but its strength, because it precisely reflects the model-theoretic state of affairs: in natural set-theoretic models the type `Seq<Bool>` is modelled by an uncountably infinite set with a cardinality of continuum, whereas in natural computational models the type `Seq<Bool>` is modeled by the countably infinite set of computable bit sequences.
+</p>
+</details>
+
 
 § Function types
 ----------------
 
-Function types were briefly mentioned in the introduction. Let us now consider them in more detail.
+For given data types `X` and `Y`, the data type of functions `X -> Y` is defined as the type inhabited by values can be applied to a value of type `X` and deterministically yield a value of type `Y`. Normally, application of function `f : A -> B` is written `f(x)`. But we can write down a verbose definition using the same syntax we used to define the type `Seq`:
 
-For given data types `A` and `B`, the data type `A -> B` is defined as the type inhabited by values can be applied to a value of type `A` and deterministically yield a value of type `B` when applied. For this definition to be machine-independent, the functions have to be “opaque”: the values of the type `A -> B` are not allowed to be inspected in any way except by applying them to arguments of matching type. Thus, values of function types are indistinguishable iff they yield equal results for same arguments. By identifiability of indiscernables, we have: **given `f(x) = g(x)` for each `x` of type `A`, `f = g`**.
+**Example 13
+```scala
+structure Function<X : *, Y : Y> {
+  apply(x : X) : Y
+}
+```
 
-The function types `A -> B` are in general open types in the sence that type defintion does limit how values of the type `A -> B` are to be constructed: the limitation are given by the way how functions are allowed to be used and inspected. Thus on the first glance it might appear that function types are never manifestly finite.
+To apply `f : Function<X, Y>` one would have to write `f.apply(x)`.
+
+For such definition to be machine-independent, functions have to be “opaque”: the values of the type `A -> B` are not allowed to be inspected in any way except by applying them to arguments of matching type. Thus, values of function types are indistinguishable if they yield equal results for same arguments. By identifiability of indiscernables (a principle which holds in univalent construction calculi), we have: **given** `f(x) = g(x)` **for each** `x` **of type** `A`, `f = g`.
+
+The function types `A -> B` are in general open types in the sence that type defintion does limit how values of the type `A -> B` are to be constructed: the limitation are only given by the way how functions are allowed to be used and inspected. Thus on the first glance it might appear that function types are never manifestly finite.
 
 Yet, assume both `A` and `B` are finite data types, with constructors denoted by `{A₁,.., Aₙ}` and `{B₁,..,Bₘ}`. Then, there are only `mⁿ` functions `A -> B` of the following form:
 ```scala
@@ -342,22 +382,24 @@ x match {
 }
 ```
 
-It can be easily shown that any functions `A -> B` is equal to one of these, thus the type `A -> B` is finite up to equality of its elements. In fact, the types `A -> B` are finite if and only if both `A` and `B` are finite.
+It can be easily shown that any functions `A -> B` is equal to one of these, thus the type `A -> B` is finite up to equality of its elements. In fact, the types `A -> B` are finite if and only if both `A` and `B` are finite. Along the same line of reasoning one can show that the type `A -> B` is synthetic if and only if `A` is finite and `B` synthetic.
 
-Along the same line of reasoning one can show that the type `A -> B` is a synthetic type in disguise if `A` is finite and `B` synthetic. The next section argues that this is the only case when function types are equivalent to synthetic types.
+§ Universes
+-----------
 
-§ Non-Synthetic Types
----------------------
+Reification principle:
 
-There are data types which cannot be expressed as synthetic types.  
+The type of all data types * is not a data type itself, it's a virtual type. But it can be approximated by data types:  
+At any point we can define the data type of all data types defined _so far_ (including being closed with regards to all parametrically polymorphic types like `List<T : *>` and `Function<X : *, Y : 0X -> *>` defined _so far_) with identifications between types given by equivalences. Such type is called a univalent (Mahlo) universe. It does not contain itself, but the universe defined right in the next line would by definition contain all the types defined _so far_, thus in particular the previous universe.
 
-The most prominent examples are given by functions on infinite data types (for instance infinite sequences of booleans `Nat -> Bool`) and exact real numbers `Real`. While this two types are perfectly valid data types, it is a matter of argument if infinite sequences and exact real numbers are data in the most narrow sense of the word because they cannot be stored on a finite digital carrier or sent over network in a finite amount of time.
+Reflection principle:
 
-Yet it is possible to define the types of _computable_ sequences and _computable_ real numbers. That is, ones sequences that can be produced by an algorithm and real numbers that can be algorithmically computed to any desired finite precision. These are unequivocally **data** types, because they can be easily sent over network or stored in form of the respective lambda expression (or any other desired form of Turing-complete computation). These two types still cannot be represented by closed synthetic types, because closed synthetic types are by design effectively enumerable and computable sequences/computable reals are not effectively enumerable due to [halting problem](https://en.wikipedia.org/wiki/Halting_problem).
+Assume, U is a universe. Any function `0U -> T` can be lifted to `* -> T`. In particular, if we prove anything for parametrically polymorphic type relativised to a fixed universe like `Category<Ob : 0U, Hom : Ob -> Ob -> 0U> : U'`, we automatically also prove it for respective generic parametrically polymorphic type, like `Category : (Ob : *) -> (Hom : Ob -> Ob -> Ob) -> *`
 
-The type of all lambda expressions can be certainly given by as a closed synthetic type, but it will neccesarily include some nonterminating expressions (the ones that does not correspond to any valid sequence and no valid real number respectively), and have the wrong notion of equality. As we already mentioned, equality on synthetic types is verifiable, while equality of reals and equality of sequences is not. Actually, it's the other way around. The equality on reals and discernable sequences is refutable: one can check equality of two numbers digit-by-digit (equality of sequences respectively item-by-item) and this process is guaranteed to terminate if there is a difference somewhere, but would last infinitely when values are indeed equal.
+TODO: Tell how reification + reflection give large elims, transport between equivalent types and paremetricity.
 
-To have a mathematically sound type system, one has to accept the existence of open types of functions `A -> B` (where `A` is an infinite type) which are inhabited by constructively definable functions from `A` to `B`, but not limited to them. The only thing one can be sure, is that such a function can be applied to a value of type `A` and yields a value of type `B`. Function types inherently satisfy a potential open-world assumption.
+Let us call the type theory based on declaratively defined datatypes as presented above, virtual types reflecting parametrically polymorphic definitions, reification principle and reflection principle Univalent Calculus of Constructions. We conjecture that this theory can be seen as conservative extension of the [ZMC/S](https://golem.ph.utexas.edu/category/2009/11/feferman_set_theory.html) set theory and thus equiconsistent with ZMC.
+
 
 § The Power of Non-Synthetic Quotient Inductive-Inductive types: Defining reals
 -------------------------------------------------------------------------------
@@ -367,54 +409,7 @@ Define reals, partial computations `℧(T)`, computable reals, computable functi
 Provide initial models for contably-infinitary algebraic theories (like the theory of compact Hausdorff spaces).
 
 
-* * * 
 
-
-
-§ More General Closed Synthetic Types
--------------------------------------
-
-There are several important extensions to inductive types.
-
-First of all, one may allow to define a family mutually dependent inductive types at once. It may be a finite number of types:
-
-**Example 6**
-```c
-inductive VariableWidthTreeOfInts, ListOfTrees {
-  Leaf(Integer n) : VariableWidthTreeOfInts,
-  Node(ListOfTrees list) : VariableWidthTreeOfInts,
-  EmptyList : ListOfTrees,
-  NonEmptyList(VariableWidthTreeOfInts head, ListOfTrees tail)
-}
-```
-
-It also may be an infinite family of types indexed by a parameter, in which case one also has to allow dependent signagures for constructors:
-
-**Example 7**
-```c
-inductive LengthIndexedListOfIntegers(NaturalNumber length) {
-   EmptyList : LengthIndexedListOfIntegers(Zero),
-   NonEmptyList(Integer head, 
-                NaturalNumber tail_length,
-                LengthIndexedListOfIntegers(tail_length) tail
-     ) : LengthIndexedListOfIntegers(tail_length + 1)
-}
-```
-
-Here, the type of the index `NaturalNumber` is defined in advance, but there is no problem in defining one or more index types simultaneously with everything else. This extension is known as inductive-inductive types. The example 7 also uses an operation (`+ 1`) defined on the index type `NaturalNumber`, which was also defined in advance. When the index type is being defined simultaneously with other types, all required operations on this type have to be also defined simultanously. This extension is known as small inductive-inductive-recursive types.
-
-With all these extensions, one can define very complex data types such as 
-* intricataly balanced trees representing internal states of advanced for data structures (such as Red-Black trees, B* trees, etc.),
-* abstract syntax trees for languages, including languages with types and binders¹.
-
-Notwithstanding all this extensions, the inductive types retain their basic properties:
-* Synthetic, i.e. built from fixed set of constructors and can be analysed by top-down-recursive pattern matching;
-* Closed, if all paremeters of all constructors are themselves closed:
-  * Effectively enumerable;
-  * Have semidecidable equality;
-
-----
-1. Closed synthetic types provide syntactic models (= initial models) for all finitary extended algebraic theories, in particular for all generalized algebraic theories without sort equations. Non-closed synthetic types (see below) are capable of dealing with countably infinitary extended algebraic theories.
 
 § Universes and other fibered inductive-inductive types
 -------------------------------------------------------
