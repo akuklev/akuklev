@@ -3,7 +3,7 @@ Declarative Approach to Data Types
 
 I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an introduction to declarative data type definitions for interested software engineers, computer scientists and mathematicians willing to tolerate programmer-ish approach. At the same time, this article contains some novel material of mathematical significance based on yet unpublished results by members of our group.
 
-Declaratively defined data types are user-defined data types specified in terms of _what_ they are and good for, rather than _how_ they are implemented. Declarative data type definitions are essential for abstract reasoning about programs.
+Declaratively defined data types are user-defined data types specified in terms of _what_ they are and good for, rather than _how_ they are implemented. Declarative data type definitions are essential for abstract reasoning about programs. Such definitions also form the frame of the Univalent Calculus of Constructions, the still unfinished structuralist's foundation of mathematics.
 
 **Clarification:** Throughout this article series, the term “data types” will be used in the narrow sense. While types in general can refer to objects such as files and mutable data structures, data types refer to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at at a given point in time. Object types are beyond scope of this article. 
 
@@ -150,8 +150,8 @@ Inductive types may have structurally recursive reducible constructors. These ge
 **Example 6**
 ```scala
 datatype Nat {
-  Zero,
-  Succ(pred : Nat),
+  Zero
+  Succ(pred : Nat)
   
   Sum(n : Nat, m : Nat)
   Prod(n : Nat, m : Nat)
@@ -167,10 +167,10 @@ datatype Nat {
 Partially reducible constructors, are constructors for which reductions are defined by non-exhaustive case analysis:
 
 **Example 7**
-```
+```scala
 datatype Int {
-  FromNat(n : Nat),
-  Negated(n : Nat),
+  FromNat(n : Nat)
+  Negated(n : Nat)
   Zero,
   
   FromNat(Zero) => Zero
@@ -183,7 +183,7 @@ datatype Int {
 When performing exhausitve case analysis, reducible cases do not appear. Let us define negation for integers to illustrate:
 
 **Example 8**
-```
+```scala
 def Incremented(z : Int) : Int
   Zero => FromNat(Succ(Zero))
   Negated(Succ(n)) => Negated(n)
@@ -194,7 +194,7 @@ Here, the cases `FromNat(Zero)` and `Negated(Zero)` are not mentioned at all bec
 
 Note, that the decision which constructors are reducible is non-unique. For example, one could have also defined integers as follows:
 **Example 9**
-```
+```scala
 datatype Int {
   Pos(n : Nat.Succ)
   Neg(n : Nat.Succ)
@@ -209,7 +209,12 @@ datatype Int {
 
 For each inductive type `T` with reducible constructors, one could define a type of “raw terms” `RawT`: the type with exactly the same constructors but without any reduction rules. Any function `f` on the original type `T` is also a function on the type of raw terms `RawT` under the hood, yet with a property that on values `x : RawT` and `y : RawT` which reduce to the same value if seen as `T`-value, `f` yields _literally_ the same results. This property is guaranteed by opaqueness of declarative types, which means that functions one defines are only allowed to inspect values of inductive types by exhaustive case analysis, and the way exhaustive case analysis works for reducible constructors (see example 8).
 
+<details><summary>A note for experts</summary>
+<p>
 **Note for experts:** Availability of partially reducible constructors substantially increase the strength of inductive types. They allow to enforce _literal_ equalities on functions from a given type without introducing strict equality types into the type system. In particular, they render semi-simplicial types definable a univalent type theory.
+</p>
+</details>
+
 
 § Defining rationals: Quotient Inductive Types
 ----------------------------------------------
