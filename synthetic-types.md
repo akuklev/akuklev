@@ -31,12 +31,12 @@ To define the types mentioned as examples above, one needs both approaches. In f
 Now let us begin with the basic examples and work our way to the most advanced ones. Since no mainstream programming language supports declarative data types in sufficient generality, pseudocode will be used in all examples.
 
 **Table of contents**
-* [Defining finite types: Variant data types]
-* [Recovering primitive types: Variant Types with bundled operations]
-* [Beyond finite types: Inductive types]
-* [Defining integers: Inductive types with reducible constructors]
-* [Defining rationals: Quotient Inductive Types]
-* [Defining containers: Polymorphic Inductive Types]
+* [**Defining finite types:** Variant data types]()
+* [Recovering primitive types: Variant Types with bundled operations]()
+* [Beyond finite types: Inductive types]()
+* [Defining integers: Inductive types with reducible constructors]()
+* [Defining rationals: Quotient Inductive Types]()
+* [Defining containers: Polymorphic Inductive Types]()
 
 
 § Defining finite types: Variant data types
