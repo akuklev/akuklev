@@ -387,16 +387,20 @@ It can be easily shown that any functions `A -> B` is equal to one of these, thu
 § Universes
 -----------
 
+
+
 Reification principle:
 
 The type of all data types * is not a data type itself, it's a virtual type. But it can be approximated by data types:  
-At any point we can define the data type of all data types defined _so far_ (including being closed with regards to all parametrically polymorphic types like `List<T : *>` and `Function<X : *, Y : 0X -> *>` defined _so far_) with identifications between types given by equivalences. Such type is called a univalent (Mahlo) universe. It does not contain itself, but the universe defined right in the next line would by definition contain all the types defined _so far_, thus in particular the previous universe.
+At any point we can define the data type of all data types defined _so far_ (including being closed with regards to all parametrically polymorphic types like `List<T : *>` and `Function<X : *, Y : 0X -> *>` defined _so far_) with identifications between types given by equivalences. Such type is called a univalent (Mahlo) universe. It does not contain itself, but the universe defined right in the next line would by definition contain all the types defined _so far_, thus in particular the previous universe. There seems to be no problem with the very first universe containing all synthetic types and all propositions, but universes themselves are _never_ synthetic. Each universe `U` comes with “decoding operator” type family `<typeTag : U> : *`. Safe large elimination is facilitated by first eliminating into a universe, and than applying `<_>`. Safety (paradox avoidance) is safeguarded by the property that the universes only contain the types defined before them, so one cannot produce vicious circles.
+
+(Clarification: Cedillian polymorphic types like `(T : *) -> T -> T` and `* -> *` are certainly open and large, i.e. do not belong to any universe, unless relativised to one. In the same time, Cedillian "inductive types", while appearing large, are synthetic types in disguise. Thus can be assumed to belong already to the very first universe. Can be checked to following way: take a universe, create an internal universe inside, relativise the type inside internal universe, show equivalence. If resizing into smaller universe is possible, than its non-contradictory to postulate this stuff exists in all universes.)
 
 Reflection principle:
 
 Assume, U is a universe. Any function `0U -> T` can be lifted to `* -> T`. In particular, if we prove anything for parametrically polymorphic type relativised to a fixed universe like `Category<Ob : 0U, Hom : Ob -> Ob -> 0U> : U'`, we automatically also prove it for respective generic parametrically polymorphic type, like `Category : (Ob : *) -> (Hom : Ob -> Ob -> Ob) -> *`
 
-TODO: Tell how reification + reflection give large elims, transport between equivalent types and paremetricity.
+TODO: Tell how reification + reflection give transport between equivalent types and paremetricity.
 
 Let us call the type theory based on declaratively defined datatypes as presented above, virtual types reflecting parametrically polymorphic definitions, reification principle and reflection principle Univalent Calculus of Constructions. We conjecture that this theory can be seen as conservative extension of the [ZMC/S](https://golem.ph.utexas.edu/category/2009/11/feferman_set_theory.html) set theory and thus equiconsistent with ZMC.
 
