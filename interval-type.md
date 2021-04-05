@@ -84,3 +84,23 @@ structure PolyBridge<Bridge<*>> {
 ```
 
 Релейшины — это просто I -> (ϰ) не для типов, а для кайндов.
+
+Рассмотрим функции `f : ∀(T : *), T -> T`. Эту функцию можно рассматривать, как определённую на пунктированных типах
+```
+structure Pointed<T : *> {
+  point : T
+}
+
+// Abuse of notation known as path dependent types:
+
+f : ∀(p : Pointed), p.T
+```
+
+Теперь пусть тип `I -> Pointed` означает
+```
+structure Bridge(OriginT TermunusT : *, RelT : OriginT -> TerminusT -> *) {
+   origin : OriginT
+   terminus : TerminusT
+   connection : RelT
+}
+```
