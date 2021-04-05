@@ -296,6 +296,13 @@ which does not assume that for `loop(a) := Swap(a, b)` the equation `loop • lo
 </p>
 </details>
 
+§ Defining Syntax Trees: Inductive-inductive Types
+--------------------------------------------------
+
+Inductive types can be combined with dependent signatures, yielding so called inductive type families. This can be pushed even further by allowing to define the (synthetic) type the family is indexed by simultaneously with indictive family itself. Such types are called inductive-inductive types. Quotient inductive-inductive types are excelent tool for defining types of abstract syntax trees for various formalized languages. In fact, syntactic model of every finitary generalized algebraic theory can be described in this way. It goes even beyond this: in terms of inductive-inductive types with reduction rules it is possible to describe syntactic models of all finitary extended algebraic theories and thus capture the language of type theories within type theories. 
+
+**TODO:** Example, for instance calculator language
+
 
 § Synthetic and Behaviorial paradigms
 -------------------------------------
@@ -317,11 +324,13 @@ Synthetic types are particularily well-behaved: each possible value of a synthet
 
 Synthetic types that do not employ user-defined identifications, equality of values is decidable, i.e. equality can be checked by an algorithm which is guaranteed to terminate. For synthetic types employing postulated identifications, the equality checking is only guaranteed to be verifiable, i.e. it is guaranteed to terminate if the values are indeed equal, but might turn out to run indefinitely if the values are distinct. That is not a flaw of a particular equality checking algorithm, but an general problem known in mathematics as [word problem undecidability](https://en.wikipedia.org/wiki/Word_problem_(mathematics)).
 
-Inductive types can be combined with dependent signatures, yielding so called inductive type families. This can be pushed even further by allowing to define the (synthetic) type the family is indexed by simultaneously with indictive family itself. Such types are called inductive-inductive types. Quotient inductive-inductive types are excelent tool for defining types of abstract syntax trees for various formalized languages. In fact, syntactic model of every finitary generalized algebraic theory can be described in this way. It goes even beyond this: in terms of inductive-inductive types with reduction rules it is possible to describe syntactic models of all finitary extended algebraic theories and thus capture the language of type theories within type theories. While very advanced, all these examples do not go beyond synthetic types.
 
 Now consider the type of computable bit sequences `CSeq<Bool>`. It is a valid data type beyond any doubt. While being infinite sequences, its values can even be sent over the network as finite pieces of data: the computability requirement means that every such sequence can be represented as a Turing machine that produces its bits one-by-one. This Turing machine can be encoded as a finite piece of data and sent over the network.
 
 Now let us assume this type can be specified as a synthetic data type. Than it would have verifiable equality. But that cannot be the case for sequences, even for computable ones. Their equality is of precisely opposite nature: it is not verifiable, but refutable. In order to check if two bit sequences are equal one has to compare their bits one by one. This process is guaranteed to terminate if there is a difference at some point, but would run indefinitely if the sequences are equal. Equality of sequences (no matter if computable or unrestricted) being not verifiable contradicts the assumption that their type can be specified in a synthetic fashion.
+
+§ Structure types 
+-----------------
 
 The type of sequences (unrestricted ones this time) can be given the following behaviorial definition:
 
@@ -334,6 +343,9 @@ structure Seq<T : *> {
 ```
 
 This definition says, a sequence `Seq<T>` is anything for which two operations are defined: `head` yielding a value of type `T`, and `tail` yielding a value of `Seq<T>`. Since _data_ types deal only with data (indefinitely copyable pieces of information), it both operations are implicitly guaranteed to be deterministic and side-effect free.
+
+**TODO:** Say a word on structures on types, such as order or ring structure
+
 Mixed paradigm types can be constructed as inductive types with exogenic constructors having non-synthetic parameters:
 
 **Example 12**
@@ -387,8 +399,6 @@ It can be easily shown that any functions `A -> B` is equal to one of these, thu
 § Universes
 -----------
 
-
-
 Reification principle:
 
 The type of all data types * is not a data type itself, it's a virtual type. But it can be approximated by data types:  
@@ -404,6 +414,7 @@ TODO: Tell how reification + reflection give transport between equivalent types 
 
 Let us call the type theory based on declaratively defined datatypes as presented above, virtual types reflecting parametrically polymorphic definitions, reification principle and reflection principle Univalent Calculus of Constructions. We conjecture that this theory can be seen as conservative extension of the [ZMC/S](https://golem.ph.utexas.edu/category/2009/11/feferman_set_theory.html) set theory and thus equiconsistent with ZMC.
 
+---
 
 ### Parametricity
 
@@ -426,18 +437,3 @@ Parametricity is a combination of application to heteroequaluty and relativizati
 ```
 f (r : A ⋈ B) (r' : x =[r]= y) : f^r(0)(x) =[e]= f^r(1)(y)
 ```
-
-§ The Power of Non-Synthetic Quotient Inductive-Inductive types: Defining reals
--------------------------------------------------------------------------------
-
-Define reals, partial computations `℧(T)`, computable reals, computable functions, borel-measurable functions `𝔅(A, B)`.
-
-Provide initial models for contably-infinitary algebraic theories (like the theory of compact Hausdorff spaces).
-
-
-
-
-§ Universes and other fibered inductive-inductive types
--------------------------------------------------------
-
-Another kind of non-closedness arises when the functions defined simultaneously with their domain in inductive-inductive types are allowed to be kind-valued. Such extention is known as fibered inductive types (or large inductive-inductive-recursion). Since kinds are inherently open virtual types, resulting synthetic types are non-closed as well. This extension allows defining universes and abstract syntax trees for languages with extensible type systems. In particular, such types are capable of capturing abstract syntax of their host language, which is known as “language eating itself”. In the latter case, types remain positively semidecidable and effectively enumerable relative to the host language, which allows calling them syntactic models, at least in relativised sense.
