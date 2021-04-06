@@ -16,7 +16,8 @@ We believe, the best way to approach this hefty topic is to work our way through
 * [**Defining integers:** Inductive Types with reduction rules]()
 * [**Defining rationals:** Quotient Inductive Types]()
 * [**Defining containers:** Polymorphic Inductive Types]()
-* [**Towards reals:** Synthetic and Behaviorial paradigms]()
+* [**Defining syntax trees:** Dependent Inductive Types]()
+* [**Towards reals:** Beyond Synthetic Types]()
 
 § Defining finite types: Variant data types
 -------------------------------------------
