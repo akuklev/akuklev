@@ -22,7 +22,7 @@ We believe that the best approach to this hefty topic is to work our way through
 § Defining finite types: Variant data types
 -------------------------------------------
 
-Variant types are a particular kind of user-defined data types. Let us begin with an example: `BasicColor` is defined as a type with allowed values `Red`, `Green`, `Blue`, and `Gray` of specific `intensity` given by an integer number between 0 and 100.
+We shall begin with the simplest kind of types: the ones defined by a finite enumeration of their possible values. These types are called variant types. Here is an example:
 
 **Example 1**
 ```scala
@@ -34,7 +34,7 @@ datatype BasicColor {
 }
 ```
 
-`Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a parametrized constructor, while the other three are called atomic. The values of enumeration types can be inspected by exhaustive case analysis:
+Here, `BasicColor` is defined as a type with allowed values `Red`, `Green`, `Blue`, and `Gray` of specific `intensity` given by an integer between 0 and 100. `Red`, `Green`, `Blue`, and `Gray` are called the _constructors_ of the type `BasicColor`. The constructor `Gray` is said to be a _parametrized_ constructor, while the other three are called _atomic_. The values of variant types can be inspected by exhaustive case analysis:
 ```scala
 s match {
   case Red   => ...
@@ -45,9 +45,9 @@ s match {
 ```
 
 **Definition 1**
-> Variant data types are specified by a finite list of named constructors with a finite number (zero or more) parameters each. All parameters are required to have types (data types) defined beforehand. Values of variant datatypes are only allowed (1) to be created by manifestly using a constructor from the list, (2) to be inspected by case analysis.
+> _Variant data types_ are data types specified by a finite list of named constructors. Constructors can either be atomic or have a finite number of parameters of already defined types. Values of variant datatypes are only allowed to be: (1) created by manifestly using a constructor from the list, (2) inspected by case analysis.
 
-Variant data types without parametized constructors only are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
+Variant data types without parametized constructors are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. This implementation is certainly non-unique. One could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. The definition 1 requires that values are only created using constructors and inspected by case analysis, which renders it impossible to inspect which implementation is being used. This opaqueness does in particular allow the compiler to chose the implementation it pressumes to be optimal on the given machine in the given setting, or even to switch implementations depending on medium. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM.
 
