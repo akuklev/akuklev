@@ -5,7 +5,7 @@ I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups
 
 Declaratively defined data types are user-defined data types specified in terms of _what_ they are good for, rather than _how_ they are implemented. Declarative data type definitions are essential for abstract reasoning about programs. Such definitions also form the frame for the structuralist's foundation of mathematics, which is currently under development[https://arxiv.org/abs/2009.09541].
 
-It is importaint to note, that throughout this article series, the term “data types” will be used in the following narrow sense: while types in general can refer to objects such as files and mutable data structures, data types refer to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at some point time. Object types are beyond scope of this article. 
+It is importaint to note, that throughout this article series, the term “data types” will be used in the following narrow sense: while types in general can refer to objects (such as files and mutable data structures), data types refer solely to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at some point time. Object types are beyond scope of this article. 
 
 We believe that the best way to approach this hefty topic is to work our way through with examples of increasing complexity. Since no mainstream programming language supports declarative data type definitions in sufficient generality, a pseudocode will be used in all examples.
 
