@@ -7,7 +7,7 @@ Declaratively defined data types are user-defined data types specified in terms 
 
 It is importaint to note, that throughout this article series, the term “data types” will be used in the following narrow sense: while types in general can refer to objects (such as files and mutable data structures), data types refer solely to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at some point time. Object types are beyond scope of this article. 
 
-We believe that the best approach to this hefty topic is to work our way through with examples of increasing complexity. Since no mainstream programming language supports declarative data type definitions in sufficient generality, a pseudocode will be used in all examples. We will start with the definitions of finite types and describe how to recover primitive numeric data types (such as the type `int32` of 32 bit integers) declaratively. Then we will progressively define the types for unbounded natural, integer, and rational numbers. After that we will make a digression to define container types (such as pairs, lists, binary trees, etc.) and complex trees. Finally, we will outline the approach to declarative definition of real numbers.
+We believe that the best approach to this hefty topic is to work our way through with examples of increasing complexity. Since no mainstream programming language supports declarative data type definitions in sufficient generality, a pseudocode will be used in all examples. We will start with the definitions of finite types and describe how to recover primitive numeric data types (such as the type `int32` of 32 bit integers) declaratively. Then we will progressively define the types for unbounded natural, integer, and rational numbers. After that we will make a digression to define container types (such as pairs, lists, binary trees, etc.) and complex trees. Finally, we will outline the approach to declarative definition of real numbers. For mathematicians among us, we will additionally provide definitions for the class of groups, and type for a finitely presented group, that naturally belongs to the class of groups.
 
 **Table of contents**
 * [**Defining finite types:** Variant data types]()
@@ -437,4 +437,34 @@ f (e : A = B) (e' : x =[e]= y) : f(x) =[e]= f(y)
 Parametricity is a combination of application to heteroequaluty and relativization:
 ```
 f (r : A ⋈ B) (r' : x =[r]= y) : f^r(0)(x) =[e]= f^r(1)(y)
+```
+
+§ Very dependent types
+----------------------
+
+
+Very dependent functions on Nat
+
+```
+datatype DepTypeList[n : Nat]:
+  Zero => Unit
+  Succ(n) => Σ(T : DepTypeList[n]), (T -> U)
+
+structure DepTypeSeq:
+  initialSegment(n : Nat) : DepTypeList[n : Nat]
+  
+  initialSegment(Succ(n)).fst <= initialSegment(n)
+
+// (T' : (T : *) x (T -> *)) x (T' -> *) ...
+// This guys are called semi-simplicial types
+
+DepArray[length : Nat, T : DepTypeList[length]]:
+  length = 0 => EmptyArray
+  length = Succ(n), d : DepTypeList[n + 1] =>
+    Snoc(tail : DepArray[n, d.fst], head : d.snd(tail))
+    
+DepSeq[T : DepTypeSeq]:
+  initialSegment(n : Nat) : DepArray[n, T.initialSegment(n)]
+  
+  initialSegment(Succ(n)).tail < initialSegment(n)
 ```
