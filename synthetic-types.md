@@ -303,7 +303,36 @@ which does not assume that for `loop(a) := Swap(a, b)` the equation `loop • lo
 Inductive types can be combined with dependent signatures, yielding so called inductive type families. This can be pushed even further by allowing to define the (synthetic) type the family is indexed by simultaneously with indictive family itself. Such types are called inductive-inductive types. Quotient inductive-inductive types are excelent tool for defining types of abstract syntax trees for various formalized languages. In fact, syntactic model of every finitary generalized algebraic theory can be described in this way. It goes even beyond this: in terms of inductive-inductive types with reduction rules it is possible to describe syntactic models of all finitary extended algebraic theories and thus capture the language of type theories within type theories. 
 
 **TODO:** Example, for instance calculator language
+```
+datatype VarSelector {
+    Empty : VarSelector
+    Left(tail : VarSelector) : VarSelector
+    Right(tail : VarSelector) : VarSelector
+    Both(tail : VarSelector) : VarSelector
+    
+    CountLeft(v : VarSelector) : Nat
+    CountLeft(Empty) => 0
+    CountLeft(Left(tail)) => Succ(CountLeft(tail))
+    CountLeft(Both(tail)) => Succ(CountLeft(tail))
+    CountLeft(Right(tail)) => CountLeft(tail)
+    
+    CountRight(v : VarSelector) : Nat
+    CountRight(Empty) => 0
+    CountRight(Left(tail)) => CountRight(tail)
+    CountRight(Both(tail)) => Succ(CountRight(tail))
+    CountLeft(Right(tail)) => Succ(CountRight(tail))
 
+    Count(...)
+}
+
+datatype Expr(nVars : Nat) {
+   Constant(z : Int) : Expr(Zeor)
+   Vor : Expr(1)
+   Neg[n](a : Expr[n]) : Expr(n)
+   Add(s : VarSelector, a : Expr(CountLeft(s)), b : CountRight(s)) : Expr(Count(s))
+   Mul(s : VarSelector, a : Expr(CountLeft(s)), b : CountRight(s)) : Expr(Count(s))
+}
+```
 
 § Synthetic and Behaviorial paradigms
 -------------------------------------
