@@ -497,3 +497,30 @@ DepSeq[T : DepTypeSeq]:
   
   initialSegment(Succ(n)).tail < initialSegment(n)
 ```
+
+
+Расширяемые сорта — параметры, могут быть индексированы другими параметрами и кофибрантными сортами
+Кофибрантные сорта — внутренние синтетические типы, могут быть зависимы от параметров
+```
+MultiCat[Ob : *, Hom : List[Ob] -> Ob -> *] where
+   EmptyList : List[Ob]
+   Cons...
+   Cont
+
+—
+struct Pair[X : *, Y : X -> *]:
+   fst : X
+   snd : Y(fst) 
+
+
+T(n.right) = T(n.left.head)
+
+—
+Тип DepTypeSeq определён на 
+Zero
+Succ(n)
+Succ(n).left -> n
+
+Zero => Unit
+Succ(n) =>
+```
