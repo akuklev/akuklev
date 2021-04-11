@@ -38,7 +38,7 @@ The real C used to support fixed-length arrays if their length is a compile-time
   <dd>A programming language is said be <i>dependently typed</i> if it allows one or several arguments of a function to be used to specify the types of the following arguments or the return type.</dd>
 </dl>
 
-Notice, that the definition also mentions the return type, so let us provide an example for this case. As opposed to C, in dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon `:` separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
+Note that the definition also mentions the return type, so let us provide an example for this case. As opposed to C, in dependently typed languages, the return type of a function has to be written not at the beginning of a declaration, but at its end. For example, a declaration of a function returning an integer looks as follows: `get_count() : int`, where colon `:` separates declarandum `get_count()` and its type `int`. That is precisely because the return type of a function can also depend on the arguments:
 ```c
 generate_random_sequence(nat length) : int[length];
 ```
