@@ -184,7 +184,7 @@ With `string<Grammar g>` from the example above, one can make the signature of f
 db.query(string<query> q, <db.query_args(q)> ...args) : <db.query_results(q)> throws IncompatibleDbSchemaException
 ```
 
-Now that the programming tools (IDEs) can see that the string literal used for the argument `q` should comply with a given grammar, they can also provide the respective inline validation, syntax highlighting, context help, autocompletion, etc. This feature has nothing to do with dependent types per ce, but it is one of the many useful features suggested by introduction of dependent types.
+Now that the programming tools (IDEs) can see that the string literal used for the argument `q` should comply with a given grammar, they can also provide the respective inline validation, syntax highlighting, context help, autocompletion, etc. This feature has nothing to do with dependent types per se, but it is one of the many useful features suggested by introduction of dependent types.
 
 ---
 1. From theoretical perspective, this extension does not introduce any additional complexity to the language if it readily supports dependent types and [inductive data types](https://en.wikipedia.org/wiki/Inductive_type).
