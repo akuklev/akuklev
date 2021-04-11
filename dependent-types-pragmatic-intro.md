@@ -212,9 +212,9 @@ The language could be restricted to pure functions only, but this is hardly an o
 
 Fallback mechanisms are unavoidable because of inherent limitations of other machinery. Termination checking is known to be undecidable in general, thus, in some non-trivial cases, the termination checker cannot ensure termination automatically (see [Halting Problem](https://en.wikipedia.org/wiki/Halting_problem)). SMT solvers also have their limitations: sometimes they might fail to see why a `DivisionByZeroException` could never arise, even if it is rather obvious to the human programmer. The minimalistic fallback mechanism is to allow the programmers to use special “Trust Me”-directive in such cases, perhaps with a mandatory name of the responsible programmer and a commentary why they assume their code never to perform a division-by-zero in a specific position, and their loops or recursion to terminate.
 
-For critical software one would a more reliable fallback mechanism. For this reason, most dependently-typed languages also support certified programming, which presumes a sublanguage for machine-readable proofs. Unfortunatelly, certified programming is complicated and requires programmers to acquire a new cognitively demanding skill. Thus, certified programming should only be enforced when "Trust me"-directives are not a viable option.
+(For critical software a more reliable fallback mechanism is required. For this reason, most dependently-typed languages also support certified programming, which presumes a sublanguage for machine-readable proofs. Unfortunatelly, certified programming is complicated and requires programmers to acquire a new cognitively demanding skill. In practice, that limits certified programming to the cases when "Trust me"-directives are not a viable option.)
 
-The complexity of these mechanisms explains why dependent typing is still not widely adopted in general purpose languages.
+The complexity of all these mechanisms explains why dependent typing is still not widely adopted in general purpose languages.
 
 
 § Concluding Notes
