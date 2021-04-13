@@ -22,7 +22,7 @@ We believe that the best way to approach to this hefty topic is by considering e
 § Defining finite types: Variant data types
 -------------------------------------------
 
-We shall begin with the simplest kind of types: the ones defined by a finite enumeration of their possible values. These types are called variant types. Here is an example:
+We shall begin with the simplest kind of types: the ones defined by a finite enumeration of their possible values. These types are called _variant types_. Here is an example:
 
 **Example 1**
 ```scala
