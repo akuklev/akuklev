@@ -56,7 +56,23 @@ The values of declarative data types have to be stored in the computer memory, a
 § Recovering primitive types: Variant Types with bundled operations
 -------------------------------------------------------------------
 
-There is a handy extension to variant types: one can allow constructors that reduce to other constructors. Reductible constructors are exempt to the rule that parameters must have types defind beforehand. In particular they are allowed to have parameters of the type being defined. Consider the following example:
+In the examples above, distinct constructors always referred to distinct values. Variant data types can be extended to contain constructors that refer to values that are readily expressible by other constructors. Such constructors are called _reducible_.
+
+**Example 2**
+```scala
+datatype BasicColor {
+  Red
+  Green
+  Blue
+  Gray(intensity : 0..100)
+  Black => Gray(100)
+  White => Gray(0)
+}
+```
+
+Here, `Black` and `White` are reducible constructors and all other constructors are called _irreducible_.
+
+Reducible constructors are exempt from the restriction that parameters must have types that are readily defined: they are allowed to have parameters of the type being defined. Consider the following example:
 
 **Example 2**
 ```scala
@@ -78,7 +94,9 @@ datatype Bool {
 }
 ```
 
-Reducible constructors have to reduce to a non-reducible one for any combination of parameters. Of course one can define all these operations such as external functions by performing exhaustive case analysis, but there are two subtle differences:
+Reducible constructors turn out to be a very useful extension. They allow to provide operations _bundled_ into declarative definitions, such as the logical operations `Not`, `And`, etc. in the example 2. (TODO: Определить bundled operations)
+
+There are two differences between operations bundled into the definition and the ones defined as external functions by performing exhaustive case analysis:
 * Bundled operations (the ones given in form of reducible constructors) are the ones the implementors are allowed to redefine when they provide custom implementations for declarative types;
 * Bundled operations are available in compile-time context, this will be disussed at length in the section about generic functions.
 
