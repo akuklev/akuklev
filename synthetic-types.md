@@ -1,7 +1,7 @@
 Declarative Approach to Data Types
 ==================================
 
-I work at [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an introduction to declarative data type definitions for interested software engineers, computer scientists, and mathematicians willing to tolerate programming-centered perspective. At the same time, this article contains novel material based on mathematical results by the members of our group which are yet to be published.
+I work in [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an introduction to declarative data type definitions for interested software engineers, computer scientists, and mathematicians willing to tolerate programming-centered perspective. At the same time, this article contains novel material based on mathematical results by the members of our group which are yet to be published.
 
 Declaratively defined data types are data types specified in terms of _what_ they are good for, rather than _how_ they are implemented. Declarative data type definitions are essential for abstract reasoning about programs. Such definitions also form the frame for the emerging structuralist's foundation of mathematics[[1]](https://arxiv.org/abs/2009.09541).
 
