@@ -45,7 +45,7 @@ s match {
 ```
 
 **Definition 1**
-> _Variant data types_ are data types specified by a finite list of named constructors. Constructors can either be atomic or have a finite number of parameters of already defined types. Values of variant datatypes can be created only by manifestly using a constructor from the list. Variables of variant data types can be inspected only by case analysis. These are the only permissible interactions with variables of variant data types.
+> _Variant data types_ are data types specified by a finite list of named constructors. Constructors can either be atomic or have a finite number of parameters of previously defined types. Values of variant datatypes can be created only by manifestly using a constructor from the list. Variables of variant data types can be inspected only by case analysis. These are the only permissible interactions with variables of variant data types.
 
 Variant data types without parametized constructors are finite, i.e. variables of the respective types can attain only a finite number of values. This also applies to variant types with parametrized constructors as long as all parameters are of finite types.
 
@@ -53,8 +53,8 @@ It may happen that multiple variant types have identically named constructors. F
 
 The values of declarative data types have to be stored in the computer memory, and for that purpose they are mapped onto hardware-specific data structures. For instance, finite variant types can be stored as integers of sufficent bit size (`int8`, `int16`, `int32`), where each constructor is identified with a specific numerical value. In the example above, `BasicColor` could be stored as an `int8`, where `Red` could be assigned to -1 and `Green` to -2, `Blue` to -3, and the remaining 100 shades of gray to the numbers 0 to 100. Alternatively, one could have chosen any other numerical codes or used a varable length encoding: four bits for the constructor variant, and additional 7 bits for the `intensity` field if the constructor happens to be `Gray`. All declaratively defined data types have multiple implementations, none of which is inherently universally superior. For example, compact variable length encodings are often better for transporting data over the network, whereas fixed length encodings perform better in RAM. When working with declaratively defined data types, the compiler can chose the implementation it pressumes to be optimal on the given machine in the given setting, or even switch implementations depending on medium. For all declarative types, the compiler will be able to generate at least one default implementation. However, the automatically generated implementation is often suboptimal. Thus, the oportunity to provide custom alternative implementations that the compiler can chose from is a desirable feature. The program cannot inspect which implementation is used as the implementation is unspecified by the type definition. Furthermore, definition 1 explicitly forbids any interactions within the program that could possibly reveal the implementation. This feature is known as implementation opaqueness.
 
-§ Recovering primitive types: Variant Types with bundled operations
--------------------------------------------------------------------
+§ Defining primitive types declaratively: Variant Types with bundled operations
+-------------------------------------------------------------------------------
 
 In the examples above, distinct constructors always referred to distinct values. Variant data types can be extended to contain constructors that refer to values that are readily expressible by other constructors. Such constructors are called _reducible_.
 
@@ -72,7 +72,7 @@ datatype BasicColor {
 
 Here, `Black` and `White` are reducible constructors and all other constructors are called _irreducible_.
 
-Reducible constructors are exempt from the restriction that parameters must have types that are readily defined: they are allowed to have parameters of the type being defined. Consider the following example:
+For reducible constructors, the restriction that parameters must be of previously types can be lifted. One can also allow parameters of type being the type being defined, without rendering the type infinite.(TODO: ещё раз подумать над формулировкой) Consider the following example:
 
 **Example 2**
 ```scala
@@ -94,13 +94,11 @@ datatype Bool {
 }
 ```
 
-Reducible constructors turn out to be a very useful extension. They allow to provide operations _bundled_ into declarative definitions, such as the logical operations `Not`, `And`, etc. in the example 2. (TODO: Определить bundled operations)
+This example uses reducible constructors `Not(x)` and `And(x, y)` to define operations on the type `Bool` while defining the type itself. An operation on the type defined in the body of the type is called a _bundled_ operation. When a custom implementation for a type is provided, bundled operations can be provided efficient custom implementations too.
 
-There are two differences between operations bundled into the definition and the ones defined as external functions by performing exhaustive case analysis:
-* Bundled operations (the ones given in form of reducible constructors) are the ones the implementors are allowed to redefine when they provide custom implementations for declarative types;
-* Bundled operations are available in compile-time context, this will be disussed at length in the section about generic functions.
+Bundled operations play an important role in context of generic programming, which will be discussed in section [TODO].
 
-Hardware-defined primitive data types such as `int32` and `float64` can be seen as finite variant types in disguise, because they can be modelled by finite sequences of bits:
+In the example above, bundled operations have already allowed us to declaratively define primitive data type `Bool` together with all hardware operations on it. Similarily we can define the type `Int8` of 8-bit integers:
 
 **Example 3**
 ```scala
@@ -126,7 +124,7 @@ datatype Int8 {
 }
 ```
 
-One can describe all primitive numeric datatypes declaratively and see their native implementations as predifined “custom implementations”.
+All hardware-defined primitive data types can be modeled by finite variant types declaratively using bit sequences, and see their native implementations as predifined “custom implementations”.
 
 § Beyond finite types: Inductive types
 --------------------------------------
