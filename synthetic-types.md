@@ -56,6 +56,8 @@ The values of declarative data types have to be stored in the computer memory, a
 § Defining primitive types declaratively: Variant Types with bundled operations
 -------------------------------------------------------------------------------
 
+Primitive data types such as `int32` and `float64` are internally just finite-length bit sequences and thus can be modelled by variant types. In order for operations on such models to be able to interact with native implementations, one needs to introduce reducible constructors.
+
 In the examples above, distinct constructors always referred to distinct values. Variant data types can be extended to contain constructors that refer to values that are readily expressible by other constructors. Such constructors are called _reducible_.
 
 **Example 2**
@@ -94,9 +96,7 @@ datatype Bool {
 }
 ```
 
-This example uses reducible constructors `Not(x)` and `And(x, y)` to define operations on the type `Bool` while defining the type itself. An operation on the type defined in the body of the type is called a _bundled_ operation. When a custom implementation for a type is provided, bundled operations can be provided efficient custom implementations too.
-
-Bundled operations play an important role in context of generic programming, which will be discussed in section [TODO].
+This example uses reducible constructors `Not(x)` and `And(x, y)` to define operations on the type `Bool` while defining the type itself. An operation on the type defined using reducible constructors is called a _bundled_ operation. When a custom implementation for a type is provided, bundled operations can be provided efficient custom implementations too.
 
 In the example above, bundled operations have already allowed us to declaratively define primitive data type `Bool` together with all hardware operations on it. Similarily we can define the type `Int8` of 8-bit integers:
 
@@ -125,6 +125,10 @@ datatype Int8 {
 ```
 
 All hardware-defined primitive data types can be modeled by finite variant types declaratively using bit sequences, and see their native implementations as predifined “custom implementations”.
+
+(**TODO: Куда воткнуть это предложение?!:**) Reducible constructors and bundled operations in particular play an important role in context of generic programming, which will be discussed in section [TODO].
+
+
 
 § Beyond finite types: Inductive types
 --------------------------------------
