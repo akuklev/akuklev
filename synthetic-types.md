@@ -98,7 +98,7 @@ datatype Bool {
 
 This example uses reducible constructors `Not(x)` and `And(x, y)` to define operations on the type `Bool` while defining the type itself. An operation on the type defined using reducible constructors is called a _bundled_ operation. When a custom implementation for a type is provided, bundled operations can be provided efficient custom implementations too.
 
-In the example above, bundled operations have already allowed us to declaratively define primitive data type `Bool` together with all hardware operations on it. Similarily we can define the type `Int8` of 8-bit integers:
+In the example above, bundled operations have already allowed us to declaratively define the primitive data type `Bool` together with all hardware operations on it. Similarily we can define the type `Int8` of 8-bit integers:
 
 **Example 3**
 ```scala
@@ -126,31 +126,29 @@ datatype Int8 {
 
 All hardware-defined primitive data types can be modeled by finite variant types declaratively using bit sequences, and see their native implementations as predifined “custom implementations”.
 
-(**TODO: Куда воткнуть это предложение?!:**) Reducible constructors and bundled operations in particular play an important role in context of generic programming, which will be discussed in section [TODO].
-
+Reducible constructors and bundled operations in particular play an important role in context of generic programming, which will be discussed in section [TODO].
 
 
 § Beyond finite types: Inductive types
 --------------------------------------
 
-The realization that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are finite. That is not true under assumption that computer memory is potentially infinite. The prime examples of infinite data types are the types of (unlimited) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
+The fact that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are finite. That, however, is not true under the assumption of potentially infinite memory, i.e. the assumption that whenever a program runs out of memory and stalls, one can always expand data storage and resume the program execution. The prime examples of infinite data types are the types of (unbounded) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
 
-To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the inductive types. In their simplest form, inductive types are cousins of variant types with recursive defintions allowed. That is, constructors of inductive types are allowed to have parameters of the type being defined:
+To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the _inductive types_. In their simplest form, inductive types are variant types with recursive irreducible constructors. That is, the constructors of inductive types are allowed to have parameters of the type being defined:
 
 **Example 4**
 ```scala
 datatype Nat {
   Zero
-  Succ(pred : Nat)   // successor of other natural number
+  Succ(pred : Nat)   // successor of the natural number `pred`
 }
 ```
 
-The possible values of a variable of type `Nat` are thus `Zero`, `Succ(Zero)`, `Succ(Succ(Zero))`, etc. Cycles are, however, not allowed. In particular there can be no such `n : Nat` that `n = Succ(n)`.
+The possible values of the type `Nat` are thus `Zero`, `Succ(Zero)`, `Succ(Succ(Zero))`, etc. Cycles are not allowed: there can be no such `n : Nat` that `n = Succ(n)`.
 
 **Technical remark:** From now on, let us treat numeric literals like `124` as shorthands for `Succ(...Succ(Zero))` with the correct number of `Succ` constructors.
 
-Now recall what mathematical induction is: to prove a statement for all natural numbers, prove it for `Zero` and prove that whenever it holds for `n` it does also hold for for `Succ(n)`. For inductive types, exhaustive case analysis gets recursive and turns into a form of mathematical induction (hence, the name): in order to define a function on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known.
-
+As with variant types, the values of inductive types can be only inspected by exhaustive case analysis. However, for inductive types exhaustive case analysis supports well-founded recursion. It is, in order to define a function `f` on `Nat`, one has to define it on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known:
 **Example 5**
 ```scala
 def isEven(n : Nat) : Boolean
@@ -159,6 +157,9 @@ def isEven(n : Nat) : Boolean
 ```
 
 Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
+
+To understand the name “inductive types” let us now recall what mathematical induction is: a proof by induction is a proof that a proposition `P(n)` holds for all natural numbers `n : Nat` by demonstrating that it holds for `Zero` and holds for `Succ(n)` whenever it is already established for `n`.
+
 
 
 § Defining integers: Inductive Types with reduction rules
