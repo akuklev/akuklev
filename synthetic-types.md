@@ -149,6 +149,7 @@ The possible values of the type `Nat` are thus `Zero`, `Succ(Zero)`, `Succ(Succ(
 **Technical remark:** From now on, let us treat numeric literals like `124` as shorthands for `Succ(...Succ(Zero))` with the correct number of `Succ` constructors.
 
 As with variant types, the values of inductive types can be only inspected by exhaustive case analysis. However, for inductive types exhaustive case analysis supports well-founded recursion. It is, in order to define a function `f` on `Nat`, one has to define it on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known:
+
 **Example 5**
 ```scala
 def isEven(n : Nat) : Boolean
