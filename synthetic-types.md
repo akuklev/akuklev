@@ -124,17 +124,20 @@ datatype Int8 {
 }
 ```
 
-All hardware-defined primitive data types can be modeled by finite variant types declaratively using bit sequences, and see their native implementations as predifined “custom implementations”.
+All hardware-defined primitive data types can be modeled by finite variant types declaratively using bit sequences. The native implementations of those data types and operations on them can be regarded as predifined “custom implementations”.
 
 Reducible constructors and bundled operations in particular play an important role in context of generic programming, which will be discussed in section [TODO].
+
+
+**TODO:** Засунуть, что primitive data types = data types directly supported by the hardware.
 
 
 § Beyond finite types: Inductive types
 --------------------------------------
 
-The fact that all low level primitive datatypes like `int32` are finite types, can mislead one into the conviction that all data types are finite. That, however, is not true under the assumption of potentially infinite memory, i.e. the assumption that whenever a program runs out of memory and stalls, one can always expand data storage and resume the program execution. The prime examples of infinite data types are the types of (unbounded) natural and integer numbers. It is certainly true, that there are integer numbers so large that they would not fit into the working memory of any given computer, but in such case it is potentially possible to build a computer with even larger memory.
+The fact that all low level primitive datatypes like `int32` are finite types, can give a misleading impression that all data types are finite. That, however, is not true under the assumption of potentially infinite memory, i.e. the assumption that whenever a program runs out of memory and stalls, one can always expand data storage and resume the program execution. The prime examples of infinite data types are the types of (unbounded) natural and integer numbers.
 
-To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the _inductive types_. In their simplest form, inductive types are variant types with recursive irreducible constructors. That is, the constructors of inductive types are allowed to have parameters of the type being defined:
+To construct the types of natural and integer numbers declaratively, one needs an extension to the concept of variant types: the _inductive types_. In their simplest form, inductive types are recursive “variant types”, i.e. the __parameters__ of their constructors are allowed to be of the type being defined:
 
 **Example 4**
 ```scala
@@ -144,11 +147,11 @@ datatype Nat {
 }
 ```
 
-The possible values of the type `Nat` are thus `Zero`, `Succ(Zero)`, `Succ(Succ(Zero))`, etc. Cycles are not allowed: there can be no such `n : Nat` that `n = Succ(n)`.
+The possible values of the type `Nat` are thus `Zero`, `Succ(Zero)`, `Succ(Succ(Zero))`, etc. This definition does not allow for cyclic values. In particular, there can be no such `n : Nat` that `n = Succ(n)`.
 
-**Technical remark:** From now on, let us treat numeric literals like `124` as shorthands for `Succ(...Succ(Zero))` with the correct number of `Succ` constructors.
+In further examples numeric literals like `124` will be regarded as values of the infinite type `Nat`, namely as shorthands for `Succ(...Succ(Zero))` with the respective number of `Succ` constructors, rather than values of a primitive data type like `int32`.
 
-As with variant types, the values of inductive types can be only inspected by exhaustive case analysis. However, for inductive types exhaustive case analysis supports well-founded recursion. It is, in order to define a function `f` on `Nat`, one has to define it on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known:
+As with variant types, the values of inductive types can be only inspected by exhaustive case analysis. However, for inductive types exhaustive case analysis supports well-founded recursion. In order to define a function `f` on `Nat`, one has to define it on `Zero` and on `Succ(n)` under assumption that `f(n)` is already known:
 
 **Example 5**
 ```scala
@@ -157,9 +160,9 @@ def isEven(n : Nat) : Boolean
   Succ(pred) => Not(isEven(pred))
 ```
 
-Functions defined in such a way are said to be structurally recursive. Acircularity of inductive types amounts to the property that structurally recursive functions always terminate, i.e. cannot fall into an endless loop.
+Acircularity of inductive types amounts to the property that such functions always terminate, i.e. cannot fall into an endless loop.
 
-To understand the name “inductive types” let us now recall what mathematical induction is: a proof by induction is a proof that a proposition `P(n)` holds for all natural numbers `n : Nat` by demonstrating that it holds for `Zero` and holds for `Succ(n)` whenever it is already established for `n`.
+The name “inductive types” comes from the mathematical concept of inductive proof. A proof by induction is a proof that a proposition `P(n)` holds for all natural numbers `n : Nat` by demonstrating that it holds for `Zero` and holds for `Succ(n)` whenever it is already established for `n`.
 
 
 
