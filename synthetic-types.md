@@ -7,7 +7,7 @@ Declaratively defined data types are data types specified in terms of _what_ the
 
 It is importaint to note, that throughout this article series, the term _“data types”_ will be used in the following narrow sense: while _types_ in general can refer to objects (such as files and mutable data structures), data types refer solely to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at some point time. _Object types_ are beyond scope of this article. 
 
-We believe that the best way to approach to this hefty topic is by considering examples of increasing complexity. Since no mainstream programming language supports declarative data type definitions in sufficient generality, a pseudocode will be used in all examples. We will start with the definitions of finite types and describe how to declaratively recover primitive numeric data types (such as the type `int32` of 32 bit integers). Then we will define the types for unbounded natural, integer, and rational numbers. After that we will make a digression to define container types (such as pairs, lists, binary trees, etc.) and complex trees.
+We believe that the best way to approach to this hefty topic is by considering examples of increasing complexity. Since no mainstream programming language supports declarative data type definitions in sufficient generality, a pseudocode will be used in all examples. We will start with the definitions of finite types and describe how to declaratively construct primitive numeric data types such as the type `int32` of 32 bit integers. Then we will define the types for unbounded natural, integer, and rational numbers. After that we will make a digression to define container types (such as pairs, lists, binary trees, etc.) and complex trees.
 
 **Table of contents**
 * [**Defining finite types:** Variant data types]()
@@ -56,7 +56,7 @@ The values of declarative data types have to be stored in the computer memory, a
 § Defining primitive types declaratively: Variant Types with bundled operations
 -------------------------------------------------------------------------------
 
-Primitive data types such as `int32` and `float64` are internally just finite-length bit sequences and thus can be modelled by variant types. In order for operations on such models to be able to interact with native implementations, one needs to introduce reducible constructors.
+On the hardware level, computers support basic logical and arithmetic operations on a number of types, such as `boolean`, `int32` of 32 bit integers, `float64` of 64-bit floating point approximations of real numbers. Such types are provided as inbuilt data types in most programming languages, and called primitive numeric data types. Internally, values of those types are just finite-length bit sequences and thus can be modelled by variant types. In order for operations on such models to be able to interact with native implementations, one needs to introduce reducible constructors.
 
 In the examples above, distinct constructors always referred to distinct values. Variant data types can be extended to contain constructors that refer to values that are readily expressible by other constructors. Such constructors are called _reducible_.
 
