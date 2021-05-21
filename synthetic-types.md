@@ -129,9 +129,6 @@ All hardware-defined primitive data types can be modeled by finite variant types
 Reducible constructors and bundled operations in particular play an important role in context of generic programming, which will be discussed in section [TODO].
 
 
-**TODO:** Засунуть, что primitive data types = data types directly supported by the hardware.
-
-
 § Beyond finite types: Inductive types
 --------------------------------------
 
@@ -169,7 +166,7 @@ The name “inductive types” comes from the mathematical concept of inductive 
 § Defining integers: Inductive Types with reduction rules
 ---------------------------------------------------------
 
-Inductive types may have structurally recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
+Inductive types may have recursive reducible constructors. These generalize reducible constructors of variant types, that were introduced in [#Variant_Types_with_bundled_operations]. Let us define some bundled operations for `Nat` to provide a solid example:
 
 **Example 6**
 ```scala
