@@ -35,7 +35,7 @@ structure BitSequence {
   tail : BitSequence
 }
 
-inductive BitList {
+construct BitList {
    EmptyBitList,
    NonEmptyBitList(head : Bit, tail : BitList)
 }
