@@ -3,7 +3,7 @@ Declarative Approach to Data Types
 
 I work in [HoTT and Dependent Types Group](https://research.jetbrains.org/groups/group-for-dependent-types-and-hott) at [JetBrains Research](https://research.jetbrains.org/). This article is an introduction to declarative data type definitions for interested software engineers, computer scientists, and mathematicians willing to tolerate programming-centered perspective. At the same time, this article contains novel material based on mathematical results by the members of our group which are yet to be published.
 
-Declaratively defined data types are data types specified in terms of _what_ they are good for, rather than _how_ they are implemented. Declarative data type definitions are essential for abstract reasoning about programs. Such definitions also form the frame for the emerging structuralist's foundation of mathematics[[1]](https://arxiv.org/abs/2009.09541).
+Declaratively defined data types are data types specified in terms of _what_ they are good for, rather than _how_ they are implemented. Declarative data type definitions are essential for abstract reasoning about programs. Such definitions also form the frame for the emerging structuralist foundation of mathematics[[1]](https://arxiv.org/abs/2009.09541).
 
 It is importaint to note, that throughout this article series, the term _“data types”_ will be used in the following narrow sense: while _types_ in general can refer to objects (such as files and mutable data structures), data types refer solely to _data_, by which we mean self-conatined indefinitely copyable pieces of information like values of variables or content of files at some point time. _Object types_ are beyond scope of this article. 
 
@@ -18,6 +18,38 @@ We believe that the best way to approach to this hefty topic is by considering e
 * [**Defining containers:** Polymorphic Inductive Types]()
 * [**Defining syntax trees:** Dependent Inductive Types]()
 * [**Towards reals:** Beyond Synthetic Types]()
+
+§ Two Basic Approaches
+----------------------
+
+We will be considering two approaches to declarative type definitions:
+* Black box approach
+* Bottom-up approach
+
+Let us illustrate the approaches by examples. Assume, the type `Bit` a finite type with exactly two values `tt` (true), and `ff` (false) and consider the following two data type defintions:
+
+**Example 1**
+```scala
+structure BitSequence {
+  head : Bit
+  tail : BitSequence
+}
+
+inductive BitList {
+   EmptyBitList,
+   NonEmptyBitList(head : Bit, tail : BitList)
+}
+```
+
+The first definition is a black box definition. It says, a piece of data is a value of type `BitSequence` whenever it has a `head` of type `Bit` and a `tail` of type `BitSequence`. The definition does not make any assumptions how the values are built.
+
+The second definition is a bottom-up definition. It says tha
+
+Both limit value space: black-box can be only observed by defined operators, no way to distinguish observationally equivalent values. bottom-up: one can safely assume that any value es equal to one built from constructors.
+
+Bottom-up types: number of possible values exactly known. even if infinite, all possible values can be systematically enumerated exhaustively.
+Black-box types are open. We have a lower bound (there is at least a countably infinite number of bit sequences, namely constructible bit sequences) and sometimes an upper bound in terms of other blackbox types (“number” of bit sequences is bounded from above by the “number” of subsets of natural numbers).
+
 
 § Defining finite types: Variant data types
 -------------------------------------------
@@ -354,16 +386,34 @@ datatype Expr(nVars : Nat) {
 }
 ```
 
-§ Synthetic and Behaviorial paradigms
--------------------------------------
+§ Synthetic and Behaviorial definitions
+---------------------------------------
 
-There are two general approaches to declarative type definitions:
-* Synthetic (or closed) paradigm: To define a type, one specifies how values of that type are built bottom-up.
-* Behaviorial (or open) paradigm: To define a type, one specifies how values of that type have behave, without explicitly limiting how they are built.
+The types discussed so far were all synthetically defined, but it turns out that synthetic defintions are not sufficient for some needs. In particular, synthetic types are not sufficient to accomodate potentially unbounded containers such as (infinite) sequences `Seq<T>`, infinite trees and most fundamentally, function types `A -> B`, where `A` is an infinite type. Real numbers also cannot be expressed as purely synthetic types.
 
-Types defined using the first paradigm are closed in the sense they do not contain anything one has not explicitly put there. Number of inhabitants of a synthetic type is known upfront. If it is infinite, than it has to be countably infinite, i.e. all possible inhabitants can be numbered by whole numbers. In contrast, for behaviorially defined types one does not assume that they are exhausted by values known upfront. Behaviorially defined types obey the duck typing principle: "if it walks like a duck and it quacks like a duck, then it's duck", so in general one only knows a lower bound on their size.
+In general, there are two approaches to declarative type definitions:
+* Synthetic (or closed) paradigm, where types are specified in terms of how their values are formed bottom-up.
+* Behaviorial (or open) paradigm, where types are specified in terms of operations that can be applied to values of that type, without explicitly limiting how values are constructed.
 
-All types defined so far were in fact synthetic types, but they are not sufficient to accomodate potentially unbounded containers such as (infinite) sequences `Seq<T>`, infinite trees and most fundamentally, function types `A -> B`. In order to declaratively define (exact) real numbers one actually has to go even beyond, and mix paradigms.
+```scala
+structure SequenceOfNats {
+   head : Nat
+   tail : SequenceOfNats
+}
+```
+
+Here we define the type `SequenceOfNats` with two operations that can be applied to a value of that type:
+* `head` extracts the first element of the sequence;
+* `tail` extracts the sequence of all elements but the first.
+
+Allowed values of such type are “black boxes” supporting those two operations, there are no assumptions about how they are built. This approach is also known as duck typing: "if it walks like a duck and it quacks like a duck, then it's duck".
+
+
+Types defined using the synthetic paradigm are closed in the sense they do not contain anything one has not explicitly put there. The number of possible values of a synthetic type is known upfront. If it is infinite, than it has to be countably infinite, i.e. all possible values can be enumerated. By contrast, for behaviorially defined types one does not assume that they are exhausted by values known upfront. , so in general one only knows a lower bound on their size. (TODO: неочевидно, почему это вообще так)
+
+
+
+
 
 Recall that variant types are finite if they have no parametric constructors or if all they their constructors only have parameters of finite types. One can formulate a similar statement for inductive types. For inductive datatypes, it makes sense to distinguiss between parametrized constructors containing only the parameters of type being defined (endogenic constructors, like `Succ(n : Nat)`) and the ones with parameters of foreign types (exogenic constructors). Atomic constructors should be considered endogenic as well.
 
