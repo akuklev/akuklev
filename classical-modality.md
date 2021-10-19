@@ -31,7 +31,7 @@ The properties of being singleton and of being a plain type are propositional as
 
 Now let us introduce the quantifier of non-effective existence `∃⁰(X : *) P : X -> *` and the respective modality of non-effective non-emptiness `∃⁰(X : *)` with `∃⁰(X : *) ≅ ∃⁰(x : X) 𝟙`.
 
-Non-effectively existing sequence `∃⁰(s : ℕ -> ℕ) P(s)` cannot be applied to a natural number `n : ℕ`. Non-effectively existing natural number `∃⁰(n : ℕ) P(n)` cannot be matched against `Zero` and `Succ`. It is, however, possible to apply constructors or leave the value as is. For example, if we know that `∀(n : Nat) P(n) => Q(Succ(n))`, we can use `∃⁰(n : ℕ) P(n)` to prove `∃⁰(m : ℕ) Q(m)`. ∃⁰ can be seen as an operator turning every type into a type with the same constructors but now eliminators. Additionally, we want to allow to use non-effectively existing values as type parameters for types `T(p : P)` iff `P : SProp`. These two kinds of usage do not compromise evaluation of closed terms and decidability of conversion despite non-computability of non-effectively existing values.
+Non-effectively existing sequence `∃⁰(s : ℕ -> ℕ) P(s)` cannot be applied to a natural number `n : ℕ`. Non-effectively existing natural number `∃⁰(n : ℕ) P(n)` cannot be matched against `Zero` and `Succ`. It is, however, possible to apply constructors or leave the value as is. For example, if we know that `∀(n : Nat) P(n) => Q(Succ(n))`, we can use `∃⁰(n : ℕ) P(n)` to prove `∃⁰(m : ℕ) Q(m)`. ∃⁰ can be seen as an operator turning every type into a type with the same constructors but now eliminators. These kind of usage do not compromise evaluation of closed terms and decidability of conversion despite non-computability of non-effectively existing values.
 
 Now that we have tentatively assured this metatheoretical property, we want to postulate the premises of the form `∃⁰(x : X) P(x)` to be satisfiable by `¬∀(x : X) ¬P(x)`. In particular, it also implies that for propositions `P` the premises of the form `∃⁰P := ∃⁰P, 𝟙` are satisfiable by `¬¬P`.
 
@@ -40,7 +40,8 @@ Let's formalize what we've just said:
 1) Every term with principal type `T` typechecks as `∃⁰T`.
 2) Every function `f : X -> Y` that never eliminates on its argument also typechecks as `f : (∃⁰X) -> (∃⁰Y)`
 3) If `Y : (∃⁰X) -> *`, and `f : ∀(x : X) Y(x)` never eliminates on its argument than it typechecks as `f : ∀(x : ∃⁰X) ∃⁰Y(x)` 
-4) Since manifestly propositional types lack eliminators, for any `P : SProp` or `P : *`, `f : P -> T`, holds `f : (∃⁰X) -> T`. 
+3') If `Y : (∃⁰X) -> *`, and `f : ∀(x : X) Y(x)` never uses its argument at all in its body than it typechecks as `f : ∀(x : ∃⁰X) Y(x)`
+5) Since manifestly propositional types lack eliminators, for any `P : SProp` or `P : *`, `f : P -> T`, holds `f : (∃⁰X) -> T`. 
 
 With this rules we can prove the following:
 ```
