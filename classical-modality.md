@@ -6,7 +6,7 @@ Classical modality for constructive type theories
 §1. The setup
 -------------
 
-Assume we work in an intentsional Martin-Löf Type Theory with empty type `𝟘`, unit type `𝟙 := {𝟘}`, boolean (or bit) type `𝔹 = {𝟘, 𝟙}`, a universe of manifestly propositional types `SProp ⊃ 𝔹` and above it, an infinite cumulative hierarchy of univalent universes `SProp ⊂ 𝒰 : 𝒰⁺ : 𝒰⁺² : ···`, closed under dependent products `∀(X : *) (Y : X -> *)`, dependent sums `Σ(X : *) (Y : X -> *)`, identity types `Id[T : *](x y : T)` and quotient inductive-inductive types including propositional truncation `∃(T : *)`, that allows defining logical disjunction `P ∨ Q := ∃(P ⊕ Q)` and effective existential quantifier `∃(X : *) (P : X -> *) := ∃(Σ X Y)`.
+Assume we work in an intentsional Martin-Löf Type Theory with empty type `𝟘`, unit type `𝟙 := {𝟘}`, boolean (or bit) type `𝔹 = {𝟘, 𝟙}`, a universe of manifestly propositional types `𝔹 ⊂ SProp` and above it, an infinite cumulative hierarchy of univalent universes `SProp ⊂ 𝒰 : 𝒰⁺ : 𝒰⁺² : ···`, closed under dependent products `∀(X : *) (Y : X -> *)`, dependent sums `Σ(X : *) (Y : X -> *)`, homotopy-identity types `Id[T : *](x y : T)` and a sufficiently rich form of quotient inductive types including propositional truncation `∃(T : *)`, that allows defining logical disjunction `P ∨ Q := ∃(P ⊕ Q)` and effective existential quantifier `∃(X : *) (P : X -> *) := ∃(Σ X Y)`.
 
 We'll also assume propositional resizing in the form of an axiom that for each propositional type in any universe there is an isomorphic type in `SProp` and hence in every universe, where
 ```
